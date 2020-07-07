@@ -1,52 +1,49 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
-public class ScaleSelectionResponse : MonoBehaviour, ISelectionResponse
+public class ScaleSelectionResponse : SelectionDefaultResponse, ISelectionResponse
 {
-    private Vector3 _originalScale;
-    private Vector3 _targetScale;
-    public GameObject DetermineSelection(Vector3 selectionPosition)
-    {
-        //create ray
-        Ray ray = Camera.main.ScreenPointToRay(selectionPosition);
-        //draw raycast
-        Debug.DrawLine(ray.origin, ray.direction, Color.red);
-
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-        //check that it hit something
-        if (!hit)
-            return null;
-
-        //get original scale
-        _originalScale = hit.collider.gameObject.transform.localScale;
-        return hit.collider.gameObject;
-    }
-
-    public void OnSelected(GameObject gameObject, Vector3 inputPosition)
+    public override void OnSelected(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
         {   //transform scale based on input position
-            gameObject.transform.localScale = new Vector3(inputPosition.x, inputPosition.y, inputPosition.z);
-            _targetScale = gameObject.transform.localScale;
+            //StartCoroutine(PopScale(gameObject));
+            gameObject.transform.localScale = new Vector3(1.2f, 1.2f, 0);
         }
     }
 
 
-    public void OnDeselect(GameObject gameObject)
+    public override void OnDeselect(GameObject gameObject)
     {
         //return to original scale
-        if(_originalScale != null && gameObject != null)
+        if(gameObject != null)
         {
-            gameObject.transform.localScale = _originalScale;
+            gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
     }
 
-    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
+    public override void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
         {   //maintain target scale;
-            gameObject.transform.localScale = _targetScale;
+            AudioSource audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+                return;
+
+            if (!audioSource.isPlaying)
+                audioSource.Play();
         }
     }
+
+    IEnumerator PopScale(GameObject gameObject)
+    {
+
+        Transform transform = gameObject.transform;
+        transform.localScale = new Vector3(1.5f, 1.5f, 0);
+        yield return new WaitForSeconds(.2f);
+        transform.localScale = new Vector3(1.2f, 1.2f, 0);
+
+    } 
 }

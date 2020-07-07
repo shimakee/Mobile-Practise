@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 
-public class DragSelectionResponse : MonoBehaviour, ISelectionResponse
+public class SelectionDefaultResponse : MonoBehaviour, ISelectionResponse
 {
-    private Vector3 _originalPosition;
-    private Vector3 _targetPosition;
-
-    public GameObject DetermineSelection(Vector3 inputPosition)
+    protected Vector3 _originalPosition;
+    protected Vector3 _targetPosition;
+    public virtual GameObject DetermineSelection(Vector3 inputPosition)
     {
         //create ray
         Ray ray = Camera.main.ScreenPointToRay(inputPosition);
@@ -22,7 +21,7 @@ public class DragSelectionResponse : MonoBehaviour, ISelectionResponse
         return hit.collider.gameObject;
     }
 
-    public void OnSelected(GameObject gameObject, Vector3 inputPosition)
+    public virtual void OnSelected(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
@@ -32,15 +31,14 @@ public class DragSelectionResponse : MonoBehaviour, ISelectionResponse
         }
     }
 
-
-    public void OnDeselect(GameObject gameObject)
+    public virtual void OnDeselect(GameObject gameObject)
     {
         //return to original location
         if (gameObject != null && _originalPosition != null)
             gameObject.transform.position = _originalPosition;
     }
 
-    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
+    public virtual void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
         //stay at target location
         if (gameObject != null && _targetPosition != null)
