@@ -38,8 +38,8 @@ public class WordController : MonoBehaviour
         {
             foreach (var touch in Input.touches)
             {
-                OnTouchMove(touch);
                 OnTouchOff(touch);
+                OnTouchMove(touch);
             }
         }
         
@@ -83,7 +83,6 @@ public class WordController : MonoBehaviour
                 _lettersGameObjectSelected.Add(_selection);
                 _selectedWord = _selectedWord + letter.Symbol;
 
-                Debug.Log(letter.Symbol, this);
                 Debug.Log($"current selected word -{_selectedWord}-", this);
             }
 
@@ -105,13 +104,8 @@ public class WordController : MonoBehaviour
                 else {
                     //find if there is any word that matches such spelling
                     AudioClip resourcedWord = Resources.Load<AudioClip>($"Audio/Words/{_selectedWord}");
-
-                    Debug.Log(resourcedWord.name.ToString());
-
-                    //if there is play audio
                     if (resourcedWord && !_audioSource.isPlaying)
                     {
-                        Debug.Log("1");
                         _audioSource.PlayOneShot(resourcedWord);
                     }
 
