@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b2d637ff016b2a4f9a2285a1c32c428, type: 3}
-  m_Name: b
+  m_Name: a
   m_EditorClassIdentifier: 
-  Symbol: 98
+  Symbol: 97
   Sprite: {fileID: 0}
-  PhonicAudio: {fileID: 8300000, guid: 505cc7fe60298db4db61640264b314ff, type: 3}
+  PhonicAudio: {fileID: 8300000, guid: fb9c1115510ad034cb4d86b285fe4c26, type: 3}
   LetterAudio: {fileID: 0}
+  LetterType: 0
