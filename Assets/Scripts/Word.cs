@@ -11,22 +11,4 @@ public class Word : ScriptableObject
     public AudioClip WordAudio;
     public AudioClip Sfx; // sfx of the word when they tap on the sprite picture.
     public string WordSpelling;
-
-
-    //public Word(string word)
-    //{
-    //    WordSpelling = word;
-    //}
-
-    //public Word(string word, AudioClip audio)
-    //    :this(word)
-    //{
-    //    WordAudio = audio;
-    //}
-
-    //public Word(string word, AudioClip audio, List<Letter> letterArray)
-    //    :this(word, audio)
-    //{
-    //    Letters = letterArray;
-    //}
 }

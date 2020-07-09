@@ -14,9 +14,7 @@ public class WordManager : MonoBehaviour
 
     private List<string> _wordList;
     private bool _isCreatingWord = false;
-    private string _currentWordString = "";
     private GameObject _currentWordObject;
-    private WordController _currentWordObjectController;
     private void Awake()
     {
         //check that wordlist text file exist
@@ -27,12 +25,6 @@ public class WordManager : MonoBehaviour
         //check that there is a prefab
         if (!WordBlockPrefab)
             throw new NullReferenceException("must have a reference to the wordBlock object to instantiate.");
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -56,7 +48,6 @@ public class WordManager : MonoBehaviour
         foreach (var word in _wordList)
         {
             trimmedWordList.Add(word.Trim());
-            Debug.Log($"-{word}- is in list.", this);
         }
 
         _wordList = trimmedWordList;
@@ -68,33 +59,36 @@ public class WordManager : MonoBehaviour
     {
         //check that the new word does not equal to the word already generated.
         int randomNumber = UnityEngine.Random.Range(0, wordList.Count);
-        Debug.Log($"Word picked -{wordList[randomNumber]}");
         return wordList[randomNumber];
     }
-
+    //TODO: create method to position image and word
+    //show image only
+    //show word only
+    //show both
     private IEnumerator CreateWordObject(string word, Vector3 position)
     {
 
         if (!_isCreatingWord)
         {
             _isCreatingWord = true;
-            _currentWordString = word;
 
-            Debug.Log($"creating word -{word}");
             //prevent duplicates or multiple words
             //if (_currentWordObject != null)
             Destroy(_currentWordObject);
 
-            _currentWordObject = Instantiate(WordBlockPrefab);
-            _currentWordObject.transform.position = position;
-            int n = _currentWordObject.GetComponent<WordController>().InitializeWord(word);
+            //create empty for word and picture to live in
+            GameObject wordObject = new GameObject(word);
+            _currentWordObject = wordObject;
+
+            GameObject instantiatedWord = Instantiate(WordBlockPrefab, _currentWordObject.transform);
+            instantiatedWord.transform.position = position;
+            int n = instantiatedWord.GetComponent<WordController>().InitializeWord(word);
 
             //when you redesign initialize word to return -1 when not all assets are loaded or cant be found.
             //create loop to pick another word.
             //if(n == -1)
                 //pick another object
 
-            Debug.Log($"the word from list is -{word}- with return value {n}.");
             yield return new WaitForSecondsRealtime(wordSpawnWaitTime);
             _isCreatingWord = false;
         }

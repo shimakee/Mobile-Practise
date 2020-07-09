@@ -13,29 +13,16 @@ public class WordController : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private string _selectedWord = "";
     private List<GameObject> _lettersGameObjectSelected = new List<GameObject>();
+    private GameObject _singleGameObjectSelected;
 
+    //TODO: resources path set as public string to be set in editor
 
-    //NOTE - will pick another random word if all the NECCESSARY assets are not present for the word scriptable object.
-    //(WordAudio, Letters) - needed || - (Sfx, Sprite) may not be needed
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _selectionResponse = GetComponent<ISelectionResponse>();
-
     }
-
-    private void Start()
-    {
-        //assign values here. - create a method that initializes so that it can be recalled when instantiating an object
-        //if (Word)
-        //{
-        //    Debug.Log($"Initialize wordblock on start -{Word.WordSpelling}-");
-        //    InitializeWord(Word.WordSpelling);
-        //}
-    }
-
-    
 
     private void Update()
     {
@@ -43,15 +30,14 @@ public class WordController : MonoBehaviour
         {
             foreach (var touch in Input.touches)
             {
-                OnTouchOff(touch);
+                OnTouchBegin(touch);
                 OnTouchMove(touch);
+                OnTouchOff(touch);
             }
         }
         
     }
 
-    //TODO: create touch movement for Sfx
-    //TODO: create touch movement for when displaying picture sprite as a whole figure nto the letters.
 
     /// <summary>
     /// <para>Initializes the wordBlock game object based on the the word arguement.</para>
@@ -63,7 +49,6 @@ public class WordController : MonoBehaviour
     /// <returns>Returns an int 0 or 1</returns>
     public int InitializeWord(string wordString) //create method overload if necessary
     {
-        Debug.Log($"Initializing word -{wordString}-");
         if (String.IsNullOrWhiteSpace(wordString))
             throw new ArgumentNullException("wordString arguement cannot be null, as it is used to generate the word.");
 
@@ -71,49 +56,48 @@ public class WordController : MonoBehaviour
         Word wordScriptable = ScriptableObject.CreateInstance<Word>();
         Word = wordScriptable;
 
-        //load reasource components & assign them
+        //load reasource
         Word.WordSpelling = wordString;
-        Debug.Log($"finding components for {wordString}");
         Word.WordAudio = Resources.Load<AudioClip>($"Audio/Words/{wordString}");
-        Debug.Log($"Audio/Words/{wordString}", this);
-
-        Word.Sprite = Resources.Load<Sprite>($"Sprites/Words/{wordString}");
-        Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/{wordString}");
+        Word.Sprite = Resources.Load<Sprite>($"Sprites/{wordString}");
+        Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
         foreach (var character in wordString)
         {
-            Debug.Log($"finding character letter for {character}");
             Letter letter = Resources.Load<Letter>($"Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
 
             if (!Word.Letters.Contains(letter))
                 Word.Letters.Add(letter);
         }
 
-
-        //change based on options.
-        //male to female
-        //find word audio using resource.load
+        //assign components
         _audioSource.clip = Word.WordAudio;
 
         //initializing letters & place them in the world.
-        InitializeLetters(wordScriptable);
+        InitializeLetters(Word);
+        InitializeWordImage(Word);
 
         //return 0 if only necessary components are loaded
         //return 1 if all components are loaded
         if (wordScriptable.Sprite == null || wordScriptable.Sfx == null)
             return 0;
 
-        //initializing the picture (proper placement);
-        //change based on package
-        //_spriteRenderer.sprite = letter.Sprite;
-
         return 1;
     }
 
-    private void InitializeLetters(Word word)
+    private void InitializeWordImage(Word word) //create overload for offset and margins?
     {
-        Debug.Log($"Assembling letters -{word.WordSpelling}-");
+        if(word.Sprite != null)
+        {
+            _spriteRenderer.sprite = word.Sprite;
+        }
+    }
+
+    private void InitializeLetters(Word word) // create overload for offset and margins?
+    {
         int lettersInstantiated = 0;
-        float widthAllowance = LetterBlockPrefab.GetComponent<SpriteRenderer>().bounds.size.x;
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        float widthAllowance = letterBlockSpriteRenderer.bounds.size.x;
+        float heightAllowance = letterBlockSpriteRenderer.bounds.size.y;
 
         //assemble the word using the letters
         foreach (char character in word.WordSpelling)
@@ -121,9 +105,9 @@ public class WordController : MonoBehaviour
             Letter letter = word.Letters.Where(l => l.Symbol == character).FirstOrDefault();
             if (letter)
             {
-                Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated), transform.position.y, transform.position.z);
+                Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated) - widthAllowance, transform.position.y - heightAllowance, transform.position.z);
 
-                GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
+                GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform.parent);
                 letterGameObject.transform.position = objectPosition;
                 letterGameObject.GetComponent< LetterController>().letter = letter;
             }
@@ -131,59 +115,102 @@ public class WordController : MonoBehaviour
         }
     }
 
+    private void OnTouchBegin(Touch touch)
+    {
+        if (touch.tapCount == 1 && touch.phase == TouchPhase.Began)
+        {
+            _singleGameObjectSelected = _selectionResponse.DetermineSelection(touch.position);
+            if (!_singleGameObjectSelected)
+                return;
+
+            if(_singleGameObjectSelected == this.gameObject)
+                _selectionResponse.OnSelected(_singleGameObjectSelected, touch.position);
+        }
+    }
+
     private void OnTouchMove(Touch touch)
     {
-        if(touch.phase == TouchPhase.Moved && touch.tapCount == 1)
+        if(touch.phase == TouchPhase.Moved)
         {
-            GameObject _selection = _selectionResponse.DetermineSelection(touch.position);
-
-            if (!_selection)
-                return;
-
-            Letter letter = _selection.GetComponent<LetterController>().letter;
-            if (letter == null)
-                return;
-
-            if (!_lettersGameObjectSelected.Contains(_selection))
+            GameObject selection = _selectionResponse.DetermineSelection(touch.position);
+            //for the picture
+            if (selection && selection == this.gameObject)
             {
-                _lettersGameObjectSelected.Add(_selection);
-                _selectedWord = _selectedWord + letter.Symbol;
-
-                Debug.Log($"current selected word -{_selectedWord}-", this);
+                _selectionResponse.OnSelected(this.gameObject, touch.position);
+                _selectedWord = "";
+                _lettersGameObjectSelected.Clear();
+                return;
             }
+            else
+            {
+                _singleGameObjectSelected = selection;
+                _selectionResponse.OnDeselect(this.gameObject);
+            }
+
+            //for the letters word
+            if (selection)
+            {
+                LetterController letterController = selection.GetComponent<LetterController>();
+                if (!letterController)
+                {
+                    _selectedWord = "";
+                    _lettersGameObjectSelected.Clear();
+                    return;
+                }
+
+                if (!_lettersGameObjectSelected.Contains(selection))
+                {
+                    _lettersGameObjectSelected.Add(selection);
+                    _selectedWord = _selectedWord + letterController.letter.Symbol;
+                }
+            }
+
 
         }
     }
 
     private void OnTouchOff(Touch touch)
     {
-        if(touch.phase == TouchPhase.Ended)
+        if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
         {
-            Debug.Log($"selected word on release -{_selectedWord}-", this);
-            if(_selectedWord.Length > 1 && Word)
-            {
-                if (_selectedWord == Word.WordSpelling)
-                {
-                    if (!_audioSource.isPlaying)
-                        _audioSource.Play();
-                }
-                else {
 
-                    //find if there is any word that matches such spelling
-                    //change PATH depending on the word searched. cv/cc/cvc/ etc.
-                    //use word.letters to determin if vowel or consonant to get to the desired directory
-                    AudioClip resourcedWord = Resources.Load<AudioClip>($"Audio/Words/{_selectedWord}");
-                    if (resourcedWord && !_audioSource.isPlaying)
-                    {
-                        _audioSource.PlayOneShot(resourcedWord);
-                    }
+            _selectionResponse.OnDeselect(this.gameObject);
 
-                }
-            }
+            GameObject selectionEnd =_selectionResponse.DetermineSelection(touch.position);
             
+            //for the image 
+            if (_singleGameObjectSelected == selectionEnd && _singleGameObjectSelected == this.gameObject)
+            {
+                if (Word.Sfx != null && !_audioSource.isPlaying)
+                    _audioSource.PlayOneShot(Word.Sfx);
+            }
+
+            //for the letters word
+            if (_selectedWord.Length <= 1 || !Word)
+                return;
+
+            if (selectionEnd && !selectionEnd.GetComponent<LetterController>())
+            {
+                _selectedWord = "";
+                _lettersGameObjectSelected.Clear();
+            }
+
+            if (_selectedWord == Word.WordSpelling)
+            {
+                _selectionResponse.OnSelectionConfirm(this.gameObject, transform.position);
+            }
+            else {
+                //check for cvc folders when it gets bigger
+                AudioClip resourcedWord = Resources.Load<AudioClip>($"Audio/Words/{_selectedWord}");
+                if (resourcedWord && !_audioSource.isPlaying)
+                {
+                    _audioSource.PlayOneShot(resourcedWord);
+                }
+
+            }
+
             _selectedWord = "";
             _lettersGameObjectSelected.Clear();
-
         }
     }
 }

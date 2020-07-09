@@ -11,9 +11,7 @@ public class LetterController : MonoBehaviour
     private GameObject _selectedObjectBegin;
     private GameObject _selectedObjectEnd;
 
-    //TODO: create a method re-inistialize where you reload all components
-    //Useable when Word controller re-assignes a letter. audio and sprites need to be reloaded.
-
+    //TODO: resources path set as public string to be set in editor
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -24,14 +22,6 @@ public class LetterController : MonoBehaviour
     private void Start()
     {
         InitializeLetter(letter);
-        //letters will now only have one type of audio to simpllify.
-        //letter has default audio phonics
-        //using resource.load change audio to
-        //male or female
-        //phonics or letter pronounciation
-        _audioSource.clip = letter.PhonicAudio;
-        //changable sprite
-        //_spriteRenderer.sprite = letter.Sprite;    ====*
     }
 
     private void Update()
@@ -51,8 +41,15 @@ public class LetterController : MonoBehaviour
 
     public void InitializeLetter(Letter letter) // create method overload if necessary
     {
-        //assign values to letter scriptable object here.
-        //always look based on option of the user.
+        //using resource.load change audio to
+        //male or female
+        //phonics or letter pronounciation
+        _audioSource.clip = letter.PhonicAudio;
+
+        if (letter.Sprite == null)
+            letter.Sprite = Resources.Load<Sprite>($"Sprites/{letter.Symbol}");
+
+            _spriteRenderer.sprite = letter.Sprite;
     }
 
     private void OnTouchTap(Touch touch)
