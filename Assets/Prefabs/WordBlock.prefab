@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97550b31b130af14f9e19a02b310a844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  word: {fileID: 11400000, guid: 510171d2ee781d743afa2626f6bf18e8, type: 2}
-  LetterPrefab: {fileID: 7931736552008533967, guid: 890ef3d14f26bf44f8c8dd8eee6b1781,
+  Word: {fileID: 0}
+  LetterBlockPrefab: {fileID: 7931736552008533967, guid: 890ef3d14f26bf44f8c8dd8eee6b1781,
     type: 3}
 --- !u!82 &5745327227831437032
 AudioSource:
