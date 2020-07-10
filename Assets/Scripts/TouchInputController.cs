@@ -10,6 +10,7 @@ public class TouchInputController : MonoBehaviour
 
     ISelectionResponse _selectionResponse;
     Dictionary<int, GameObject> _selectedObjects; // for touch
+
     private void Awake()
     {
         _selectionResponse = GetComponent<ISelectionResponse>();

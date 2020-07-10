@@ -132,6 +132,8 @@ GameObject:
   - component: {fileID: 152059210}
   - component: {fileID: 152059211}
   - component: {fileID: 152059212}
+  - component: {fileID: 152059213}
+  - component: {fileID: 152059209}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -139,6 +141,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &152059209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152059208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a42367088a6741f409ec14ab07541c86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &152059210
 Transform:
   m_ObjectHideFlags: 0
@@ -177,6 +191,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24207717227ad744dbf5cd18db1fe8b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &152059213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152059208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cad7cfd8d9ddb42b639e7fd158e090, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  secondsToWaitOnTouchOff: 0.5
+  passiveSelection: 0
+  maxAllowedTouch: 10
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
