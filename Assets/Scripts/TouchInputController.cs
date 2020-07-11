@@ -100,7 +100,7 @@ public class TouchInputController : MonoBehaviour
     public virtual void OnTouchMoved(Touch touch)
     {
         if (touch.phase == TouchPhase.Moved && _selectedObjects.ContainsKey(touch.fingerId))
-            _selectionResponse.OnSelected(_selectedObjects[touch.fingerId], Camera.main.ScreenToWorldPoint(touch.position));
+            _selectionResponse.IsSelected(_selectedObjects[touch.fingerId], Camera.main.ScreenToWorldPoint(touch.position));
 
     }
     public virtual void OnTouchEnd(Touch touch)
@@ -123,7 +123,7 @@ public class TouchInputController : MonoBehaviour
             //check it exists
             if (_selectedObjects.ContainsKey(touch.fingerId))
             {
-                _selectionResponse.OnDeselect(_selectedObjects[touch.fingerId]);
+                _selectionResponse.Deselected(_selectedObjects[touch.fingerId], touch.position);
                 _selectedObjects.Remove(touch.fingerId);
             }
         }

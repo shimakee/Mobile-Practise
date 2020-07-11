@@ -20,11 +20,11 @@ public class TouchConroller : MonoBehaviour
     int _tapCount;
 
     //objects selected at touch phases
-    GameObject _currentSelection;
-    public List<GameObject> _selectedOnTouchMove = new List<GameObject>();
-    GameObject _selectedOnTouchBegan;
-    GameObject _selectedOnTouchStationary;
-    GameObject _selectedOnTouchOff;
+    Dictionary<int, GameObject> _currentSelection = new Dictionary<int, GameObject>();
+    public Dictionary<int, List<GameObject>> _selectedOnTouchMove = new Dictionary<int, List<GameObject>>();
+    Dictionary<int, GameObject> _selectedOnTouchBegan = new Dictionary<int, GameObject>();
+    Dictionary<int, GameObject> _selectedOnTouchStationary = new Dictionary<int, GameObject>();
+    Dictionary<int, GameObject> _selectedOnTouchOff = new Dictionary<int, GameObject>();
 
     //touch positions
     Vector2 _touchBeganPosition;
@@ -65,14 +65,26 @@ public class TouchConroller : MonoBehaviour
     {
         if (touch.phase == TouchPhase.Began)
         {
-            Debug.Log("touch began", this);
+            int fingerId = touch.fingerId;
+            Debug.Log($"touch began finger id {fingerId}", this);
+            GameObject selectedObject = touchResponse.DetermineSelection(touch.position);
 
-            _currentSelection = touchResponse.DetermineSelection(touch.position);
-            touchResponse.IsSelected(_currentSelection, touch.position);
-            _selectedOnTouchBegan = _currentSelection;
+            if (!_currentSelection.ContainsKey(fingerId))
+            {
+                Debug.Log($"began id {fingerId} is added.", this);
+                _currentSelection.Add(fingerId, selectedObject);
+            }
+            else
+            {
+                Debug.Log($"began id {fingerId} is replaced.", this);
+                _currentSelection[fingerId] = selectedObject;
+            }
+
+            _selectedOnTouchBegan[fingerId] = _currentSelection[fingerId];
+            if(_currentSelection[fingerId])
+                touchResponse.IsSelected(_currentSelection[fingerId], touch.position);
 
             _touchBeganPosition = new Vector2(touch.position.x, touch.position.y);
-            Debug.Log($"on touch began {_selectedOnTouchBegan.gameObject.name}", this);
         }
     }
 
@@ -81,14 +93,24 @@ public class TouchConroller : MonoBehaviour
         if (touch.phase == TouchPhase.Stationary)
         {
 
-            _currentSelection = touchResponse.DetermineSelection(touch.position);
+            int fingerId = touch.fingerId;
+            GameObject selectedObject = touchResponse.DetermineSelection(touch.position);
+            if (!_currentSelection.ContainsKey(fingerId))
+            {
+                _currentSelection.Add(fingerId, selectedObject);
+            }
+            else
+            {
+                _currentSelection[fingerId] = selectedObject;
+            }
 
             _hoverTime -= Time.deltaTime;
             if (_hoverTime <= 0)
             {
+                Debug.Log($"touch stationary finger id {fingerId}", this);
                 Debug.Log("touch stationary", this);
-                if (_currentSelection)
-                    touchResponse.OnHoverSelected(_currentSelection, touch.position);
+                if (_currentSelection[fingerId])
+                    touchResponse.OnHoverSelected(_currentSelection[fingerId], touch.position);
                 _selectedOnTouchStationary = _currentSelection;
                 _hoverTime = timeOnHover;
             }
@@ -99,38 +121,44 @@ public class TouchConroller : MonoBehaviour
     {
         if(touch.phase == TouchPhase.Moved)
         {
-
+            int fingerId = touch.fingerId;
             //already moving remove stationary object
 
+            //if its a new current then add previous current to the list of selected objects (only if it was not yet added)
+            if (!_selectedOnTouchMove.ContainsKey(fingerId))
+                _selectedOnTouchMove.Add(fingerId, new List<GameObject>());
+
+            _selectedOnTouchStationary.Remove(fingerId);
             _hoverTime = timeOnHover;
-            _selectedOnTouchStationary = null;
-            Debug.Log("touch move", this);
+            Debug.Log($"touch move finger id {fingerId}", this);
 
             GameObject selectedObject = touchResponse.DetermineSelection(touch.position);
             if(selectedObject)
                 touchResponse.IsSelected(selectedObject, touch.position);
-            if(_currentSelection && _currentSelection != selectedObject)
+
+            if (!_currentSelection.ContainsKey(fingerId))
+                _currentSelection.Add(fingerId, selectedObject);
+
+            if(_currentSelection[fingerId] && _currentSelection[fingerId] != selectedObject)
             {
                 if (enablePassiveSelection)
                 {
-                    touchResponse.WasSelected(_currentSelection, touch.position);
+                        touchResponse.WasSelected(_currentSelection[fingerId], touch.position);
                 }
                 else
                 {
-                    touchResponse.Deselected(_currentSelection, touch.position);
+                    touchResponse.Deselected(_currentSelection[fingerId], touch.position);
                 }
             }
 
-            //determine if previous current selection != new current selection
-            if (_currentSelection != selectedObject && _currentSelection != null)
+            if(_currentSelection[fingerId] != null && _currentSelection[fingerId] != selectedObject)
             {
-                //if its a new current then add previous current to the list of selected objects (only if it was not yet added)
-                if (!_selectedOnTouchMove.Contains(_currentSelection))
-                    _selectedOnTouchMove.Add(_currentSelection);
-            }
 
+                if (!_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+                    _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+            }
             //change current selection with new current.
-            _currentSelection = selectedObject;
+            _currentSelection[fingerId] = selectedObject;
         }
     }
 
@@ -138,28 +166,31 @@ public class TouchConroller : MonoBehaviour
     {
         if(touch.phase == TouchPhase.Ended)
         {
+            int fingerId = touch.fingerId;
+            Debug.Log($"touch off finger id {fingerId}", this);
+
             _hoverTime = timeOnHover;
-            _selectedOnTouchOff = touchResponse.DetermineSelection(touch.position);
+            _selectedOnTouchOff[fingerId] = touchResponse.DetermineSelection(touch.position);
             _touchEndedPosition = new Vector2(touch.position.x, touch.position.y);
             _touchDirection = DetermineSwipeDirection(_touchBeganPosition, _touchEndedPosition);
             //Response
-            if (_selectedOnTouchOff)
+            if (_selectedOnTouchOff[fingerId])
             {
                 if (enableLastTouchConfirm)
                 {
-                    touchResponse.OnSelectionConfirm(_selectedOnTouchOff, touch.position);
+                    touchResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
 
                 }
                 else
                 {
-                    touchResponse.Deselected(_selectedOnTouchOff, touch.position);
+                    touchResponse.Deselected(_selectedOnTouchOff[fingerId], touch.position);
                 }
             }
 
 
-            if (_selectedOnTouchMove.Count > 0 && enablePassiveSelection)
+            if (_selectedOnTouchMove[fingerId].Count > 0 && enablePassiveSelection)
             {
-                foreach (var gameObject in _selectedOnTouchMove)
+                foreach (var gameObject in _selectedOnTouchMove[fingerId])
                 {
                     //on deselect
                     if(gameObject)
@@ -168,16 +199,16 @@ public class TouchConroller : MonoBehaviour
                 }
             }
 
-            if (_selectedOnTouchBegan && _selectedOnTouchBegan == _selectedOnTouchOff)
-                touchResponse.OnSelectionConfirm(_selectedOnTouchOff, touch.position);
-            if (_selectedOnTouchBegan && _selectedOnTouchBegan == _selectedOnTouchOff && _selectedOnTouchMove.Count <= 1 && enableUnniqueSelection)
-                touchResponse.IsSelectedUnique(_selectedOnTouchBegan, touch.position);
+            if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId])
+                touchResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+            if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1 && enableUnniqueSelection)
+                touchResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
 
-            _currentSelection = null;
-            _selectedOnTouchBegan = null;
-            _selectedOnTouchStationary = null;
-            _selectedOnTouchMove.Clear();
-            _selectedOnTouchOff = null;
+            _currentSelection.Remove(fingerId);
+            _selectedOnTouchBegan.Remove(fingerId);
+            _selectedOnTouchStationary.Remove(fingerId);
+            _selectedOnTouchMove[fingerId].Clear();
+            _selectedOnTouchOff.Remove(fingerId);
         }
     }
 
