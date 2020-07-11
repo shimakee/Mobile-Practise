@@ -71,12 +71,10 @@ public class TouchConroller : MonoBehaviour
             //assigning current touch objects
             if (!_currentSelection.ContainsKey(fingerId))
             {
-                Debug.Log($"began id {fingerId} is added.", this);
                 _currentSelection.Add(fingerId, selectedObject);
             }
             else
             {
-                Debug.Log($"began id {fingerId} is replaced.", this);
                 _currentSelection[fingerId] = selectedObject;
             }
 
@@ -211,11 +209,30 @@ public class TouchConroller : MonoBehaviour
                     //    }
                     //}
 
-                    if(_currentSelection[fingerId])
-                        selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                    if (enablePassiveSelection)
+                    {
+                        if (_currentSelection[fingerId])
+                            selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                    }
+                    else
+                    {
+                        if (_currentSelection[fingerId])
+                            selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                    }
                 }
                 else
                 {
+                    if (enablePassiveSelection)
+                    {
+                        if (_currentSelection[fingerId])
+                            selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                    }
+                    else
+                    {
+                        if (_currentSelection[fingerId])
+                            selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                    }
+
                     //Allow null current selection
                     _currentSelection[fingerId] = selectedObject;
                 }
@@ -277,9 +294,11 @@ public class TouchConroller : MonoBehaviour
             //check it exist - touch off might happen before you could move - like taps
             if (_selectedOnTouchMove[fingerId] != null)
             {
+                Debug.Log("touchmoveselection not null", this);
                 //clean was selected responses to deselected responses
-                if (_selectedOnTouchMove[fingerId].Count > 0 && enablePassiveSelection)
+                if (_selectedOnTouchMove[fingerId].Count > 0)
                 {
+                    Debug.Log("touch move cycling through object deselect", this);
                     foreach (var gameObject in _selectedOnTouchMove[fingerId])
                     {
                         //on deselect

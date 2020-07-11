@@ -13,7 +13,6 @@ public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionRespon
         }
     }
 
-
     public override void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
@@ -27,7 +26,9 @@ public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionRespon
     {
         //check it exists
         if (gameObject)
-        {   //maintain target scale;
+        {
+            gameObject.transform.localScale = new Vector3(1, 1, 1);
+            //maintain target scale;
             AudioSource audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
                 return;
