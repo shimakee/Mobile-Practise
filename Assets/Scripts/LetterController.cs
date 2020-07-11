@@ -70,7 +70,7 @@ public class LetterController : MonoBehaviour
             _selectedObjectBegin = _selectionResponse.DetermineSelection(touch.position);
             if (_selectedObjectBegin == this.gameObject)
             {
-                _selectionResponse.OnSelected(this.gameObject, touch.position);
+                _selectionResponse.IsSelected(this.gameObject, touch.position);
             }
         }
     }
@@ -82,9 +82,9 @@ public class LetterController : MonoBehaviour
         {
             GameObject selection = _selectionResponse.DetermineSelection(touch.position);
             if (selection && selection == this.gameObject)
-                _selectionResponse.OnSelected(this.gameObject, touch.position);
+                _selectionResponse.IsSelected(this.gameObject, touch.position);
             if(!selection || selection != this.gameObject)
-                _selectionResponse.OnDeselect(this.gameObject);
+                _selectionResponse.Deselected(this.gameObject, touch.position);
         }
     }
 
@@ -93,7 +93,7 @@ public class LetterController : MonoBehaviour
         if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
         {
             _selectedObjectEnd = _selectionResponse.DetermineSelection(touch.position);
-            _selectionResponse.OnDeselect(this.gameObject);
+            _selectionResponse.Deselected(this.gameObject, touch.position);
         }
     }
 }

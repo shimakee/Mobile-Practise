@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class ScaleSelectionResponse : SelectionDefaultResponse, ISelectionResponse
+public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionResponse
 {
-    public override void OnSelected(GameObject gameObject, Vector3 inputPosition)
+    public override void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
@@ -14,7 +14,7 @@ public class ScaleSelectionResponse : SelectionDefaultResponse, ISelectionRespon
     }
 
 
-    public override void OnDeselect(GameObject gameObject)
+    public override void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
         if(gameObject != null)

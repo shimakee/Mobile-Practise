@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class TouchConroller : MonoBehaviour
 {
-    public ITouchResponse touchResponse;
-    public float secondsToWaitOnTouchOff = .5f;
+    public ISelectionResponse touchResponse;
     //public bool enablePinch; //to be implemented
     //public bool enableSwipe; //to be implemented
-    public bool passiveSelection;
+    public bool enablePassiveSelection;
+    public bool enableUnniqueSelection;
+    public bool enableLastTouchConfirm;
     public int maxAllowedTouch = 10;
-    //public bool isUniqueResponse;
     public float timeOnHover = 2f;
+    public float timeOnTap = .5f;
 
+    //timers
     float _hoverTime;
-    bool isClearing;
+    float _tapTime;
+    int _tapCount;
+
     //objects selected at touch phases
     GameObject _currentSelection;
     public List<GameObject> _selectedOnTouchMove = new List<GameObject>();
@@ -27,10 +31,11 @@ public class TouchConroller : MonoBehaviour
     Vector2 _touchEndedPosition;
     Vector2 _touchDirection;
 
+    //for gestures
     float _pinchDifference;
     private void Awake()
     {
-        touchResponse = GetComponent<ITouchResponse>();
+        touchResponse = GetComponent<ISelectionResponse>();
     }
 
     // Start is called before the first frame update
@@ -44,6 +49,7 @@ public class TouchConroller : MonoBehaviour
     {
         if(Input.touchCount > 0 && Input.touchCount <= maxAllowedTouch)
         {
+
             foreach (Touch touch in Input.touches)
             {
                 //select object based on touch phase input.
@@ -57,7 +63,7 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchBegan(Touch touch)
     {
-        if (touch.phase == TouchPhase.Began && !isClearing)
+        if (touch.phase == TouchPhase.Began)
         {
             Debug.Log("touch began", this);
 
@@ -72,7 +78,7 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchStationary(Touch touch)
     {
-        if (touch.phase == TouchPhase.Stationary && !isClearing)
+        if (touch.phase == TouchPhase.Stationary)
         {
 
             _currentSelection = touchResponse.DetermineSelection(touch.position);
@@ -91,10 +97,12 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchMove(Touch touch)
     {
-        if(touch.phase == TouchPhase.Moved && !isClearing)
+        if(touch.phase == TouchPhase.Moved)
         {
 
             //already moving remove stationary object
+
+            _hoverTime = timeOnHover;
             _selectedOnTouchStationary = null;
             Debug.Log("touch move", this);
 
@@ -103,7 +111,7 @@ public class TouchConroller : MonoBehaviour
                 touchResponse.IsSelected(selectedObject, touch.position);
             if(_currentSelection && _currentSelection != selectedObject)
             {
-                if (passiveSelection)
+                if (enablePassiveSelection)
                 {
                     touchResponse.WasSelected(_currentSelection, touch.position);
                 }
@@ -128,16 +136,28 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchOff(Touch touch)
     {
-        if(touch.phase == TouchPhase.Ended && !isClearing)
+        if(touch.phase == TouchPhase.Ended)
         {
-            _selectedOnTouchOff = touchResponse.DetermineSelection(touch.position);
-            if (_selectedOnTouchOff)
-                touchResponse.Deselected(_selectedOnTouchOff, touch.position);
-            _touchEndedPosition = new Vector2(touch.position.x, touch.position.y);
             _hoverTime = timeOnHover;
+            _selectedOnTouchOff = touchResponse.DetermineSelection(touch.position);
+            _touchEndedPosition = new Vector2(touch.position.x, touch.position.y);
+            _touchDirection = DetermineSwipeDirection(_touchBeganPosition, _touchEndedPosition);
+            //Response
+            if (_selectedOnTouchOff)
+            {
+                if (enableLastTouchConfirm)
+                {
+                    touchResponse.OnSelectionConfirm(_selectedOnTouchOff, touch.position);
+
+                }
+                else
+                {
+                    touchResponse.Deselected(_selectedOnTouchOff, touch.position);
+                }
+            }
 
 
-            if (_selectedOnTouchMove.Count > 0 && passiveSelection)
+            if (_selectedOnTouchMove.Count > 0 && enablePassiveSelection)
             {
                 foreach (var gameObject in _selectedOnTouchMove)
                 {
@@ -148,10 +168,9 @@ public class TouchConroller : MonoBehaviour
                 }
             }
 
-
             if (_selectedOnTouchBegan && _selectedOnTouchBegan == _selectedOnTouchOff)
-                touchResponse.SelectionConfirmed(_selectedOnTouchOff, touch.position);
-            if (_selectedOnTouchBegan && _selectedOnTouchBegan == _selectedOnTouchOff && _selectedOnTouchMove.Count <= 1)
+                touchResponse.OnSelectionConfirm(_selectedOnTouchOff, touch.position);
+            if (_selectedOnTouchBegan && _selectedOnTouchBegan == _selectedOnTouchOff && _selectedOnTouchMove.Count <= 1 && enableUnniqueSelection)
                 touchResponse.IsSelectedUnique(_selectedOnTouchBegan, touch.position);
 
             _currentSelection = null;
@@ -162,16 +181,33 @@ public class TouchConroller : MonoBehaviour
         }
     }
 
-    void DeterminDirection()
+    Vector2 DetermineSwipeDirection(Vector2 positionStart, Vector2 positionEnd)
     {
-        if (_touchBeganPosition != null && _touchEndedPosition != null)
-            _touchDirection = _touchEndedPosition - _touchBeganPosition;
+        if (positionStart != null && positionEnd != null)
+            return positionEnd - positionStart;
+        return new Vector2(0, 0);
     }
 
-    float TouchPinchDifferenceFromPrevious(Touch firstTouch, Touch secondTouch, float pinchAllowance)
+    void DetermineTapCount(Touch touch)
     {
+        _tapTime -= Time.deltaTime;
 
+        if(touch.phase == TouchPhase.Began)
+        {
+            if(_tapTime > 0)
+            {
+                _tapCount++;
+            }
+            else
+            {
+                _tapTime = timeOnTap;
+                _tapCount = 0;
+            }
+        }
+    }
 
+    float GetPinchDifference(Touch firstTouch, Touch secondTouch, float pinchAllowance = 1f)
+    {
         firstTouch = Input.GetTouch(0);
         secondTouch = Input.GetTouch(1);
 

@@ -124,7 +124,7 @@ public class WordController : MonoBehaviour
                 return;
 
             if(_singleGameObjectSelected == this.gameObject)
-                _selectionResponse.OnSelected(_singleGameObjectSelected, touch.position);
+                _selectionResponse.IsSelected(_singleGameObjectSelected, touch.position);
         }
     }
 
@@ -136,7 +136,7 @@ public class WordController : MonoBehaviour
             //for the picture
             if (selection && selection == this.gameObject)
             {
-                _selectionResponse.OnSelected(this.gameObject, touch.position);
+                _selectionResponse.IsSelected(this.gameObject, touch.position);
                 _selectedWord = "";
                 _lettersGameObjectSelected.Clear();
                 return;
@@ -144,7 +144,7 @@ public class WordController : MonoBehaviour
             else
             {
                 _singleGameObjectSelected = selection;
-                _selectionResponse.OnDeselect(this.gameObject);
+                _selectionResponse.Deselected(this.gameObject, touch.position);
             }
 
             //for the letters word
@@ -174,7 +174,7 @@ public class WordController : MonoBehaviour
         if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
         {
 
-            _selectionResponse.OnDeselect(this.gameObject);
+            _selectionResponse.Deselected(this.gameObject, touch.position);
 
             GameObject selectionEnd =_selectionResponse.DetermineSelection(touch.position);
             
