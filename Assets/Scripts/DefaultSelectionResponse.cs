@@ -1,13 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
 {
-    Vector3 _originalPosition;
-    Vector3 _targetPosition;
+    //Vector3 _originalPosition;
+    //Vector3 _targetPosition;
     //Vector3 _originalScale;
     //Quaternion _originalRotation;
 
-    //Transform _originalTransform;
+
+    private void Awake()
+    {
+    }
 
     public virtual GameObject DetermineSelection(Vector3 inputPosition)
     {
@@ -21,11 +25,6 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
         if (!hit)
             return null;
 
-        //store original position 
-        _originalPosition = hit.collider.gameObject.transform.position;
-        //_originalScale = hit.collider.gameObject.transform.localScale;
-        //_originalRotation = hit.collider.gameObject.transform.rotation;
-        //_originalTransform = hit.collider.gameObject.transform;
         return hit.collider.gameObject;
     }
 
@@ -33,39 +32,101 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
     {
         //check it exists
         if (gameObject)
-        {   //follow input position
-            var position = Camera.main.ScreenToWorldPoint(inputPosition);
-            _targetPosition = gameObject.transform.position;
-            gameObject.transform.position = new Vector2(position.x, position.y);
+        {
+            //check if it has its own selection response
+            ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+            if (selectionResponse != null)
+            {
+                selectionResponse.IsSelected(gameObject, inputPosition);
+            }
+            else
+            {
+                //use default implementation
+                //follow input position
+                var position = Camera.main.ScreenToWorldPoint(inputPosition);
+                gameObject.transform.position = new Vector2(position.x, position.y);
+            }
         }
     }
+
 
     public virtual void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original location
-        if (gameObject != null && _originalPosition != null)
-            gameObject.transform.position = _originalPosition;
+        if (gameObject)
+        {
+            //check if it has its own selection response
+            ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+            if (selectionResponse != null)
+            {
+                selectionResponse.Deselected(gameObject, inputPosition);
+            }
+            else
+            {
+                //use default implementation
+                //no implementation yet
+            }
+        }
     }
 
     public virtual void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
-        //stay at target location
-        if (gameObject != null && _targetPosition != null)
-            gameObject.transform.position = _targetPosition;
+        //check if it has its own selection response
+        ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+        if (selectionResponse != null)
+        {
+            selectionResponse.OnSelectionConfirm(gameObject, inputPosition);
+        }
+        else
+        {
+            //use default implementation
+            //no implementation yet
+        }
     }
 
     public virtual void OnHoverSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.IsSelected(gameObject, inputPosition);
+        //check if it has its own selection response
+        ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+        if (selectionResponse != null)
+        {
+            selectionResponse.OnHoverSelected(gameObject, inputPosition);
+        }
+        else
+        {
+            //use default implementation
+            //just follow is selected method and drag object to touch location
+            this.IsSelected(gameObject, inputPosition);
+        }
     }
 
     public virtual void WasSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.Deselected(gameObject, inputPosition);
+        //check if it has its own selection response
+        ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+        if (selectionResponse != null)
+        {
+            selectionResponse.WasSelected(gameObject, inputPosition);
+        }
+        else
+        {
+            //use default implementation
+            //no implementation yet
+        }
     }
 
     public virtual void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
-        this.OnSelectionConfirm(gameObject, inputPosition);
+        //check if it has its own selection response
+        ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+        if (selectionResponse != null)
+        {
+            selectionResponse.IsSelectedUnique(gameObject, inputPosition);
+        }
+        else
+        {
+            //use default implementation
+            //no implementation yet
+        }
     }
 }
