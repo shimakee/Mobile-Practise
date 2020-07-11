@@ -180,10 +180,10 @@ MonoBehaviour:
   enablePassiveSelection: 0
   enableUnniqueSelection: 0
   enableLastTouchConfirm: 0
+  enableDiselectOnlyOnTouchOff: 1
   maxAllowedTouch: 10
   timeOnHover: 2
   timeOnTap: 0.5
-  _selectedOnTouchMove: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +639,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120977228}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -718,6 +718,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WordManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cefedf84837768e43a677ebde4fb74d9, type: 3}

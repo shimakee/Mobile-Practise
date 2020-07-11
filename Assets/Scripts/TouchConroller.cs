@@ -10,6 +10,7 @@ public class TouchConroller : MonoBehaviour
     public bool enablePassiveSelection;
     public bool enableUnniqueSelection;
     public bool enableLastTouchConfirm;
+    public bool enableDiselectOnlyOnTouchOff;
     public int maxAllowedTouch = 10;
     public float timeOnHover = 2f;
     public float timeOnTap = .5f;
@@ -122,43 +123,139 @@ public class TouchConroller : MonoBehaviour
         if(touch.phase == TouchPhase.Moved)
         {
             int fingerId = touch.fingerId;
-            //already moving remove stationary object
-
-            //if its a new current then add previous current to the list of selected objects (only if it was not yet added)
-            if (!_selectedOnTouchMove.ContainsKey(fingerId))
-                _selectedOnTouchMove.Add(fingerId, new List<GameObject>());
-
-            _selectedOnTouchStationary.Remove(fingerId);
-            _hoverTime = timeOnHover;
             Debug.Log($"touch move finger id {fingerId}", this);
 
+            _hoverTime = timeOnHover;
+            _selectedOnTouchStationary.Remove(fingerId);
+
             GameObject selectedObject = touchResponse.DetermineSelection(touch.position);
-            if(selectedObject)
-                touchResponse.IsSelected(selectedObject, touch.position);
 
+            if (!_selectedOnTouchMove.ContainsKey(fingerId))
+                _selectedOnTouchMove.Add(fingerId, new List<GameObject>());
             if (!_currentSelection.ContainsKey(fingerId))
-                _currentSelection.Add(fingerId, selectedObject);
+                _currentSelection.Add(fingerId, null);
 
-            if(_currentSelection[fingerId] && _currentSelection[fingerId] != selectedObject)
+            if (selectedObject)
             {
-                if (enablePassiveSelection)
+                if (_currentSelection[fingerId])
                 {
-                        touchResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                    if(_currentSelection[fingerId] != selectedObject)
+                    {
+                        if (enablePassiveSelection)
+                        {
+                            touchResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                        }
+                        else
+                        {
+                            if (!enableDiselectOnlyOnTouchOff)
+                                touchResponse.Deselected(_currentSelection[fingerId], touch.position);
+                        }
+
+                        //add current to touch move
+                        if (_currentSelection[fingerId] && !_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+                            _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+                        //assign selected as the new current object
+                        _currentSelection[fingerId] = selectedObject;
+                    }
+                    //touch response
+                    touchResponse.IsSelected(_currentSelection[fingerId], touch.position);
                 }
                 else
                 {
-                    touchResponse.Deselected(_currentSelection[fingerId], touch.position);
+                    touchResponse.IsSelected(selectedObject, touch.position);
+                    _currentSelection[fingerId] = selectedObject;
                 }
-            }
 
-            if(_currentSelection[fingerId] != null && _currentSelection[fingerId] != selectedObject)
-            {
-
-                if (!_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+                // add current to touch move
+                if (_currentSelection[fingerId] && !_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
                     _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
             }
-            //change current selection with new current.
-            _currentSelection[fingerId] = selectedObject;
+            else
+            {
+                if (enableDiselectOnlyOnTouchOff)
+                {
+                    //look for most recent item selected and make it current
+                    if (!_currentSelection[fingerId])
+                    {
+                        int selectedOnTouchMoveCount = _selectedOnTouchMove[fingerId].Count;
+                        if (selectedOnTouchMoveCount > 0)
+                        {
+                            _currentSelection[fingerId] = _selectedOnTouchMove[fingerId][selectedOnTouchMoveCount - 1];
+                        }
+                    }
+
+                    if(_currentSelection[fingerId])
+                        touchResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                }
+                else
+                {
+                    //Allow null current selection
+                    _currentSelection[fingerId] = selectedObject;
+                }
+
+                //add current to touch move
+                if (_currentSelection[fingerId] && !_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+                    _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+            }
+
+            //if (!_currentSelection.ContainsKey(fingerId))
+            //    _currentSelection.Add(fingerId, selectedObject);
+
+            //if (_currentSelection[fingerId] && _currentSelection[fingerId] != selectedObject)
+            //{
+            //    if (!_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+            //        _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+
+            //    if (enablePassiveSelection)
+            //    {
+            //        touchResponse.WasSelected(_currentSelection[fingerId], touch.position);
+            //    }
+            //    else
+            //    {
+            //        if (!enableDiselectOnlyOnTouchOff)
+            //        {
+            //            Debug.Log($"Deselected here", this);
+            //            touchResponse.Deselected(_currentSelection[fingerId], touch.position);
+            //        }
+            //        else
+            //        {
+            //            touchResponse.IsSelected(_currentSelection[fingerId], touch.position);
+            //        }
+            //    }
+            //}
+            
+
+            //if (_currentSelection[fingerId] != null && _currentSelection[fingerId] != selectedObject)
+            //{
+            //    if (!_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
+            //        _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+            //}
+
+            //if (enableDiselectOnlyOnTouchOff)
+            //{
+            //    if (selectedObject)
+            //    {
+            //        touchResponse.IsSelected(selectedObject, touch.position);
+            //        _currentSelection[fingerId] = selectedObject;
+            //    }
+            //    else
+            //    {
+            //        if (_currentSelection[fingerId])
+            //        {
+            //            touchResponse.IsSelected(_currentSelection[fingerId], touch.position);
+            //        }
+            //        else
+            //        {
+
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    Debug.Log($"current was replaced");
+            //    //change current selection with new current.
+            //    _currentSelection[fingerId] = selectedObject;
+            //}
         }
     }
 
