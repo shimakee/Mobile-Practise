@@ -261,14 +261,31 @@ public class TouchConroller : MonoBehaviour
                 _selectedOnTouchOff[fingerId] = selectedObject;
             }
 
-            //reset hover time for determining stationary touch
-            _hoverTime.Remove(fingerId);
+            //check it exist - touch off might happen before you could move - like taps
+            if (_selectedOnTouchMove[fingerId] != null)
+            {
+                //clean was selected responses to deselected responses
+                if (_selectedOnTouchMove[fingerId].Count > 0)
+                {
+                    foreach (var gameObject in _selectedOnTouchMove[fingerId])
+                    {
+                        //on deselect
+                        if (gameObject)
+                        {
+                            selectionResponse.Deselected(gameObject, touch.position);
+                        }
+                    }
+                }
+            }
 
             //Determine response to touch ended && touch phase cancelled
             if (_selectedOnTouchOff[fingerId])
             {
+                Debug.Log("we have touch selected off", this);
+
                 if (enableLastTouchConfirm)
                 {
+                    Debug.Log("we are confirming touch selected off", this);
                     selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
                 }
                 else
@@ -287,25 +304,6 @@ public class TouchConroller : MonoBehaviour
                     else
                     {
                         selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
-                    }
-                }
-            }
-
-            //check it exist - touch off might happen before you could move - like taps
-            if (_selectedOnTouchMove[fingerId] != null)
-            {
-                Debug.Log("touchmoveselection not null", this);
-                //clean was selected responses to deselected responses
-                if (_selectedOnTouchMove[fingerId].Count > 0)
-                {
-                    Debug.Log("touch move cycling through object deselect", this);
-                    foreach (var gameObject in _selectedOnTouchMove[fingerId])
-                    {
-                        //on deselect
-                        if (gameObject)
-                        {
-                            selectionResponse.Deselected(gameObject, touch.position);
-                        }
                     }
                 }
             }
