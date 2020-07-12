@@ -180,7 +180,7 @@ MonoBehaviour:
   enablePassiveSelection: 0
   enableUnniqueSelection: 0
   enableLastTouchConfirm: 0
-  enableDiselectOnlyOnTouchOff: 1
+  enableDiselectOnlyOnTouchOff: 0
   maxAllowedTouch: 10
   timeOnHover: 2
   timeOnTap: 0.5

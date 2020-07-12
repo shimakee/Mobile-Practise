@@ -14,8 +14,11 @@ public class TouchConroller : MonoBehaviour
     public float timeOnHover = 2f;
     public float timeOnTap = .5f;
 
-    //timers
-    Dictionary<int, float> _hoverTime = new Dictionary<int, float>();
+    //contorl options
+    ITouchControlOptions _touchControlOptions;
+
+       //timers
+       Dictionary<int, float> _hoverTime = new Dictionary<int, float>();
     Dictionary<int, float> _tapTime = new Dictionary<int, float>();
     Dictionary<int, int> _tapCount = new Dictionary<int, int>();
 
@@ -152,6 +155,18 @@ public class TouchConroller : MonoBehaviour
             int fingerId = touch.fingerId;
             GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
 
+            //determine if touch control option exist
+            if (selectedObject)
+            {
+                _touchControlOptions = selectedObject.GetComponent<ITouchControlOptions>();
+            }
+            else
+            {
+                if(_currentSelection[fingerId])
+                    _touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
+            }
+
+            //predetermine if keys already exists
             if (!_selectedOnTouchMove.ContainsKey(fingerId))
                 _selectedOnTouchMove.Add(fingerId, new List<GameObject>());
             if (!_currentSelection.ContainsKey(fingerId))
@@ -164,8 +179,7 @@ public class TouchConroller : MonoBehaviour
                 {
                     if(_currentSelection[fingerId] != selectedObject)
                     {
-                        ITouchControlOptions touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
-                        if (touchControlOptions == null)
+                        if (_touchControlOptions == null)
                         {
                             if (enablePassiveSelection)
                             {
@@ -181,13 +195,13 @@ public class TouchConroller : MonoBehaviour
                         }
                         else
                         {
-                            if (touchControlOptions.enablePassiveSelection)
+                            if (_touchControlOptions.enablePassiveSelection)
                             {
                                 selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                             }
                             else
                             {
-                                if (!touchControlOptions.enableDiselectOnlyOnTouchOff)
+                                if (!_touchControlOptions.enableDiselectOnlyOnTouchOff)
                                 {
                                     selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                                 }
@@ -215,9 +229,7 @@ public class TouchConroller : MonoBehaviour
             }
             else
             {
-
-                ITouchControlOptions touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
-                if (touchControlOptions == null)
+                if (_touchControlOptions == null)
                 {
                     if (enableDiselectOnlyOnTouchOff)
                     {
@@ -261,9 +273,9 @@ public class TouchConroller : MonoBehaviour
                 }
                 else
                 {
-                    if (touchControlOptions.enableDiselectOnlyOnTouchOff)
+                    if (_touchControlOptions.enableDiselectOnlyOnTouchOff)
                     {
-                        if (touchControlOptions.enablePassiveSelection)
+                        if (_touchControlOptions.enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
                                 selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
@@ -276,7 +288,7 @@ public class TouchConroller : MonoBehaviour
                     }
                     else
                     {
-                        if (touchControlOptions.enablePassiveSelection)
+                        if (_touchControlOptions.enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
                                 selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
@@ -305,7 +317,15 @@ public class TouchConroller : MonoBehaviour
         {
             int fingerId = touch.fingerId;
             GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
-            ITouchControlOptions touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
+            if (selectedObject)
+            {
+                _touchControlOptions = selectedObject.GetComponent<ITouchControlOptions>();
+            }
+            else
+            {
+                if (_currentSelection[fingerId])
+                    _touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
+            }
 
             if (!_selectedOnTouchOff.ContainsKey(fingerId))
             {
@@ -336,7 +356,7 @@ public class TouchConroller : MonoBehaviour
             //Determine response to touch ended && touch phase cancelled
             if (_selectedOnTouchOff[fingerId])
             {
-                if(touchControlOptions == null)
+                if (_touchControlOptions == null)
                 {
                     if (enableLastTouchConfirm)
                     {
@@ -349,7 +369,7 @@ public class TouchConroller : MonoBehaviour
                 }
                 else
                 {
-                    if (touchControlOptions.enableLastTouchConfirm)
+                    if (_touchControlOptions.enableLastTouchConfirm)
                     {
                         selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
                     }
@@ -363,7 +383,7 @@ public class TouchConroller : MonoBehaviour
             {
                 if (_currentSelection[fingerId])
                 {
-                    if (touchControlOptions == null)
+                    if (_touchControlOptions == null)
                     { 
                         if (enableLastTouchConfirm)
                         {
@@ -376,7 +396,7 @@ public class TouchConroller : MonoBehaviour
                     }
                     else
                     {
-                        if (touchControlOptions.enableLastTouchConfirm)
+                        if (_touchControlOptions.enableLastTouchConfirm)
                         {
                             selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
                         }
@@ -391,7 +411,8 @@ public class TouchConroller : MonoBehaviour
             //determine touch end response confirmation
             if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId])
                 selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
-            if(touchControlOptions == null)
+
+            if(_touchControlOptions == null)
             {
                 if (enableUnniqueSelection)
                 {
@@ -401,7 +422,7 @@ public class TouchConroller : MonoBehaviour
             }
             else
             {
-                if (touchControlOptions.enableUnniqueSelection)
+                if (_touchControlOptions.enableUnniqueSelection)
                 {
                     if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1)
                         selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
