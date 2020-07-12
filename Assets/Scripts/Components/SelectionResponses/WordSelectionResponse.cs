@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.iOS;
 using UnityEngine;
 
 public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
@@ -13,6 +14,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         set { WordScriptable = value; }
     }
     public GameObject LetterBlockPrefab;
+    public GameObject PictureBlockPrefab;
 
     ////spacing
     //public int XMargin = 1;
@@ -26,6 +28,11 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     {
         _audioSource = GetComponent<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (!_audioSource)
+            throw new NullReferenceException("no audio source comppnent attached.");
+        if (!_spriteRenderer)
+            throw new NullReferenceException("no sprite renderer comppnent attached.");
     }
 
     /// <summary>
@@ -67,7 +74,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //return 0 if only necessary components are loaded
         //return 1 if all components are loaded
-        if (wordScriptable.Sprite == null || wordScriptable.Sfx == null)
+        if (Word.Sprite == null || Word.Sfx == null)
             return 0;
 
         return 1;
@@ -75,9 +82,29 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private void InitializeWordImage(Word word) //create overload for offset and margins?
     {
-        if (word.Sprite != null)
+        //if (word.Sprite != null)
+        //{
+        //    _spriteRenderer.sprite = word.Sprite;
+        //}
+
+        //instantiate object
+        GameObject pictureGameObject = Instantiate(PictureBlockPrefab, transform);
+        pictureGameObject.transform.position = transform.position;
+        pictureGameObject.name = word.WordSpelling+"Picture";
+
+        //get component
+        var pictureObjectComponent = pictureGameObject.GetComponent<IPictureSelectionResponse>();
+        if(pictureObjectComponent != null && word != null)
         {
-            _spriteRenderer.sprite = word.Sprite;
+            Picture picture = ScriptableObject.CreateInstance<Picture>();
+            //assign assets
+            picture.Sfx = word.Sfx;
+            picture.Sprite = word.Sprite;
+            picture.Name = word.WordSpelling;
+            picture.WordAudio = word.WordAudio;
+
+            //connect scriptable to object
+            pictureObjectComponent.InitializePicure(picture);
         }
     }
 

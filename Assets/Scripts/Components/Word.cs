@@ -12,4 +12,3 @@ public class Word : ScriptableObject
     public AudioClip Sfx; // sfx of the word when they tap on the sprite picture.
     public string WordSpelling;
 }
-

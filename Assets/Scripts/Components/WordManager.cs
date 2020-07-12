@@ -81,10 +81,11 @@ public class WordManager : MonoBehaviour
             //_currentWordObject = wordObject;
 
             GameObject instantiatedWord = Instantiate(WordBlockPrefab);
+            _currentWordObject = instantiatedWord;
             instantiatedWord.transform.position = position;
             instantiatedWord.name = word;
             //int n = instantiatedWord.GetComponent<WordController>().InitializeWord(word);
-            int n = instantiatedWord.GetComponent<WordSelectionResponse>().InitializeWord(word);
+            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().InitializeWord(word);
 
             //when you redesign initialize word to return -1 when not all assets are loaded or cant be found.
             //create loop to pick another word.
