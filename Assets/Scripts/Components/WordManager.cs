@@ -13,6 +13,7 @@ public class WordManager : MonoBehaviour
     public float wordSpawnWaitTime = 3f;
 
     private List<string> _wordList;
+    private List<string> _wordsReadList;
     private bool _isCreatingWord = false;
     private GameObject _currentWordObject;
     private void Awake()
@@ -72,13 +73,20 @@ public class WordManager : MonoBehaviour
         {
             _isCreatingWord = true;
 
-            //prevent duplicates or multiple words
-            //if (_currentWordObject != null)
-            Destroy(_currentWordObject);
+                //prevent duplicates or multiple words in a single scene
+            if (_currentWordObject)
+            {
+                //depending on option - remove word from wordList - so no repeating words.
+                //if(!_wordsReadList.Contains(word))
+                //    _wordsReadList.Add(word);
+                //if (_wordList.Contains(word))
+                //    _wordList.Remove(word);
 
-            //create empty for word and picture to live in
-            //GameObject wordObject = new GameObject(word);
-            //_currentWordObject = wordObject;
+                //maybe just hide object - store it in a list of objects already read words. - to be reusable
+                Destroy(_currentWordObject);
+
+
+            }
 
             GameObject instantiatedWord = Instantiate(WordBlockPrefab);
             _currentWordObject = instantiatedWord;

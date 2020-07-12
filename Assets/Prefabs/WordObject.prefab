@@ -197,6 +197,11 @@ MonoBehaviour:
     type: 3}
   PictureBlockPrefab: {fileID: 8189060424923311912, guid: 6445341ef3862ec408d599e35dd1f27d,
     type: 3}
+  ImageXMargin: 0
+  ImageYMargin: 0
+  LetterXMargin: -1.25
+  LetterYMargin: -1.25
+  PerLetterMargin: 0.25
 --- !u!114 &7429833229380686744
 MonoBehaviour:
   m_ObjectHideFlags: 0

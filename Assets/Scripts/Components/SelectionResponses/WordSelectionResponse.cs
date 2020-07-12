@@ -16,9 +16,12 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     public GameObject LetterBlockPrefab;
     public GameObject PictureBlockPrefab;
 
-    ////spacing
-    //public int XMargin = 1;
-    //public int YMargin = 1;
+    //allowance for spacing
+    public float ImageXMargin = 0;
+    public float ImageYMargin = 0;
+    public float LetterXMargin = 0;
+    public float LetterYMargin = 0;
+    public float PerLetterMargin = 0;
 
     private string _currentWord = "";
     private AudioSource _audioSource;
@@ -89,7 +92,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //instantiate object
         GameObject pictureGameObject = Instantiate(PictureBlockPrefab, transform);
-        pictureGameObject.transform.position = transform.position;
+
+        pictureGameObject.transform.position = new Vector2(transform.position.x + ImageXMargin, transform.position.y + ImageYMargin);
         pictureGameObject.name = word.WordSpelling+"Picture";
 
         //get component
@@ -112,8 +116,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     {
         int lettersInstantiated = 0;
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
-        float widthAllowance = letterBlockSpriteRenderer.bounds.size.x;
-        float heightAllowance = letterBlockSpriteRenderer.bounds.size.y;
+        float widthAllowance = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        //float heightAllowance = letterBlockSpriteRenderer.bounds.size.y;
 
         //assemble the word using the letters
         foreach (char character in word.WordSpelling)
@@ -122,7 +126,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             if (letter)
             {
 
-                Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated) - widthAllowance, transform.position.y - heightAllowance, transform.position.z);
+                Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated + PerLetterMargin * lettersInstantiated) + LetterXMargin, transform.position.y + LetterYMargin, transform.position.z);
 
                 GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
                 letterGameObject.transform.position = objectPosition;
