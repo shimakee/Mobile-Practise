@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TouchConroller : MonoBehaviour
 {
-    public ISelectionResponse selectionResponse;
-    public ITouchResponse touchResponse;
     public bool enablePassiveSelection;
     public bool enableUnniqueSelection;
     public bool enableLastTouchConfirm;
@@ -14,11 +12,16 @@ public class TouchConroller : MonoBehaviour
     public float timeOnHover = 2f;
     public float timeOnTap = .5f;
 
+    //Selector and responses
+    private IObjectSelector _objectSelector;
+    private ISelectionResponse _selectionResponse;
+    private ITouchResponse _touchResponse;
+
     //contorl options
     ITouchControlOptions _touchControlOptions;
 
-       //timers
-       Dictionary<int, float> _hoverTime = new Dictionary<int, float>();
+    //timers
+    Dictionary<int, float> _hoverTime = new Dictionary<int, float>();
     Dictionary<int, float> _tapTime = new Dictionary<int, float>();
     Dictionary<int, int> _tapCount = new Dictionary<int, int>();
 
@@ -38,7 +41,8 @@ public class TouchConroller : MonoBehaviour
     float _pinchDifference;
     private void Awake()
     {
-        selectionResponse = GetComponent<ISelectionResponse>();
+        _selectionResponse = GetComponent<ISelectionResponse>();
+        _objectSelector = GetComponent<IObjectSelector>();
     }
 
     // Start is called before the first frame update
@@ -69,7 +73,7 @@ public class TouchConroller : MonoBehaviour
         if (touch.phase == TouchPhase.Began)
         {
             int fingerId = touch.fingerId;
-            GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
+            GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
 
             //assigning current touch objects
             if (!_currentSelection.ContainsKey(fingerId))
@@ -86,7 +90,7 @@ public class TouchConroller : MonoBehaviour
             //selection respond to object being actively selected
             if (_currentSelection[fingerId])
             {
-                selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                _selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
             }
         }
     }
@@ -118,7 +122,7 @@ public class TouchConroller : MonoBehaviour
 
         if (touch.phase == TouchPhase.Stationary)
         {
-            GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
+            GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
 
             if (!_currentSelection.ContainsKey(fingerId))
             {
@@ -135,7 +139,7 @@ public class TouchConroller : MonoBehaviour
             if (_hoverTime[fingerId] <= 0)
             {
                 if (_currentSelection[fingerId])
-                    selectionResponse.OnHoverSelected(_currentSelection[fingerId], touch.position);
+                    _selectionResponse.OnHoverSelected(_currentSelection[fingerId], touch.position);
                 if (!_selectedOnTouchStationary.ContainsKey(fingerId))
                 {
                     _selectedOnTouchStationary.Add(fingerId, _currentSelection[fingerId]);
@@ -153,7 +157,7 @@ public class TouchConroller : MonoBehaviour
         if(touch.phase == TouchPhase.Moved)
         {
             int fingerId = touch.fingerId;
-            GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
+            GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
 
             //determine if touch control option exist
             if (selectedObject)
@@ -183,13 +187,13 @@ public class TouchConroller : MonoBehaviour
                         {
                             if (enablePassiveSelection)
                             {
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                             }
                             else
                             {
                                 if (!enableDiselectOnlyOnTouchOff)
                                 {
-                                    selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                                    _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                                 }
                             }
                         }
@@ -197,13 +201,13 @@ public class TouchConroller : MonoBehaviour
                         {
                             if (_touchControlOptions.enablePassiveSelection)
                             {
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                             }
                             else
                             {
                                 if (!_touchControlOptions.enableDiselectOnlyOnTouchOff)
                                 {
-                                    selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                                    _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                                 }
                             }
                         }
@@ -211,15 +215,21 @@ public class TouchConroller : MonoBehaviour
                         //add current to touch move
                         if (_currentSelection[fingerId] && !_selectedOnTouchMove[fingerId].Contains(_currentSelection[fingerId]))
                             _selectedOnTouchMove[fingerId].Add(_currentSelection[fingerId]);
+
                         //assign selected as the new current object
                         _currentSelection[fingerId] = selectedObject;
                     }
+
                     //touch response
-                    selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                    _selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+
+                    //add selected object to current
+                    if (!_selectedOnTouchMove[fingerId].Contains(selectedObject))
+                        _selectedOnTouchMove[fingerId].Add(selectedObject);
                 }
                 else
                 {
-                    selectionResponse.IsSelected(selectedObject, touch.position);
+                    _selectionResponse.IsSelected(selectedObject, touch.position);
                     _currentSelection[fingerId] = selectedObject;
                 }
 
@@ -246,12 +256,12 @@ public class TouchConroller : MonoBehaviour
                         if (enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                         }
                         else
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
                         }
                     }
                     else
@@ -259,12 +269,12 @@ public class TouchConroller : MonoBehaviour
                         if (enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                         }
                         else
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                         }
 
                         //Allow null current selection
@@ -278,12 +288,12 @@ public class TouchConroller : MonoBehaviour
                         if (_touchControlOptions.enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                         }
                         else
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.IsSelected(_currentSelection[fingerId], touch.position);
                         }
                     }
                     else
@@ -291,12 +301,12 @@ public class TouchConroller : MonoBehaviour
                         if (_touchControlOptions.enablePassiveSelection)
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.WasSelected(_currentSelection[fingerId], touch.position);
                         }
                         else
                         {
                             if (_currentSelection[fingerId])
-                                selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                                _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                         }
 
                         //Allow null current selection
@@ -316,7 +326,7 @@ public class TouchConroller : MonoBehaviour
         if(touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
         {
             int fingerId = touch.fingerId;
-            GameObject selectedObject = selectionResponse.DetermineSelection(touch.position);
+            GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
             if (selectedObject)
             {
                 _touchControlOptions = selectedObject.GetComponent<ITouchControlOptions>();
@@ -337,20 +347,28 @@ public class TouchConroller : MonoBehaviour
             }
 
             //check it exist - touch off might happen before you could move - like taps
-            if (_selectedOnTouchMove[fingerId] != null)
+            if (_selectedOnTouchMove.ContainsKey(fingerId))
             {
-                //clean was selected responses to deselected responses
-                if (_selectedOnTouchMove[fingerId].Count > 0)
+                if(_selectedOnTouchMove[fingerId] != null)
                 {
-                    foreach (var gameObject in _selectedOnTouchMove[fingerId])
+                    //clean was selected responses to deselected responses
+                    if (_selectedOnTouchMove[fingerId].Count > 0)
                     {
-                        //on deselect
-                        if (gameObject)
+                        foreach (var gameObject in _selectedOnTouchMove[fingerId])
                         {
-                            selectionResponse.Deselected(gameObject, touch.position);
+                            //on deselect
+                            if (gameObject)
+                            {
+                                _selectionResponse.Deselected(gameObject, touch.position);
+                            }
                         }
                     }
                 }
+            }
+            else
+            {
+
+                _selectedOnTouchMove.Add(fingerId, new List<GameObject>());
             }
 
             //Determine response to touch ended && touch phase cancelled
@@ -360,22 +378,41 @@ public class TouchConroller : MonoBehaviour
                 {
                     if (enableLastTouchConfirm)
                     {
-                        selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+                        if (_selectedOnTouchMove[fingerId].Count > 0)
+                        {
+                            Debug.Log("This confirm", this);
+                            _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                        }
+                        else
+                        {
+                            Debug.Log("This confirm", this);
+                            _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+
+                        }
                     }
                     else
                     {
-                        selectionResponse.Deselected(_selectedOnTouchOff[fingerId], touch.position);
+                        _selectionResponse.Deselected(_selectedOnTouchOff[fingerId], touch.position);
                     }
                 }
                 else
                 {
                     if (_touchControlOptions.enableLastTouchConfirm)
                     {
-                        selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+                        if (_selectedOnTouchMove[fingerId].Count > 0)
+                        {
+                            Debug.Log($"This confirm {_selectedOnTouchMove[fingerId].Count}", this);
+                            _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                        }
+                        else
+                        {
+                            Debug.Log("This confirm", this);
+                            _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+                        }
                     }
                     else
                     {
-                        selectionResponse.Deselected(_selectedOnTouchOff[fingerId], touch.position);
+                        _selectionResponse.Deselected(_selectedOnTouchOff[fingerId], touch.position);
                     }
                 }
             }
@@ -387,22 +424,40 @@ public class TouchConroller : MonoBehaviour
                     { 
                         if (enableLastTouchConfirm)
                         {
-                            selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
+                            if (_selectedOnTouchMove[fingerId].Count > 0)
+                            {
+                                Debug.Log("This confirm", this);
+                                _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                            }
+                            else
+                            {
+                                Debug.Log("This confirm", this);
+                                _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
+                            }
                         }
                         else
                         {
-                            selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                            _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                         }
                     }
                     else
                     {
                         if (_touchControlOptions.enableLastTouchConfirm)
                         {
-                            selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
+                            if (_selectedOnTouchMove[fingerId].Count > 0)
+                            {
+                                Debug.Log("This confirm", this);
+                                _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                            }
+                            else
+                            {
+                                Debug.Log("This confirm", this);
+                                _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
+                            }
                         }
                         else
                         {
-                            selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
+                            _selectionResponse.Deselected(_currentSelection[fingerId], touch.position);
                         }
                     }
                 }
@@ -410,14 +465,25 @@ public class TouchConroller : MonoBehaviour
 
             //determine touch end response confirmation
             if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId])
-                selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+            {
+                if (_selectedOnTouchMove[fingerId].Count > 0)
+                {
+                    Debug.Log("This confirm", this);
+                    _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                }
+                else
+                {
+                    Debug.Log("This confirm", this);
+                    _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+                }
+            }
 
             if(_touchControlOptions == null)
             {
                 if (enableUnniqueSelection)
                 {
                     if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1)
-                        selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
+                        _selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
                 }
             }
             else
@@ -425,7 +491,7 @@ public class TouchConroller : MonoBehaviour
                 if (_touchControlOptions.enableUnniqueSelection)
                 {
                     if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1)
-                        selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
+                        _selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
                 }
             }
 

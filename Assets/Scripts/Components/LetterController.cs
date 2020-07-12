@@ -6,6 +6,7 @@ public class LetterController : MonoBehaviour
 
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
+    private IObjectSelector _objectSelector;
     private ISelectionResponse _selectionResponse;
 
     private GameObject _selectedObjectBegin;
@@ -17,6 +18,7 @@ public class LetterController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _selectionResponse = GetComponent<ISelectionResponse>();
+        _objectSelector = GetComponent<IObjectSelector>();
 
     }
     private void Start()
@@ -67,7 +69,7 @@ public class LetterController : MonoBehaviour
     {
         if (touch.phase == TouchPhase.Began)
         {
-            _selectedObjectBegin = _selectionResponse.DetermineSelection(touch.position);
+            _selectedObjectBegin = _objectSelector.DetermineSelection(touch.position);
             if (_selectedObjectBegin == this.gameObject)
             {
                 _selectionResponse.IsSelected(this.gameObject, touch.position);
@@ -80,7 +82,7 @@ public class LetterController : MonoBehaviour
     {
         if(touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
         {
-            GameObject selection = _selectionResponse.DetermineSelection(touch.position);
+            GameObject selection = _objectSelector.DetermineSelection(touch.position);
             if (selection && selection == this.gameObject)
                 _selectionResponse.IsSelected(this.gameObject, touch.position);
             if(!selection || selection != this.gameObject)
@@ -92,7 +94,7 @@ public class LetterController : MonoBehaviour
     {
         if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
         {
-            _selectedObjectEnd = _selectionResponse.DetermineSelection(touch.position);
+            _selectedObjectEnd = _objectSelector.DetermineSelection(touch.position);
             _selectionResponse.Deselected(this.gameObject, touch.position);
         }
     }

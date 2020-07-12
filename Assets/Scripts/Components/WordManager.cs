@@ -77,17 +77,19 @@ public class WordManager : MonoBehaviour
             Destroy(_currentWordObject);
 
             //create empty for word and picture to live in
-            GameObject wordObject = new GameObject(word);
-            _currentWordObject = wordObject;
+            //GameObject wordObject = new GameObject(word);
+            //_currentWordObject = wordObject;
 
-            GameObject instantiatedWord = Instantiate(WordBlockPrefab, _currentWordObject.transform);
+            GameObject instantiatedWord = Instantiate(WordBlockPrefab);
             instantiatedWord.transform.position = position;
-            int n = instantiatedWord.GetComponent<WordController>().InitializeWord(word);
+            instantiatedWord.name = word;
+            //int n = instantiatedWord.GetComponent<WordController>().InitializeWord(word);
+            int n = instantiatedWord.GetComponent<WordSelectionResponse>().InitializeWord(word);
 
             //when you redesign initialize word to return -1 when not all assets are loaded or cant be found.
             //create loop to pick another word.
             //if(n == -1)
-                //pick another object
+            //pick another object
 
             yield return new WaitForSecondsRealtime(wordSpawnWaitTime);
             _isCreatingWord = false;

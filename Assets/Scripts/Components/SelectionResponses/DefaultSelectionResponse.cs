@@ -7,26 +7,25 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
     //Vector3 _targetPosition;
     //Vector3 _originalScale;
     //Quaternion _originalRotation;
-    public ITouchControlOptions TouchContorlOptions;
 
     private void Awake()
     {
     }
 
-    public virtual GameObject DetermineSelection(Vector3 inputPosition)
-    {
-        //create ray
-        Ray ray = Camera.main.ScreenPointToRay(inputPosition);
-        //draw raycast
-        Debug.DrawLine(ray.origin, ray.direction, Color.red);
+    //public virtual GameObject DetermineSelection(Vector3 inputPosition)
+    //{
+    //    //create ray
+    //    Ray ray = Camera.main.ScreenPointToRay(inputPosition);
+    //    //draw raycast
+    //    Debug.DrawLine(ray.origin, ray.direction, Color.red);
 
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-        //check that it hit something
-        if (!hit)
-            return null;
+    //    RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+    //    //check that it hit something
+    //    if (!hit)
+    //        return null;
 
-        return hit.collider.gameObject;
-    }
+    //    return hit.collider.gameObject;
+    //}
 
     public virtual void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
@@ -76,6 +75,20 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
         if (selectionResponse != null)
         {
             selectionResponse.OnSelectionConfirm(gameObject, inputPosition);
+        }
+        else
+        {
+            //use default implementation
+            //no implementation yet
+        }
+    }
+    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
+    {
+        //check if it has its own selection response
+        ISelectionResponse selectionResponse = gameObject.GetComponent<ISelectionResponse>();
+        if (selectionResponse != null)
+        {
+            selectionResponse.OnSelectionConfirm(gameObject, inputPosition, wasSelectedGameObjects);
         }
         else
         {

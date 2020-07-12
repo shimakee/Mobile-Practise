@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 97550b31b130af14f9e19a02b310a844
+guid: d0915dc26ab48db4b9f8aae68b721972
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - Word: {instanceID: 0}
-  - LetterBlockPrefab: {fileID: 4666805750346136884, guid: 21bf90287115c1548925fc91ee4116cd,
+  - LetterBlockPrefab: {fileID: 3441751586502322947, guid: ee6bb81ff0205654c91accd766edfcd6,
       type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

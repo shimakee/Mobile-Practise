@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionResponse
+public class ScaleSelectionResponse : MonoBehaviour, ISelectionResponse
 {
-    public override void IsSelected(GameObject gameObject, Vector3 inputPosition)
+    public void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
@@ -13,7 +14,7 @@ public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionRespon
         }
     }
 
-    public override void Deselected(GameObject gameObject, Vector3 inputPosition)
+    public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
         if(gameObject != null)
@@ -22,7 +23,7 @@ public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionRespon
         }
     }
 
-    public override void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
+    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
         //check it exists
         if (gameObject)
@@ -38,13 +39,23 @@ public class ScaleSelectionResponse : DefaultSelectionResponse, ISelectionRespon
         }
     }
 
-    IEnumerator PopScale(GameObject gameObject)
+    public void OnHoverSelected(GameObject gameObject, Vector3 inputPosition)
     {
+        //do nothing
+    }
 
-        Transform transform = gameObject.transform;
-        transform.localScale = new Vector3(1.5f, 1.5f, 0);
-        yield return new WaitForSeconds(.2f);
-        transform.localScale = new Vector3(1.2f, 1.2f, 0);
+    public void WasSelected(GameObject gameObject, Vector3 inputPosition)
+    {
+        //do nothing
+    }
 
-    } 
+    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
+    {
+        //do nothing
+    }
+
+    public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
+    {
+        //do nothing
+    }
 }

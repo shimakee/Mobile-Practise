@@ -6,9 +6,10 @@ using UnityEngine;
 public class WordController : MonoBehaviour
 {
     public Word Word;
-    public ISelectionResponse _selectionResponse;
     public GameObject LetterBlockPrefab;
 
+    private ISelectionResponse _selectionResponse;
+    private IObjectSelector _objectSelector;
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
     private string _selectedWord = "";
@@ -22,6 +23,7 @@ public class WordController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _selectionResponse = GetComponent<ISelectionResponse>();
+        _objectSelector = GetComponent<IObjectSelector>();
     }
 
     private void Update()
@@ -107,9 +109,9 @@ public class WordController : MonoBehaviour
             {
                 Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated) - widthAllowance, transform.position.y - heightAllowance, transform.position.z);
 
-                GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform.parent);
+                GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
                 letterGameObject.transform.position = objectPosition;
-                letterGameObject.GetComponent< LetterController>().letter = letter;
+                letterGameObject.GetComponent<ILetterSelectionResponse>().Letter = letter;
             }
             lettersInstantiated++;
         }
@@ -119,7 +121,7 @@ public class WordController : MonoBehaviour
     {
         if (touch.tapCount == 1 && touch.phase == TouchPhase.Began)
         {
-            _singleGameObjectSelected = _selectionResponse.DetermineSelection(touch.position);
+            _singleGameObjectSelected = _objectSelector.DetermineSelection(touch.position);
             if (!_singleGameObjectSelected)
                 return;
 
@@ -132,7 +134,7 @@ public class WordController : MonoBehaviour
     {
         if(touch.phase == TouchPhase.Moved)
         {
-            GameObject selection = _selectionResponse.DetermineSelection(touch.position);
+            GameObject selection = _objectSelector.DetermineSelection(touch.position);
             //for the picture
             if (selection && selection == this.gameObject)
             {
@@ -150,8 +152,8 @@ public class WordController : MonoBehaviour
             //for the letters word
             if (selection)
             {
-                LetterController letterController = selection.GetComponent<LetterController>();
-                if (!letterController)
+                ILetterSelectionResponse letterController = selection.GetComponent<ILetterSelectionResponse>();
+                if (letterController == null)
                 {
                     _selectedWord = "";
                     _lettersGameObjectSelected.Clear();
@@ -161,7 +163,7 @@ public class WordController : MonoBehaviour
                 if (!_lettersGameObjectSelected.Contains(selection))
                 {
                     _lettersGameObjectSelected.Add(selection);
-                    _selectedWord = _selectedWord + letterController.letter.Symbol;
+                    _selectedWord = _selectedWord + letterController.Letter.Symbol;
                 }
             }
 
@@ -176,7 +178,7 @@ public class WordController : MonoBehaviour
 
             _selectionResponse.Deselected(this.gameObject, touch.position);
 
-            GameObject selectionEnd =_selectionResponse.DetermineSelection(touch.position);
+            GameObject selectionEnd = _objectSelector.DetermineSelection(touch.position);
             
             //for the image 
             if (_singleGameObjectSelected == selectionEnd && _singleGameObjectSelected == this.gameObject)
@@ -189,7 +191,7 @@ public class WordController : MonoBehaviour
             if (_selectedWord.Length <= 1 || !Word)
                 return;
 
-            if (selectionEnd && !selectionEnd.GetComponent<LetterController>())
+            if (selectionEnd && selectionEnd.GetComponent<ILetterSelectionResponse>() == null)
             {
                 _selectedWord = "";
                 _lettersGameObjectSelected.Clear();
