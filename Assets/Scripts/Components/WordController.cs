@@ -63,7 +63,7 @@ public class WordController : MonoBehaviour
         Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
         foreach (var character in wordString)
         {
-            Letter letter = Resources.Load<Letter>($"Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
+            Letter letter = Resources.Load<Letter>($"Scripts/Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
 
             if (!Word.Letters.Contains(letter))
                 Word.Letters.Add(letter);

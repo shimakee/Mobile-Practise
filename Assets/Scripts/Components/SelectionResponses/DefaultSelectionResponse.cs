@@ -7,7 +7,7 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
     //Vector3 _targetPosition;
     //Vector3 _originalScale;
     //Quaternion _originalRotation;
-
+    public ITouchControlOptions TouchContorlOptions;
 
     private void Awake()
     {

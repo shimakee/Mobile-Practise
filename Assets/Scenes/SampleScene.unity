@@ -646,6 +646,7 @@ GameObject:
   - component: {fileID: 1905547147}
   - component: {fileID: 1905547150}
   - component: {fileID: 1905547149}
+  - component: {fileID: 1905547151}
   m_Layer: 0
   m_Name: Hexagon
   m_TagString: Untagged
@@ -769,6 +770,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &1905547151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905547146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ae3c6de12374240b90fcc02dbfb4bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Option: {fileID: 11400000, guid: 4ad34cdd3219c2c429540b561873f566, type: 2}
 --- !u!1 &2120977228
 GameObject:
   m_ObjectHideFlags: 0
