@@ -71,7 +71,7 @@ public class WordManager : MonoBehaviour
         _wordsListIndex = GetArrangedIndex(_completeWordList);
 
         //generate first word
-        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, new Vector2(0, 0)));
+        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, new Vector2(-3, 0)));
     }
 
     // Update is called once per frame
@@ -179,73 +179,83 @@ public class WordManager : MonoBehaviour
         }
     }
 
-    private void OnTwoFingerOneap(Touch touch)
+    void OnTwoFingerOneap(Touch touch)
     {
         if(Input.touchCount == 2)
         {
-            if (!_isCreatingWord)
-            {
-                //hide previous object
-                //assign it to the _readWordsObject[WordIndex];
-
-                //for now destroy object
-                Destroy(_currentWordObject);
-
-                PreviousWord();
-                Vector3 position = new Vector3(0, 0, 0); // could be set as global or on a larger scope
-
-
-                ////check readList if it contains that object
-                //if (_readWordsObject[WordIndex] != null)
-                //{
-                //    //re-enableCollider
-                //    //unhide object
-                //    //re-assign as current object
-                //}
-                //else
-                //{
-                //    //instantiate/create new object
-                //    //assign as current object
-                string word = _completeWordList[_wordIndex];
-                Debug.Log($"word generated = {word}");
-
-                StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
-                //}
-            }
+            Previous();
         }
     }
 
-    private void OnOneFingerTwoTaps(Touch touch)
+    void OnOneFingerTwoTaps(Touch touch)
     {
         if(Input.touchCount == 1 && touch.tapCount == 2 && touch.phase == TouchPhase.Ended)
         {
-            if (!_isCreatingWord)
-            {
-                //hide previous object
-                //assign it to the _readWordsObject[WordIndex];
+            Next();
+        }
+    }
 
-                //for now destroy object
-                if(_currentWordObject)
-                    Destroy(_currentWordObject);
+    public void Next()
+    {
+        if (!_isCreatingWord)
+        {
+            //hide previous object
+            //assign it to the _readWordsObject[WordIndex];
 
-                NextWord();
-                Vector3 position = new Vector3(0, 0, 0); // could be set as global or on a larger scope
+            //for now destroy object
+            if (_currentWordObject)
+                Destroy(_currentWordObject);
+
+            NextWord();
+            Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
 
 
-                ////check readList if it contains that object
-                //if (_readWordsObject[WordIndex] != null)
-                //{
-                //    //re-enableCollider
-                //    //unhide object
-                //    //re-assign as current object
-                //}
-                //else
-                //{
-                //    //instantiate/create new object
-                //    //assign as current object
-                        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, position));
-                //}
-            }
+            ////check readList if it contains that object
+            //if (_readWordsObject[WordIndex] != null)
+            //{
+            //    //re-enableCollider
+            //    //unhide object
+            //    //re-assign as current object
+            //}
+            //else
+            //{
+            //    //instantiate/create new object
+            //    //assign as current object
+            StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, position));
+            //}
+        }
+    }
+
+    public void Previous()
+    {
+        if (!_isCreatingWord)
+        {
+            //hide previous object
+            //assign it to the _readWordsObject[WordIndex];
+
+            //for now destroy object
+            Destroy(_currentWordObject);
+
+            PreviousWord();
+            Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
+
+
+            ////check readList if it contains that object
+            //if (_readWordsObject[WordIndex] != null)
+            //{
+            //    //re-enableCollider
+            //    //unhide object
+            //    //re-assign as current object
+            //}
+            //else
+            //{
+            //    //instantiate/create new object
+            //    //assign as current object
+            string word = _completeWordList[_wordIndex];
+            Debug.Log($"word generated = {word}");
+
+            StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
+            //}
         }
     }
 
