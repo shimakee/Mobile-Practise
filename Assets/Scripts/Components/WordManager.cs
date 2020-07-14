@@ -10,11 +10,11 @@ public class WordManager : MonoBehaviour
     public string TextAssetName = "wordList";
     public TextAsset WordsListTextFile;
     public GameObject WordBlockPrefab;
-    public float WordSpawnWaitTime = 3f;
+    public float WordSpawnWaitTime = .5f;
 
     //Options
     public bool Shuffle;
-    [Range(0, 3)] public int Repeat;
+    public bool Repeat;
     //[Range(1, 5)] public int MinWordLength;
     //[Range(1, 5)] public int MaxWordLength;
 
@@ -113,8 +113,14 @@ public class WordManager : MonoBehaviour
         else
         {
             //if repeat is on loop back to the start
-            if (Repeat > 0)
+            if (Repeat)
+            {
                 _currentWorListIndex = 0;
+            }
+            else
+            {
+                //end scene?... show end game animation?... score?..
+            }
         }
 
         Debug.Log($"wordlist length = {_wordsListIndex.Length}");
@@ -249,4 +255,6 @@ public class WordManager : MonoBehaviour
     //    float width = Screen.width;
     //    float height = Screen.height;
     //}
+
+    //Button function
 }

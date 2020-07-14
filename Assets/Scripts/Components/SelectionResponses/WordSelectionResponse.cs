@@ -90,6 +90,10 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //    _spriteRenderer.sprite = word.Sprite;
         //}
 
+        //check if sprite exist
+        if (!word.Sprite)
+            return;
+
         //instantiate object
         GameObject pictureGameObject = Instantiate(PictureBlockPrefab, transform);
 

@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ObjectSelector : MonoBehaviour, IObjectSelector
 {
     public virtual GameObject DetermineSelection(Vector3 inputPosition)
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return null;
+
         //create ray
         Ray ray = Camera.main.ScreenPointToRay(inputPosition);
         //draw raycast

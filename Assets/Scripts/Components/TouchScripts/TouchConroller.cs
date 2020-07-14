@@ -380,14 +380,11 @@ public class TouchConroller : MonoBehaviour
                     {
                         if (_selectedOnTouchMove[fingerId].Count > 0)
                         {
-                            Debug.Log("This confirm", this);
                             _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
                         }
                         else
                         {
-                            Debug.Log("This confirm", this);
                             _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
-
                         }
                     }
                     else
@@ -401,12 +398,10 @@ public class TouchConroller : MonoBehaviour
                     {
                         if (_selectedOnTouchMove[fingerId].Count > 0)
                         {
-                            Debug.Log($"This confirm {_selectedOnTouchMove[fingerId].Count}", this);
                             _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
                         }
                         else
                         {
-                            Debug.Log("This confirm", this);
                             _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
                         }
                     }
@@ -426,12 +421,10 @@ public class TouchConroller : MonoBehaviour
                         {
                             if (_selectedOnTouchMove[fingerId].Count > 0)
                             {
-                                Debug.Log("This confirm", this);
                                 _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
                             }
                             else
                             {
-                                Debug.Log("This confirm", this);
                                 _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
                             }
                         }
@@ -446,12 +439,10 @@ public class TouchConroller : MonoBehaviour
                         {
                             if (_selectedOnTouchMove[fingerId].Count > 0)
                             {
-                                Debug.Log("This confirm", this);
                                 _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
                             }
                             else
                             {
-                                Debug.Log("This confirm", this);
                                 _selectionResponse.OnSelectionConfirm(_currentSelection[fingerId], touch.position);
                             }
                         }
@@ -468,12 +459,10 @@ public class TouchConroller : MonoBehaviour
             {
                 if (_selectedOnTouchMove[fingerId].Count > 0)
                 {
-                    Debug.Log("This confirm", this);
                     _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
                 }
                 else
                 {
-                    Debug.Log("This confirm", this);
                     _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
                 }
             }
