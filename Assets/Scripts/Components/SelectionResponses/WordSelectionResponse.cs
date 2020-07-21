@@ -16,17 +16,19 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     public GameObject LetterBlockPrefab;
     public GameObject PictureBlockPrefab;
 
+    //audio options
+    public GameOptions GameOptions;
+
     //allowance for spacing
-    public float ImageXMargin = 0;
-    public float ImageYMargin = 0;
-    public float LetterXMargin = 0;
-    public float LetterYMargin = 0;
     public float PerLetterMargin = 0;
 
     private string _currentWord = "";
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
+
+    //directories
+    private string _selectedVoice;
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -36,6 +38,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             throw new NullReferenceException("no audio source comppnent attached.");
         if (!_spriteRenderer)
             throw new NullReferenceException("no sprite renderer comppnent attached.");
+        if (!GameOptions)
+            throw new NullReferenceException("no game options to load.");
     }
 
     /// <summary>
@@ -46,7 +50,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     /// </summary>
     /// <param name="wordString"></param>
     /// <returns>Returns an int 0 or 1</returns>
-    public int InitializeWord(string wordString) //create method overload if necessary
+    public int InitializeWord(string wordString, float scaler = 1) //create method overload if necessary
     {
         if (String.IsNullOrWhiteSpace(wordString))
             throw new ArgumentNullException("wordString arguement cannot be null, as it is used to generate the word.");
@@ -57,7 +61,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //load reasource
         Word.WordSpelling = wordString;
-        Word.WordAudio = Resources.Load<AudioClip>($"Audio/Words/{wordString}");
+        Word.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{wordString}");
         Word.Sprite = Resources.Load<Sprite>($"Sprites/{wordString}");
         Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
         foreach (var character in wordString)
@@ -100,7 +104,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //instantiate object
         GameObject pictureGameObject = Instantiate(PictureBlockPrefab, transform);
 
-        pictureGameObject.transform.position = new Vector2(transform.position.x + ImageXMargin, transform.position.y + ImageYMargin);
+        pictureGameObject.transform.position = new Vector2(transform.position.x, transform.position.y);
         pictureGameObject.name = word.WordSpelling+"Picture";
 
         //get component
@@ -123,9 +127,10 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     {
         int lettersInstantiated = 0;
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
-        float widthAllowance = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float letterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
         //float heightAllowance = letterBlockSpriteRenderer.bounds.size.y;
-
+        //float totalWidth = (widthAllowance * word.WordSpelling.Length) + (PerLetterMargin * word.WordSpelling.Length-1);
+        //float initialXPosition = transform.position.x - (totalWidth/2);
         //assemble the word using the letters
         foreach (char character in word.WordSpelling)
         {
@@ -133,7 +138,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             if (letter)
             {
 
-                Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated + PerLetterMargin * lettersInstantiated) + LetterXMargin, transform.position.y + LetterYMargin, transform.position.z);
+                //Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated + PerLetterMargin * lettersInstantiated) + LetterXMargin, transform.position.y + LetterYMargin, transform.position.z);
+                Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated), transform.position.y, transform.position.z);
 
                 GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
                 letterGameObject.transform.position = objectPosition;
@@ -206,7 +212,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
                 }
 
                 //find if we have audio that matches current selected
-                AudioClip resourcedWord = Resources.Load<AudioClip>($"Audio/Words/{_currentWord}");
+                AudioClip resourcedWord = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{_currentWord}");
                 if (resourcedWord && !_audioSource.isPlaying)
                 {
                     _audioSource.PlayOneShot(resourcedWord);
@@ -223,7 +229,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //play audio
         if (!_audioSource.isPlaying)
         {
-            _audioSource.PlayOneShot(Word.Sfx);
+            _audioSource.Play();
         }
     }
 
@@ -246,4 +252,23 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         OnSelectionConfirm(this.gameObject, inputPosition, wasSelectedObjects);
     }
+
+    //private Vector3 CalculatePosition(string word, float scaler, float allowance)
+    //{
+    //    //float widthCenterPosition = (Screen.width / 2)/Screen.width * (WorldUnitSize * WidthAspectRatio);
+    //    //Debug.Log($"center position X: {widthCenterPosition}");
+
+    //    //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
+    //    //Debug.Log($"center position Y: {heightCenterPosition}");
+
+    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+
+    //    int length = word.Length;
+    //    float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+    //    float totalWordSizeX = length * LetterWidth;
+
+    //    float PositionX = ((totalWordSizeX / 2 * -1) + LetterWidth / 2) * scaler;
+
+    //    return new Vector2(PositionX, 0);
+    //}
 }

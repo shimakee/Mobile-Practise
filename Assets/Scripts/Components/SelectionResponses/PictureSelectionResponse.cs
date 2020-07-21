@@ -11,6 +11,8 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         set { PictureScriptable = value; }
     }
 
+    public GameOptions GameOptions;
+
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
     private void Awake()
@@ -22,6 +24,8 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
             throw new NullReferenceException("no audio source comppnent attached.");
         if (!_spriteRenderer)
             throw new NullReferenceException("no sprite renderer comppnent attached.");
+        if (!GameOptions)
+            throw new NullReferenceException("no options.");
     }
 
     public void InitializePicure(Picture picture) //create overload for offset and margins?
@@ -57,7 +61,15 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
     {
         if (!_audioSource.isPlaying)
         {
-            _audioSource.Play();
+            if (GameOptions.ImageAudio == ImageAudioOptions.sfxs)
+            {
+                _audioSource.Play();
+            }
+            else
+            {
+                //play the word
+                _audioSource.PlayOneShot(Picture.WordAudio);
+            }
         }
     }
 

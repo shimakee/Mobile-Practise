@@ -73,7 +73,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ab7d6b69e1f9b0143be748e6277e2eb7, type: 3}
+  m_Sprite: {fileID: 1287621971658640614, guid: cea58ef11292d484d8b7d4dca8a06547,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -197,10 +198,7 @@ MonoBehaviour:
     type: 3}
   PictureBlockPrefab: {fileID: 8189060424923311912, guid: 6445341ef3862ec408d599e35dd1f27d,
     type: 3}
-  ImageXMargin: 0
-  ImageYMargin: 0
-  LetterXMargin: -1.25
-  LetterYMargin: -1.25
+  GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
   PerLetterMargin: 0.25
 --- !u!114 &7429833229380686744
 MonoBehaviour:

@@ -43,8 +43,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be25c35d9bedb34dbd512e0ef254e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordsListTextFile: {fileID: 4900000, guid: 5f3cbfee23bfa6844ade1b714969a6bf, type: 3}
   TextAssetName: wordList
+  WordsListTextFile: {fileID: 4900000, guid: 5f3cbfee23bfa6844ade1b714969a6bf, type: 3}
   WordBlockPrefab: {fileID: 5745327227831437029, guid: 4399d6267833fac4b9071c7dec6b4635,
     type: 3}
-  wordSpawnWaitTime: 2
+  LetterBlockPrefab: {fileID: 3441751586502322947, guid: ee6bb81ff0205654c91accd766edfcd6,
+    type: 3}
+  WordSpawnWaitTime: 0.5
+  Shuffle: 0
+  Repeat: 0

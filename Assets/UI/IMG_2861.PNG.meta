@@ -1,0 +1,470 @@
+fileFormatVersion: 2
+guid: c60623fd3ecfa9e448d3e3537ae90118
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2116943040211356323
+    second: IMG_2861_0
+  - first:
+      213: 4233550686660773647
+    second: IMG_2861_1
+  - first:
+      213: 2002028436167663956
+    second: IMG_2861_2
+  - first:
+      213: 3602169941997892989
+    second: IMG_2861_3
+  - first:
+      213: 9028446409299048339
+    second: IMG_2861_4
+  - first:
+      213: -2394035523513472727
+    second: IMG_2861_5
+  - first:
+      213: -7029087746839457016
+    second: IMG_2861_6
+  - first:
+      213: -7504486954780240460
+    second: IMG_2861_7
+  - first:
+      213: -2701929028944966823
+    second: IMG_2861_8
+  - first:
+      213: 9049029759971383295
+    second: IMG_2861_9
+  - first:
+      213: -6987672327090306554
+    second: IMG_2861_10
+  - first:
+      213: 2007449298060328541
+    second: IMG_2861_11
+  - first:
+      213: -7935269397636616411
+    second: IMG_2861_12
+  - first:
+      213: 3438725314768204379
+    second: IMG_2861_13
+  - first:
+      213: -3440465560536628231
+    second: IMG_2861_14
+  - first:
+      213: 8961610657722094771
+    second: IMG_2861_15
+  - first:
+      213: -5757136586577275019
+    second: IMG_2861_16
+  - first:
+      213: -5584234820385219170
+    second: IMG_2861_17
+  - first:
+      213: -8085211392965299603
+    second: IMG_2861_18
+  - first:
+      213: -4652662707785914511
+    second: IMG_2861_19
+  - first:
+      213: -8476929633286032473
+    second: IMG_2861_20
+  - first:
+      213: -124939668500214077
+    second: IMG_2861_21
+  - first:
+      213: -3274091992417359137
+    second: IMG_2861_22
+  - first:
+      213: -6780237426393294528
+    second: IMG_2861_23
+  - first:
+      213: 7681879523811059080
+    second: IMG_2861_24
+  - first:
+      213: 980852862642033501
+    second: IMG_2861_25
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: IMG_2861_0
+      rect:
+        serializedVersion: 2
+        x: 1037
+        y: 1070
+        width: 373
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aa8881aa74e06d10800000000000000
+      internalID: 2116943040211356323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_3
+      rect:
+        serializedVersion: 2
+        x: 1442
+        y: 1054
+        width: 372
+        height: 206
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d75bf552a7a7df130800000000000000
+      internalID: 3602169941997892989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_4
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 821
+        width: 406
+        height: 307
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 397bbebac2c7b4d70800000000000000
+      internalID: 9028446409299048339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_13
+      rect:
+        serializedVersion: 2
+        x: 642
+        y: 565
+        width: 364
+        height: 427
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b52f6e2647ec8bf20800000000000000
+      internalID: 3438725314768204379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_15
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 808
+        width: 191
+        height: 140
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b451ec99690e5c70800000000000000
+      internalID: 8961610657722094771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_16
+      rect:
+        serializedVersion: 2
+        x: 1044
+        y: 617
+        width: 343
+        height: 312
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57718a1f6ca8a10b0800000000000000
+      internalID: -5757136586577275019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_17
+      rect:
+        serializedVersion: 2
+        x: 1484
+        y: 639
+        width: 279
+        height: 289
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9d52947400d082b0800000000000000
+      internalID: -5584234820385219170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_20
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 399
+        width: 333
+        height: 307
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a3f0064965eb5a80800000000000000
+      internalID: -8476929633286032473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_22
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 197
+        width: 320
+        height: 294
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fda23060ea61092d0800000000000000
+      internalID: -3274091992417359137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_23
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 247
+        width: 260
+        height: 263
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 049d403ebf1c7e1a0800000000000000
+      internalID: -6780237426393294528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_24
+      rect:
+        serializedVersion: 2
+        x: 1252
+        y: 233
+        width: 360
+        height: 267
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 885ea100ab48b9a60800000000000000
+      internalID: 7681879523811059080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IMG_2861_25
+      rect:
+        serializedVersion: 2
+        x: 1644
+        y: 228
+        width: 360
+        height: 269
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5314b65b70bc9d00800000000000000
+      internalID: 980852862642033501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

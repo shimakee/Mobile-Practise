@@ -11,6 +11,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         get { return LetterScriptable; }
         set { LetterScriptable = value; }
     }
+
+    public GameOptions GameOptions;
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
 
@@ -26,6 +28,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
             throw new NullReferenceException("no audio source comppnent attached.");
         if (!_spriteRenderer)
             throw new NullReferenceException("no sprite renderer comppnent attached.");
+        if (!GameOptions)
+            throw new NullReferenceException("no ooptions");
     }
     private void Start()
     {
@@ -35,13 +39,14 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     {
         //check that all resources are there
         if (letter.PhonicAudio == null)
-            letter.PhonicAudio = Resources.Load<AudioClip>($"Audio/Letters/{letter.Symbol}");
+            letter.PhonicAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/phonics/{letter.Symbol}");
+        if (letter.LetterAudio == null)
+            letter.LetterAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/letters/{letter.Symbol}");
+      
+
         if (letter.Sprite == null)
             letter.Sprite = Resources.Load<Sprite>($"Sprites/{letter.Symbol}");
 
-        //using resource.load change audio to
-        //male or female
-        //phonics or letter pronounciation
         if (_audioSource)
             _audioSource.clip = letter.PhonicAudio;
 
@@ -99,7 +104,15 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
         if (!_audioSource.isPlaying)
         {
-            _audioSource.Play();
+            if (GameOptions.LetterAudio == LetterAudioOptions.phonics)
+            {
+                _audioSource.Play();
+
+            }
+            else
+            {
+                _audioSource.PlayOneShot(Letter.LetterAudio);
+            }
         }
     }
 }

@@ -4,19 +4,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class WordManager : MonoBehaviour
 {
-    public string TextAssetName = "wordList";
+    public string TextAssetName = "wordList"; // to delete
     public TextAsset WordsListTextFile;
     public GameObject WordBlockPrefab;
+    public GameObject LetterBlockPrefab;
     public float WordSpawnWaitTime = .5f;
 
+    //aspect ratio
+    public int WorldUnitSize = 10;
+    public int WidthAspectRatio = 16; //to delete
+    public int HeightAspectRatio = 9; //to delete
+
     //Options
-    public bool Shuffle;
-    public bool Repeat;
+    public GameOptions gameOptions;
     //[Range(1, 5)] public int MinWordLength;
     //[Range(1, 5)] public int MaxWordLength;
+
+
 
     //wordList
     private List<string> _completeWordList;
@@ -46,18 +54,9 @@ public class WordManager : MonoBehaviour
         //generate list of words.
         _completeWordList = GenerateWordListFromTxt(WordsListTextFile);
 
-        Debug.Log($"complete wordlist length {_completeWordList.Count}");
-
-        foreach (var item in _completeWordList)
-        {
-            Debug.Log($"{item} is in complete word list");
-        }
-
         //assign max index;
         _maxIndex = _completeWordList.Count - 1;
         _readWordsObject = new GameObject[_completeWordList.Count];
-
-        Debug.Log($"max index {_maxIndex}");
 
         //check that there is a prefab
         if (!WordBlockPrefab)
@@ -69,9 +68,10 @@ public class WordManager : MonoBehaviour
 
         //generate array indexes - should be based on options
         _wordsListIndex = GetArrangedIndex(_completeWordList);
+        string word = _completeWordList[_wordIndex];
 
         //generate first word
-        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, new Vector2(-3, 0)));
+        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, CalculatePosition(word)));
     }
 
     // Update is called once per frame
@@ -85,6 +85,8 @@ public class WordManager : MonoBehaviour
                 OnTwoFingerOneap(touch); //get previous object
             }
         }
+        //Debug.Log($"x:{Input.mousePosition.x}");
+        //Debug.Log($"y:{Input.mousePosition.y}");
     }
 
     //create list of strings from the word block
@@ -113,7 +115,7 @@ public class WordManager : MonoBehaviour
         else
         {
             //if repeat is on loop back to the start
-            if (Repeat)
+            if (gameOptions.Repeat)
             {
                 _currentWorListIndex = 0;
             }
@@ -171,8 +173,9 @@ public class WordManager : MonoBehaviour
             GameObject instantiatedWord = Instantiate(WordBlockPrefab);
             _currentWordObject = instantiatedWord;
             instantiatedWord.transform.position = position;
+            float scaler = CalculateScale(word);
             instantiatedWord.name = word;
-            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().InitializeWord(word);
+            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().InitializeWord(word, scaler);
 
             yield return new WaitForSecondsRealtime(waitTime);
             _isCreatingWord = false;
@@ -207,7 +210,7 @@ public class WordManager : MonoBehaviour
                 Destroy(_currentWordObject);
 
             NextWord();
-            Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
+            //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
 
 
             ////check readList if it contains that object
@@ -221,7 +224,10 @@ public class WordManager : MonoBehaviour
             //{
             //    //instantiate/create new object
             //    //assign as current object
-            StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, position));
+            string word = _completeWordList[_wordIndex];
+            Vector2 position = CalculatePosition(word);
+
+            StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
             //}
         }
     }
@@ -237,7 +243,7 @@ public class WordManager : MonoBehaviour
             Destroy(_currentWordObject);
 
             PreviousWord();
-            Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
+            //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
 
 
             ////check readList if it contains that object
@@ -254,17 +260,48 @@ public class WordManager : MonoBehaviour
             string word = _completeWordList[_wordIndex];
             Debug.Log($"word generated = {word}");
 
+            Vector2 position = CalculatePosition(word);
+
+
             StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
             //}
         }
     }
 
     ////calculates the position to place on screen
-    //private void CalculatePosition()
-    //{
-    //    float width = Screen.width;
-    //    float height = Screen.height;
-    //}
+    private Vector3 CalculatePosition(string word)
+    {
+        //float widthCenterPosition = (Screen.width / 2)/Screen.width * (WorldUnitSize * WidthAspectRatio);
+        //Debug.Log($"center position X: {widthCenterPosition}");
 
-    //Button function
+        //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
+        //Debug.Log($"center position Y: {heightCenterPosition}");
+
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+
+        int length = word.Length;
+        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float totalWordSizeX = length * LetterWidth;
+        
+        float PositionX = (totalWordSizeX/2 * -1) + LetterWidth/2;
+
+        return new Vector2(PositionX, 0);
+    }
+
+    float CalculateScale(string word)
+    {
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+
+        int length = word.Length;
+        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float totalWordSizeX = length * LetterWidth;
+
+        int totalWidthInUnits = (int)Math.Round(WorldUnitSize * (float)WidthAspectRatio / (float)HeightAspectRatio);
+        float divisor = totalWidthInUnits / totalWordSizeX;
+
+        Debug.Log($"divisor {divisor}");
+
+        return divisor;
+    }
+
 }
