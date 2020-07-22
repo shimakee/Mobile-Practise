@@ -19,6 +19,11 @@ public class GameTimeFunctions : MonoBehaviour
     private void Start()
     {
         _gameOptions = WordManager.gameOptions;
+
+        SetColor(ShuffleToggle, _gameOptions.Shuffle);
+        SetColor(RepeatToggle, _gameOptions.Repeat);
+        SetColor(ImageAudioToggle, _gameOptions.ImageAudio == ImageAudioOptions.sfxs);
+        SetColor(LetterAudioToggle, _gameOptions.LetterAudio == LetterAudioOptions.letters);
     }
 
     public void PauseGame()
@@ -43,19 +48,8 @@ public class GameTimeFunctions : MonoBehaviour
     public void ToggleShuffle()
     {
         _gameOptions.Shuffle = !_gameOptions.Shuffle;
-
-        //change sprite based on shuffle toggled
-        if (_gameOptions.Shuffle)
-        {
-            //active sprite
-            ShuffleToggle.GetComponent<Image>().color = new Color32(45, 146, 231, 255);
-        }
-        else
-        {
-            //inactive sprite
-            ShuffleToggle.GetComponent<Image>().color = Color.white;
-        }
-
+        
+        SetColor(ShuffleToggle, _gameOptions.Shuffle);
         _gameOptions.Save();
 
     }
@@ -63,59 +57,54 @@ public class GameTimeFunctions : MonoBehaviour
     public void ToggleRepeat()
     {
         _gameOptions.Repeat = !_gameOptions.Repeat;
-        //change sprite based on repeat toggled
-        if (_gameOptions.Repeat)
-        {
-            //active sprite
-            RepeatToggle.GetComponent<Image>().color = new Color32(45, 146, 231, 255);
-        }
-        else
-        {
-            //inactive sprite
-            RepeatToggle.GetComponent<Image>().color = Color.white;
-        }
 
+        SetColor(RepeatToggle, _gameOptions.Repeat);
         _gameOptions.Save();
     }
 
     public void ToggleImageAudio()
     {
-         Image spriteRenderer = ImageAudioToggle.GetComponent<Image>();
-
         if (_gameOptions.ImageAudio == ImageAudioOptions.sfxs)
         {
             _gameOptions.ImageAudio = ImageAudioOptions.words;
-            //change sprite
-            spriteRenderer.color = Color.white;
         }
         else
         {
             _gameOptions.ImageAudio = ImageAudioOptions.sfxs;
-            //change sprite
-            spriteRenderer.color = Color.blue;
         }
+
+        SetColor(ImageAudioToggle, _gameOptions.ImageAudio == ImageAudioOptions.sfxs);
         _gameOptions.Save();
     }
 
     public void ToggleLetterAudio()
     {
-        Image spriteRenderer = LetterAudioToggle.GetComponent<Image>();
-
-
         if (_gameOptions.LetterAudio == LetterAudioOptions.letters)
         {
             _gameOptions.LetterAudio = LetterAudioOptions.phonics;
-            //change sprite
-            spriteRenderer.color = Color.white;
         }
         else
         {
             _gameOptions.LetterAudio = LetterAudioOptions.letters;
-            //change sprite
-            spriteRenderer.color = Color.blue;
         }
 
+        SetColor(LetterAudioToggle, _gameOptions.LetterAudio == LetterAudioOptions.letters);
         _gameOptions.Save();
     }
 
+
+    private void SetColor(GameObject gameObject, bool isActive)
+    {
+        Image spriteRenderer = gameObject.GetComponent<Image>();
+
+
+        if (isActive)
+        {
+            spriteRenderer.color = new Color32(45, 146, 231, 255);
+        }
+        else
+        {
+            spriteRenderer.color = Color.white;
+        }
+    }
 }

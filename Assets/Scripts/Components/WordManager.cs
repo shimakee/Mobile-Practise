@@ -17,8 +17,8 @@ public class WordManager : MonoBehaviour
 
     //aspect ratio
     public int WorldUnitSize = 10;
-    public int WidthAspectRatio = 16; //to delete
-    public int HeightAspectRatio = 9; //to delete
+    //public int WidthAspectRatio = 16; //to delete
+    //public int HeightAspectRatio = 9; //to delete
 
     //Options
     public GameOptions gameOptions;
@@ -30,6 +30,7 @@ public class WordManager : MonoBehaviour
     //wordList
     private List<string> _completeWordList;
     private GameObject[] _readWordsObject; //object of words already read; (so as not to destroy and instantiate them again and again
+    private GameObject[] _readImagesObjects;
 
     //indexes
     private int[] _wordsListIndex; //list of index for all words arranged or shuffled based on option.
@@ -56,6 +57,10 @@ public class WordManager : MonoBehaviour
 
         //generate list of words.
         _completeWordList = GenerateWordListFromTxt(WordsListTextFile);
+
+        //initialize array to store instantiated objects
+        _readWordsObject = new GameObject[_completeWordList.Count];
+        _readImagesObjects = new GameObject[_completeWordList.Count];
 
         //assign max index;
         _maxIndex = _completeWordList.Count - 1;
@@ -222,36 +227,9 @@ public class WordManager : MonoBehaviour
     {
         if (!_isCreatingWord)
         {
-            //hide previous object
-            //assign it to the _readWordsObject[WordIndex];
-
-            //for now destroy object
-            if (_currentWordObject)
-                Destroy(_currentWordObject);
-            if (_currentImageObject)
-                Destroy(_currentImageObject);
-
+            DisableCurrentWordImage();
             NextIndex();
-            //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
-
-
-            ////check readList if it contains that object
-            //if (_readWordsObject[WordIndex] != null)
-            //{
-            //    //re-enableCollider
-            //    //unhide object
-            //    //re-assign as current object
-            //}
-            //else
-            //{
-            //    //instantiate/create new object
-            //    //assign as current object
-            string word = _completeWordList[_wordIndex];
-            Vector2 position = CalculatePosition(word);
-
-            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
-            StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
-            //}
+            InstantiateWordImage();
         }
     }
 
@@ -259,40 +237,51 @@ public class WordManager : MonoBehaviour
     {
         if (!_isCreatingWord)
         {
-            //hide previous object
-            //assign it to the _readWordsObject[WordIndex];
-
-            //for now destroy object
-
-            if (_currentImageObject)
-                Destroy(_currentImageObject);
-            if(_currentWordObject)
-                Destroy(_currentWordObject);
-
+            DisableCurrentWordImage();
             PreviousIndex();
-            //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
+            InstantiateWordImage();
+        }
+    }
 
+    private void InstantiateWordImage()
+    {
+        string word = _completeWordList[_wordIndex];
 
-            ////check readList if it contains that object
-            //if (_readWordsObject[WordIndex] != null)
-            //{
-            //    //re-enableCollider
-            //    //unhide object
-            //    //re-assign as current object
-            //}
-            //else
-            //{
-            //    //instantiate/create new object
-            //    //assign as current object
-            string word = _completeWordList[_wordIndex];
-            Debug.Log($"word generated = {word}");
-
+        //WORD
+        if (_readWordsObject[_wordIndex] != null)
+        {
+            _currentWordObject = _readWordsObject[_wordIndex];
+            _currentWordObject.SetActive(true);
+        }
+        else
+        {
             Vector2 position = CalculatePosition(word);
-
-
-            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0,0)));
             StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
-            //}
+        }
+
+        //IMAGE
+        if (_readImagesObjects[_wordIndex] != null)
+        {
+            _currentImageObject = _readImagesObjects[_wordIndex];
+            _currentImageObject.SetActive(true);
+        }
+        else
+        {
+            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
+        }
+    }
+
+    private void DisableCurrentWordImage()
+    {
+        if (_currentWordObject)
+        {
+            _readWordsObject[_wordIndex] = _currentWordObject;
+            _currentWordObject.SetActive(false);
+        }
+        if (_currentImageObject)
+        {
+            _readImagesObjects[_wordIndex] = _currentImageObject;
+            _currentImageObject.SetActive(false);
         }
     }
 
@@ -311,21 +300,4 @@ public class WordManager : MonoBehaviour
 
         return new Vector2(0, PositionY);
     }
-
-    //float CalculateScale(string word)
-    //{
-    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
-
-    //    int length = word.Length;
-    //    float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-    //    float totalWordSizeX = length * LetterWidth;
-
-    //    int totalWidthInUnits = (int)Math.Round(WorldUnitSize * (float)WidthAspectRatio / (float)HeightAspectRatio);
-    //    float divisor = totalWidthInUnits / totalWordSizeX;
-
-    //    Debug.Log($"divisor {divisor}");
-
-    //    return divisor;
-    //}
-
 }

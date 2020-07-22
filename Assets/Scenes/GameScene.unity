@@ -2933,7 +2933,7 @@ PrefabInstance:
         type: 3}
       propertyPath: WordsListTextFile
       value: 
-      objectReference: {fileID: 4900000, guid: 918d901691c13fe47a0d54d5fe92fbf3, type: 3}
+      objectReference: {fileID: 4900000, guid: 1e68ae6063d07714298a86c238eef56e, type: 3}
     - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
       propertyPath: WordSpawnWaitTime

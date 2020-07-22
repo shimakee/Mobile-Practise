@@ -96,7 +96,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -196,10 +196,9 @@ MonoBehaviour:
   WordScriptable: {fileID: 0}
   LetterBlockPrefab: {fileID: 3441751586502322947, guid: ee6bb81ff0205654c91accd766edfcd6,
     type: 3}
-  PictureBlockPrefab: {fileID: 8189060424923311912, guid: 6445341ef3862ec408d599e35dd1f27d,
-    type: 3}
   GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
   PerLetterMargin: 0.25
+  WorldUnitSize: 16
 --- !u!114 &7429833229380686744
 MonoBehaviour:
   m_ObjectHideFlags: 0
