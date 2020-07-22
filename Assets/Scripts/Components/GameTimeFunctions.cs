@@ -14,6 +14,10 @@ public class GameTimeFunctions : MonoBehaviour
     public GameObject LetterAudioToggle;
     public Canvas PauseCanvas;
 
+    //buttons
+    public GameObject NextButton;
+    public GameObject PreviousButton;
+
     private GameOptions _gameOptions;
 
     private void Start()
@@ -24,6 +28,27 @@ public class GameTimeFunctions : MonoBehaviour
         SetColor(RepeatToggle, _gameOptions.Repeat);
         SetColor(ImageAudioToggle, _gameOptions.ImageAudio == ImageAudioOptions.sfxs);
         SetColor(LetterAudioToggle, _gameOptions.LetterAudio == LetterAudioOptions.letters);
+    }
+
+    private void FixedUpdate()
+    {
+        if (WordManager.CurrentWordListIndex <= 0)
+        {
+            PreviousButton.SetActive(false);
+        }
+        else
+        {
+            PreviousButton.SetActive(true);
+        }
+
+        if(WordManager.CurrentWordListIndex >= WordManager.WordListLength-1 && !WordManager.gameOptions.Repeat)
+        {
+            NextButton.SetActive(false);
+        }
+        else
+        {
+            NextButton.SetActive(true);
+        }
     }
 
     public void PauseGame()

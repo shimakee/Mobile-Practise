@@ -31,6 +31,9 @@ public class WordManager : MonoBehaviour
     private int[] _wordsListIndex; //list of index for all words arranged or shuffled based on option.
     private int _currentWorListIndex = 0; //this is the index that will run up and down the wordsListIndex.
     private int _maxIndex; //maxIndex before looping/repeating
+
+    public int WordListLength {  get { return _completeWordList.Count; } }
+    public int CurrentWordListIndex { get { return _currentWorListIndex; } }
     private int _wordIndex
     {
         get {
