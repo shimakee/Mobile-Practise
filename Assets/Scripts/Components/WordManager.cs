@@ -206,7 +206,7 @@ public class WordManager : MonoBehaviour
 
     void OnTwoFingerOneap(Touch touch)
     {
-        if(Input.touchCount == 2)
+        if(Input.touchCount == 2 && touch.phase == TouchPhase.Ended)
         {
             Previous();
         }

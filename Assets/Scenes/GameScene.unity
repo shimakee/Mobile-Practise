@@ -1729,6 +1729,8 @@ MonoBehaviour:
   ImageAudioToggle: {fileID: 1812657217}
   LetterAudioToggle: {fileID: 1285348075}
   PauseCanvas: {fileID: 841405692}
+  NextButton: {fileID: 571866562}
+  PreviousButton: {fileID: 1151766985}
 --- !u!1 &1618707468
 GameObject:
   m_ObjectHideFlags: 0
@@ -2899,16 +2901,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WordManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: Margin
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: WordSpawnWaitTime
-      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cefedf84837768e43a677ebde4fb74d9, type: 3}
