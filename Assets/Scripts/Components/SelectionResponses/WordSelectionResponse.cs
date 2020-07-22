@@ -14,21 +14,20 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         set { WordScriptable = value; }
     }
     public GameObject LetterBlockPrefab;
-    public GameObject PictureBlockPrefab;
+    //public GameObject PictureBlockPrefab;
 
     //audio options
     public GameOptions GameOptions;
 
     //allowance for spacing
     public float PerLetterMargin = 0;
+    public int WorldUnitSize = 16;
 
     private string _currentWord = "";
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
-    //directories
-    private string _selectedVoice;
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -50,34 +49,39 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     /// </summary>
     /// <param name="wordString"></param>
     /// <returns>Returns an int 0 or 1</returns>
-    public int InitializeWord(string wordString, float scaler = 1) //create method overload if necessary
+    public int Initialize(string wordString) //create method overload if necessary
     {
         if (String.IsNullOrWhiteSpace(wordString))
             throw new ArgumentNullException("wordString arguement cannot be null, as it is used to generate the word.");
 
         //create word class scriptable object
-        Word wordScriptable = ScriptableObject.CreateInstance<Word>();
-        Word = wordScriptable;
+        if(Word == null)
+            Word = ScriptableObject.CreateInstance<Word>();
 
         //load reasource
-        Word.WordSpelling = wordString;
-        Word.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{wordString}");
-        Word.Sprite = Resources.Load<Sprite>($"Sprites/{wordString}");
-        Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
-        foreach (var character in wordString)
-        {
-            Letter letter = Resources.Load<Letter>($"Scripts/Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
+        if(String.IsNullOrWhiteSpace(Word.WordSpelling))
+            Word.WordSpelling = wordString;
+        if(Word.WordAudio == null)
+            Word.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{wordString}");
+        if(Word.Sprite == null)
+            Word.Sprite = Resources.Load<Sprite>($"Sprites/{wordString}");
+        if(Word.Sfx == null)
+            Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
 
-            if (!Word.Letters.Contains(letter))
-                Word.Letters.Add(letter);
-        }
+        //foreach (var character in wordString)
+        //{
+        //    Letter letter = Resources.Load<Letter>($"Scripts/Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
+
+        //    if (!Word.Letters.Contains(letter))
+        //        Word.Letters.Add(letter);
+        //}
 
         //assign components
         _audioSource.clip = Word.WordAudio;
 
         //initializing letters & place them in the world.
-        InitializeLetters(Word);
-        InitializeWordImage(Word);
+        AssembleLetters(Word.WordSpelling);
+        //InitializeWordImage(Word);
 
         //return 0 if only necessary components are loaded
         //return 1 if all components are loaded
@@ -87,64 +91,68 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         return 1;
     }
 
-    private void InitializeWordImage(Word word) //create overload for offset and margins?
+    //private void InitializeWordImage(Word word) //create overload for offset and margins?
+    //{
+    //    //if (word.Sprite != null)
+    //    //{
+    //    //    _spriteRenderer.sprite = word.Sprite;
+    //    //}
+
+    //    //check if sprite exist
+    //    if (!word.Sprite)
+    //    {
+    //        this._spriteRenderer.enabled = false;
+    //        return;
+    //    }
+
+    //    //instantiate object
+    //    GameObject pictureGameObject = Instantiate(PictureBlockPrefab);
+    //    //assign position
+
+    //    pictureGameObject.transform.position = new Vector2(0, 0);
+    //    pictureGameObject.transform.SetParent(transform);
+    //    pictureGameObject.name = word.WordSpelling+"Picture";
+
+    //    //get component
+    //    var pictureObjectComponent = pictureGameObject.GetComponent<IPictureSelectionResponse>();
+    //    if(pictureObjectComponent != null && word != null)
+    //    {
+    //        Picture picture = ScriptableObject.CreateInstance<Picture>();
+    //        //assign assets
+    //        picture.Sfx = word.Sfx;
+    //        picture.Sprite = word.Sprite;
+    //        picture.Name = word.WordSpelling;
+    //        picture.WordAudio = word.WordAudio;
+
+    //        //connect scriptable to object
+    //        pictureObjectComponent.InitializePicure(picture);
+    //    }
+    //}
+
+    private void AssembleLetters(string word) // create overload for offset and margins?
     {
-        //if (word.Sprite != null)
-        //{
-        //    _spriteRenderer.sprite = word.Sprite;
-        //}
-
-        //check if sprite exist
-        if (!word.Sprite)
-        {
-            this._spriteRenderer.enabled = false;
-            return;
-        }
-
-        //instantiate object
-        GameObject pictureGameObject = Instantiate(PictureBlockPrefab, transform);
-
-        pictureGameObject.transform.position = new Vector2(transform.position.x, transform.position.y);
-        pictureGameObject.name = word.WordSpelling+"Picture";
-
-        //get component
-        var pictureObjectComponent = pictureGameObject.GetComponent<IPictureSelectionResponse>();
-        if(pictureObjectComponent != null && word != null)
-        {
-            Picture picture = ScriptableObject.CreateInstance<Picture>();
-            //assign assets
-            picture.Sfx = word.Sfx;
-            picture.Sprite = word.Sprite;
-            picture.Name = word.WordSpelling;
-            picture.WordAudio = word.WordAudio;
-
-            //connect scriptable to object
-            pictureObjectComponent.InitializePicure(picture);
-        }
-    }
-
-    private void InitializeLetters(Word word) // create overload for offset and margins?
-    {
-        int lettersInstantiated = 0;
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
-        float letterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        //float heightAllowance = letterBlockSpriteRenderer.bounds.size.y;
-        //float totalWidth = (widthAllowance * word.WordSpelling.Length) + (PerLetterMargin * word.WordSpelling.Length-1);
-        //float initialXPosition = transform.position.x - (totalWidth/2);
+        float scale = CalculateScale(word);
+        Debug.Log($"scale {scale}");
+
+        float letterWidth = letterBlockSpriteRenderer.bounds.size.x * scale; // for starting position
+        Debug.Log($"Letter width scaled {letterWidth}");
+        float initialAllowanceToCenterPosition =((letterWidth * word.Length) / 2 ) - (letterWidth / 2); //less half since pivot point is at the center.
+        Debug.Log($"Initial allowance {initialAllowanceToCenterPosition}");
+
         //assemble the word using the letters
-        foreach (char character in word.WordSpelling)
+        int lettersInstantiated = 0;
+        foreach (char character in word)
         {
-            Letter letter = word.Letters.Where(l => l.Symbol == character).FirstOrDefault();
-            if (letter)
-            {
-
-                //Vector3 objectPosition = new Vector3(transform.position.x + (widthAllowance * lettersInstantiated + PerLetterMargin * lettersInstantiated) + LetterXMargin, transform.position.y + LetterYMargin, transform.position.z);
-                Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated), transform.position.y, transform.position.z);
-
+            //Letter letter = word.Letters.Where(l => l.Symbol == character).FirstOrDefault();
+            //if (letter)
+            //{
+                Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated) - initialAllowanceToCenterPosition, transform.position.y, transform.position.z);
                 GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
                 letterGameObject.transform.position = objectPosition;
-                letterGameObject.GetComponent<ILetterSelectionResponse>().Letter = letter;
-            }
+                letterGameObject.transform.localScale = new Vector2(scale, scale);
+                letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
+            //}
             lettersInstantiated++;
         }
     }
@@ -253,22 +261,20 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         OnSelectionConfirm(this.gameObject, inputPosition, wasSelectedObjects);
     }
 
-    //private Vector3 CalculatePosition(string word, float scaler, float allowance)
-    //{
-    //    //float widthCenterPosition = (Screen.width / 2)/Screen.width * (WorldUnitSize * WidthAspectRatio);
-    //    //Debug.Log($"center position X: {widthCenterPosition}");
+    float CalculateScale(string word)
+    {
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
 
-    //    //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
-    //    //Debug.Log($"center position Y: {heightCenterPosition}");
+        int length = word.Length;
+        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float totalWordSizeX = length * LetterWidth;
 
-    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
+        float divisor = totalWidthInUnits / totalWordSizeX;
 
-    //    int length = word.Length;
-    //    float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-    //    float totalWordSizeX = length * LetterWidth;
+        Debug.Log($"divisor {divisor}");
 
-    //    float PositionX = ((totalWordSizeX / 2 * -1) + LetterWidth / 2) * scaler;
+        return divisor;
+    }
 
-    //    return new Vector2(PositionX, 0);
-    //}
 }

@@ -28,23 +28,23 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
             throw new NullReferenceException("no options.");
     }
 
-    public void InitializePicure(Picture picture) //create overload for offset and margins?
+    public void InitializePicure(string picture) //create overload for offset and margins?
     {
-        if(picture != null)
-        {
-            Picture = picture;
-            //check that all resources are there
-            if (Picture.Sfx == null)
-                Picture.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{Picture.Name}");
-            if (Picture.Sprite == null)
-                Picture.Sprite = Resources.Load<Sprite>($"Sprites/{Picture}");
+        if(Picture == null)
+            Picture = ScriptableObject.CreateInstance<Picture>();
+        if(String.IsNullOrWhiteSpace(Picture.Name))
+            Picture.Name = picture + "Image";
+        //assign assets
+        if (Picture.Sfx == null)
+            Picture.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{picture}");
+        if (Picture.Sprite == null)
+            Picture.Sprite = Resources.Load<Sprite>($"Sprites/{picture}");
+        if (Picture.WordAudio == null)
+            Picture.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{picture}");
 
-            if (Picture.Sprite != null)
-                _spriteRenderer.sprite = picture.Sprite;
-
-            if (Picture.Sfx != null)
-                _audioSource.clip = picture.Sfx;
-        }
+        //check that all resources are there
+            _spriteRenderer.sprite = Picture.Sprite;
+            _audioSource.clip = Picture.Sfx;
 
     }
     public void Deselected(GameObject gameObject, Vector3 inputPosition)

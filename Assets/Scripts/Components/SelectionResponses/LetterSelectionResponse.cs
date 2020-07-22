@@ -33,26 +33,25 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     }
     private void Start()
     {
-        InitializeLetter(Letter);
     }
-    public void InitializeLetter(Letter letter) // create method overload if necessary
+    public void Initialize(char letter) // create method overload if necessary
     {
+        //if (Letter == null)
+            Letter = Resources.Load<Letter>($"Scripts/Letters/{letter}");
+
         //check that all resources are there
-        if (letter.PhonicAudio == null)
-            letter.PhonicAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/phonics/{letter.Symbol}");
-        if (letter.LetterAudio == null)
-            letter.LetterAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/letters/{letter.Symbol}");
-      
+        //if (Letter.PhonicAudio == null)
+            Letter.PhonicAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/phonics/{Letter.Symbol}");
+        //if (Letter.LetterAudio == null)
+            Letter.LetterAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/letters/{Letter.Symbol}");
+        if (Letter.Sprite == null)
+            Letter.Sprite = Resources.Load<Sprite>($"Sprites/{Letter.Symbol}");
 
-        if (letter.Sprite == null)
-            letter.Sprite = Resources.Load<Sprite>($"Sprites/{letter.Symbol}");
-
+        //assign to component
         if (_audioSource)
-            _audioSource.clip = letter.PhonicAudio;
-
-        //sprite to display
+            _audioSource.clip = Letter.PhonicAudio;
         if (_spriteRenderer)
-            _spriteRenderer.sprite = letter.Sprite;
+            _spriteRenderer.sprite = Letter.Sprite;
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)

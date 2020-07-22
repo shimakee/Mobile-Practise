@@ -12,6 +12,7 @@ public class WordManager : MonoBehaviour
     public TextAsset WordsListTextFile;
     public GameObject WordBlockPrefab;
     public GameObject LetterBlockPrefab;
+    public GameObject ImageBlockPrefab;
     public float WordSpawnWaitTime = .5f;
 
     //aspect ratio
@@ -43,7 +44,9 @@ public class WordManager : MonoBehaviour
 
     //word
     private bool _isCreatingWord = false;
+    private bool _isCreatingImage = false;
     private GameObject _currentWordObject;
+    private GameObject _currentImageObject;
     private void Awake()
     {
         //check that wordlist text file exist
@@ -72,6 +75,7 @@ public class WordManager : MonoBehaviour
 
         //generate first word
         StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, CalculatePosition(word)));
+        StartCoroutine(CreateImageObject(_completeWordList[_wordIndex], WordSpawnWaitTime, new Vector2(0, 0)));
     }
 
     // Update is called once per frame
@@ -106,7 +110,7 @@ public class WordManager : MonoBehaviour
         return trimmedWordList;
     }
 
-    void NextWord()
+    void NextIndex()
     {
         if(_currentWorListIndex < _maxIndex)
         {
@@ -129,7 +133,7 @@ public class WordManager : MonoBehaviour
         Debug.Log($"currentWordListIndex = {_currentWorListIndex}");
     }
 
-    void PreviousWord()
+    void PreviousIndex()
     {
         if (_currentWorListIndex > 0)
             _currentWorListIndex--;
@@ -173,12 +177,28 @@ public class WordManager : MonoBehaviour
             GameObject instantiatedWord = Instantiate(WordBlockPrefab);
             _currentWordObject = instantiatedWord;
             instantiatedWord.transform.position = position;
-            float scaler = CalculateScale(word);
-            instantiatedWord.name = word;
-            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().InitializeWord(word, scaler);
+            //instantiatedWord.name = word;
+            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().Initialize(word);
 
             yield return new WaitForSecondsRealtime(waitTime);
             _isCreatingWord = false;
+        }
+    }
+
+    private IEnumerator CreateImageObject(string word, float waitTime, Vector3 position)
+    {
+
+        if (!_isCreatingImage)
+        {
+            _isCreatingImage = true;
+
+            GameObject instantiatedImageObject = Instantiate(ImageBlockPrefab);
+            _currentImageObject = instantiatedImageObject;
+            instantiatedImageObject.transform.position = position;
+            instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicure(word);
+
+            yield return new WaitForSecondsRealtime(waitTime);
+            _isCreatingImage = false;
         }
     }
 
@@ -208,8 +228,10 @@ public class WordManager : MonoBehaviour
             //for now destroy object
             if (_currentWordObject)
                 Destroy(_currentWordObject);
+            if (_currentImageObject)
+                Destroy(_currentImageObject);
 
-            NextWord();
+            NextIndex();
             //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
 
 
@@ -227,6 +249,7 @@ public class WordManager : MonoBehaviour
             string word = _completeWordList[_wordIndex];
             Vector2 position = CalculatePosition(word);
 
+            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
             StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
             //}
         }
@@ -240,9 +263,13 @@ public class WordManager : MonoBehaviour
             //assign it to the _readWordsObject[WordIndex];
 
             //for now destroy object
-            Destroy(_currentWordObject);
 
-            PreviousWord();
+            if (_currentImageObject)
+                Destroy(_currentImageObject);
+            if(_currentWordObject)
+                Destroy(_currentWordObject);
+
+            PreviousIndex();
             //Vector3 position = new Vector3(-3, 0, 0); // could be set as global or on a larger scope
 
 
@@ -263,6 +290,7 @@ public class WordManager : MonoBehaviour
             Vector2 position = CalculatePosition(word);
 
 
+            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0,0)));
             StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
             //}
         }
@@ -278,30 +306,26 @@ public class WordManager : MonoBehaviour
         //Debug.Log($"center position Y: {heightCenterPosition}");
 
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        float letterHeight = letterBlockSpriteRenderer.bounds.size.y; // for starting position
+        float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2;
 
-        int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        float totalWordSizeX = length * LetterWidth;
-        
-        float PositionX = (totalWordSizeX/2 * -1) + LetterWidth/2;
-
-        return new Vector2(PositionX, 0);
+        return new Vector2(0, PositionY);
     }
 
-    float CalculateScale(string word)
-    {
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+    //float CalculateScale(string word)
+    //{
+    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
 
-        int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        float totalWordSizeX = length * LetterWidth;
+    //    int length = word.Length;
+    //    float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+    //    float totalWordSizeX = length * LetterWidth;
 
-        int totalWidthInUnits = (int)Math.Round(WorldUnitSize * (float)WidthAspectRatio / (float)HeightAspectRatio);
-        float divisor = totalWidthInUnits / totalWordSizeX;
+    //    int totalWidthInUnits = (int)Math.Round(WorldUnitSize * (float)WidthAspectRatio / (float)HeightAspectRatio);
+    //    float divisor = totalWidthInUnits / totalWordSizeX;
 
-        Debug.Log($"divisor {divisor}");
+    //    Debug.Log($"divisor {divisor}");
 
-        return divisor;
-    }
+    //    return divisor;
+    //}
 
 }
