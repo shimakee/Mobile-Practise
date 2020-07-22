@@ -14,14 +14,14 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         set { WordScriptable = value; }
     }
     public GameObject LetterBlockPrefab;
-    //public GameObject PictureBlockPrefab;
 
     //audio options
     public GameOptions GameOptions;
 
     //allowance for spacing
-    public float PerLetterMargin = 0;
-    public int WorldUnitSize = 16;
+    public int WorldUnitSize = 10;
+    [Range(0, 1)] public float PerLetterMargin = 0;
+    [Range(0, 5)] public float Allowance = .5f;
 
     private string _currentWord = "";
     private AudioSource _audioSource;
@@ -68,14 +68,6 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         if(Word.Sfx == null)
             Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
 
-        //foreach (var character in wordString)
-        //{
-        //    Letter letter = Resources.Load<Letter>($"Scripts/Letters/{character}") ?? throw new NullReferenceException("letter cannot be null, it is the building block of the word.");
-
-        //    if (!Word.Letters.Contains(letter))
-        //        Word.Letters.Add(letter);
-        //}
-
         //assign components
         _audioSource.clip = Word.WordAudio;
 
@@ -90,45 +82,6 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         return 1;
     }
-
-    //private void InitializeWordImage(Word word) //create overload for offset and margins?
-    //{
-    //    //if (word.Sprite != null)
-    //    //{
-    //    //    _spriteRenderer.sprite = word.Sprite;
-    //    //}
-
-    //    //check if sprite exist
-    //    if (!word.Sprite)
-    //    {
-    //        this._spriteRenderer.enabled = false;
-    //        return;
-    //    }
-
-    //    //instantiate object
-    //    GameObject pictureGameObject = Instantiate(PictureBlockPrefab);
-    //    //assign position
-
-    //    pictureGameObject.transform.position = new Vector2(0, 0);
-    //    pictureGameObject.transform.SetParent(transform);
-    //    pictureGameObject.name = word.WordSpelling+"Picture";
-
-    //    //get component
-    //    var pictureObjectComponent = pictureGameObject.GetComponent<IPictureSelectionResponse>();
-    //    if(pictureObjectComponent != null && word != null)
-    //    {
-    //        Picture picture = ScriptableObject.CreateInstance<Picture>();
-    //        //assign assets
-    //        picture.Sfx = word.Sfx;
-    //        picture.Sprite = word.Sprite;
-    //        picture.Name = word.WordSpelling;
-    //        picture.WordAudio = word.WordAudio;
-
-    //        //connect scriptable to object
-    //        pictureObjectComponent.InitializePicure(picture);
-    //    }
-    //}
-
     private void AssembleLetters(string word) // create overload for offset and margins?
     {
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
@@ -267,10 +220,10 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         int length = word.Length;
         float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        float totalWordSizeX = length * LetterWidth;
+        float totalWordSizeX = (length * LetterWidth) ;
 
-        float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
-        float divisor = totalWidthInUnits / totalWordSizeX;
+        float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
+        float divisor = totalWidthInUnits/ totalWordSizeX;
 
         Debug.Log($"divisor {divisor}");
 

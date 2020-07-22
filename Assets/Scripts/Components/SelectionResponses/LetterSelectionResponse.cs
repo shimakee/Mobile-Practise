@@ -16,8 +16,10 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
 
-    private GameObject _selectedObjectBegin;
-    private GameObject _selectedObjectEnd;
+    private Vector3 _originalPosition;
+    private Vector3 _originalScale;
+
+    private Vector3 _growScale;
 
     private void Awake()
     {
@@ -33,6 +35,9 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     }
     private void Start()
     {
+        _originalPosition = transform.position;
+        _originalScale = transform.localScale;
+        _growScale = new Vector2((float)(_originalScale.x * 1.3), (float)(_originalScale.x * 1.3));
     }
     public void Initialize(char letter) // create method overload if necessary
     {
@@ -56,7 +61,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1.3f, 1.3f, 0);
+        
+        this.gameObject.transform.localScale = _growScale;
         var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
         if (parentWordComponent != null)
             parentWordComponent.OnChildLetterSelected(this, inputPosition);
@@ -65,20 +71,20 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
 
         this.OnSelectionConfirm(gameObject, inputPosition, new List<GameObject>());
     }
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
 
         var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
         if (parentWordComponent != null)
@@ -93,20 +99,19 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     public void WasSelected(GameObject gameObject, Vector3 inputPosition)
     {
         //do nothing
-        this.gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 0);
+        this.gameObject.transform.localScale = _originalScale;
     }
 
     public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
         //maintain scale;
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
 
         if (!_audioSource.isPlaying)
         {
             if (GameOptions.LetterAudio == LetterAudioOptions.phonics)
             {
                 _audioSource.Play();
-
             }
             else
             {

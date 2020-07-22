@@ -197,8 +197,9 @@ MonoBehaviour:
   LetterBlockPrefab: {fileID: 3441751586502322947, guid: ee6bb81ff0205654c91accd766edfcd6,
     type: 3}
   GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
-  PerLetterMargin: 0.25
   WorldUnitSize: 16
+  PerLetterMargin: 0.194
+  Allowance: 2
 --- !u!114 &7429833229380686744
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6528589355397592904}
   - component: {fileID: 6528589355397592907}
+  - component: {fileID: 1866846915}
   m_Layer: 0
   m_Name: WordManager
   m_TagString: Untagged
@@ -45,14 +46,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TextAssetName: wordList
   WordsListTextFile: {fileID: 4900000, guid: 1e68ae6063d07714298a86c238eef56e, type: 3}
-  WordBlockPrefab: {fileID: 5745327227831437029, guid: 4399d6267833fac4b9071c7dec6b4635,
+  WordBlockPrefab: {fileID: 4864529629476286148, guid: 27e5289485780a34cbd6781b83c68ee2,
     type: 3}
   LetterBlockPrefab: {fileID: 3441751586502322947, guid: ee6bb81ff0205654c91accd766edfcd6,
     type: 3}
   ImageBlockPrefab: {fileID: 8189060424923311912, guid: 6445341ef3862ec408d599e35dd1f27d,
     type: 3}
-  WordSpawnWaitTime: 0.5
+  WordSpawnWaitTime: 0.1
   WorldUnitSize: 10
-  WidthAspectRatio: 16
-  HeightAspectRatio: 9
-  gameOptions: {fileID: 0}
+  Margin: 0.5
+  gameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
+--- !u!114 &1866846915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6528589355397592905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b3b8c5e5a8333c4d8490a7aae39f425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

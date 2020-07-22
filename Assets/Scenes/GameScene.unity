@@ -2317,24 +2317,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1812657217}
   m_CullTransparentMesh: 0
---- !u!1 &1866846914 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6528589355397592905, guid: cefedf84837768e43a677ebde4fb74d9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6528589355577125605}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1866846915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866846914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b3b8c5e5a8333c4d8490a7aae39f425, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1910363539
 GameObject:
   m_ObjectHideFlags: 0
@@ -2861,17 +2843,17 @@ PrefabInstance:
     - target: {fileID: 6528589355397592904, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -23.343727
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6528589355397592904, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.275683
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6528589355397592904, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -18.750246
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6528589355397592904, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
@@ -2920,41 +2902,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: Margin
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: WordBlockPrefab
-      value: 
-      objectReference: {fileID: 4864529629476286148, guid: 27e5289485780a34cbd6781b83c68ee2,
-        type: 3}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: WordsListTextFile
-      value: 
-      objectReference: {fileID: 4900000, guid: 1e68ae6063d07714298a86c238eef56e, type: 3}
     - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
         type: 3}
       propertyPath: WordSpawnWaitTime
-      value: 0.3
+      value: 0.1
       objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: HeightAspectRatio
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: WidthAspectRatio
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 6528589355397592907, guid: cefedf84837768e43a677ebde4fb74d9,
-        type: 3}
-      propertyPath: gameOptions
-      value: 
-      objectReference: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cefedf84837768e43a677ebde4fb74d9, type: 3}
 --- !u!114 &6528589355577125606 stripped
@@ -2963,7 +2918,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 6528589355577125605}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1866846914}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8be25c35d9bedb34dbd512e0ef254e69, type: 3}

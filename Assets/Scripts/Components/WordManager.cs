@@ -15,17 +15,12 @@ public class WordManager : MonoBehaviour
     public GameObject ImageBlockPrefab;
     public float WordSpawnWaitTime = .5f;
 
-    //aspect ratio
+    //worldsize
     public int WorldUnitSize = 10;
-    //public int WidthAspectRatio = 16; //to delete
-    //public int HeightAspectRatio = 9; //to delete
+    [Range(0, 1)] public float Margin = 0.5f;
 
     //Options
     public GameOptions gameOptions;
-    //[Range(1, 5)] public int MinWordLength;
-    //[Range(1, 5)] public int MaxWordLength;
-
-
 
     //wordList
     private List<string> _completeWordList;
@@ -143,7 +138,6 @@ public class WordManager : MonoBehaviour
         if (_currentWorListIndex > 0)
             _currentWorListIndex--;
 
-        Debug.Log($"currentWordListIndex = {_currentWorListIndex}");
     }
 
     //int[] GetShuffledIndex(List<string> wordList)
@@ -295,9 +289,26 @@ public class WordManager : MonoBehaviour
         //Debug.Log($"center position Y: {heightCenterPosition}");
 
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
-        float letterHeight = letterBlockSpriteRenderer.bounds.size.y; // for starting position
-        float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2;
+        float scale = CalculateScale(word);
+        float letterHeight = letterBlockSpriteRenderer.bounds.size.y * scale; // for starting position
+        float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
 
         return new Vector2(0, PositionY);
+    }
+
+    float CalculateScale(string word)
+    {
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+
+        int length = word.Length;
+        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float totalWordSizeX = length * LetterWidth;
+
+        float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
+        float divisor = totalWidthInUnits / totalWordSizeX;
+
+        Debug.Log($"divisor {divisor}");
+
+        return divisor;
     }
 }
