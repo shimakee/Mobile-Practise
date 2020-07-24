@@ -42,7 +42,7 @@ public class GameTimeFunctions : MonoBehaviour
             PreviousButton.SetActive(true);
         }
 
-        if(WordManager.CurrentWordListIndex >= WordManager.WordListLength-1 && !WordManager.gameOptions.Repeat)
+        if (WordManager.CurrentWordListIndex >= WordManager.WordListLength - 1 && !WordManager.gameOptions.Repeat)
         {
             NextButton.SetActive(false);
         }

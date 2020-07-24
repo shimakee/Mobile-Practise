@@ -73,6 +73,7 @@ public class TouchConroller : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;
+
         if (touch.phase == TouchPhase.Began)
         {
             int fingerId = touch.fingerId;
@@ -102,6 +103,7 @@ public class TouchConroller : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;
+
         int fingerId = touch.fingerId;
 
         if (touch.phase == TouchPhase.Began)
@@ -161,6 +163,7 @@ public class TouchConroller : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;
+
         if (touch.phase == TouchPhase.Moved)
         {
             int fingerId = touch.fingerId;
@@ -332,6 +335,7 @@ public class TouchConroller : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             return;
+
         if (touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
         {
             int fingerId = touch.fingerId;

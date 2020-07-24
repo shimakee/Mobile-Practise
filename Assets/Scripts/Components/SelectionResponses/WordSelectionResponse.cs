@@ -26,18 +26,20 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private string _currentWord = "";
     private AudioSource _audioSource;
-    private SpriteRenderer _spriteRenderer;
+    //private MeshRenderer _renderer;
+    //private SpriteRenderer _spriteRenderer;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        //_renderer = GetComponent<MeshRenderer>();
+        //_spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
-        if (!_spriteRenderer)
-            throw new NullReferenceException("no sprite renderer comppnent attached.");
+        //if (!_spriteRenderer)
+        //    throw new NullReferenceException("no sprite renderer comppnent attached.");
         if (!GameOptions)
             throw new NullReferenceException("no game options to load.");
     }
@@ -85,14 +87,14 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     }
     private void AssembleLetters(string word) // create overload for offset and margins?
     {
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         float scale = CalculateScale(word);
         Debug.Log($"scale {scale}");
 
-        float letterWidth = letterBlockSpriteRenderer.bounds.size.x * scale; // for starting position
+        float letterWidth = letterBlockSpriteRenderer.rect.width * scale; // for starting position
         //float letterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
         Debug.Log($"Letter width scaled {letterWidth}");
-        float initialAllowanceToCenterPosition =((letterWidth * word.Length) / 2 ) - (letterWidth / 2); //less half since pivot point is at the center.
+        float initialAllowanceToCenterPosition = ((letterWidth * word.Length) / 2) - (letterWidth / 2); //less half since pivot point is at the center.
         Debug.Log($"Initial allowance {initialAllowanceToCenterPosition}");
 
         //assemble the word using the letters
@@ -102,11 +104,11 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             //Letter letter = word.Letters.Where(l => l.Symbol == character).FirstOrDefault();
             //if (letter)
             //{
-                Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated) - initialAllowanceToCenterPosition, transform.position.y, transform.position.z);
+            Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated) - initialAllowanceToCenterPosition, transform.position.y, transform.position.z);
                 GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
                 letterGameObject.transform.position = objectPosition;
-                letterGameObject.transform.localScale = new Vector2(scale, scale);
-                letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
+                //letterGameObject.transform.localScale = new Vector2(scale, scale);
+            letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
             //}
             lettersInstantiated++;
         }
@@ -218,15 +220,15 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     float CalculateScale(string word)
     {
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
         int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        float totalWordSizeX = (length * LetterWidth) ;
+        float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
+        float totalWordSizeX = (length * LetterWidth);
 
         float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
-        if(totalWidthInUnits < totalWordSizeX)
-            return totalWidthInUnits/totalWordSizeX;
+        if (totalWidthInUnits < totalWordSizeX)
+            return totalWidthInUnits / totalWordSizeX;
 
         //Debug.Log($"word size {totalWordSizeX}");
         //Debug.Log($"width in units {totalWidthInUnits}");

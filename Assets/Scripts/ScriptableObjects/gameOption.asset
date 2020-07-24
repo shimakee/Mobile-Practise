@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 437c9d4c4b31e82439c15c751b5099fa, type: 3}
   m_Name: gameOption
   m_EditorClassIdentifier: 
-  ImageAudio: 0
-  LetterAudio: 0
-  VoicePackage: 0
-  Shuffle: 0
-  Repeat: 0
+  ImageAudio: 1
+  LetterAudio: 1
+  VoicePackage: 2
+  Shuffle: 1
+  Repeat: 1

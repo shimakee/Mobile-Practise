@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
@@ -14,24 +15,30 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
     public GameOptions GameOptions;
     private AudioSource _audioSource;
-    private SpriteRenderer _spriteRenderer;
+    //private SpriteRenderer _spriteRenderer;
+    //private RectTransform _rectTransform;
 
     private Vector3 _originalPosition;
     private Vector3 _originalScale;
 
     private Vector3 _growScale;
+    private TextMeshProUGUI _textMeshPro;
 
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _textMeshPro = GetComponent<TextMeshProUGUI>();
+        //_rectTransform = GetComponent<RectTransform>();
+        //_spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
-        if (!_spriteRenderer)
-            throw new NullReferenceException("no sprite renderer comppnent attached.");
+        if(!_textMeshPro)
+            throw new NullReferenceException("no text mesh pro comppnent attached.");
+        //if (!_rectTransform)
+        //    throw new NullReferenceException("no mesh renderer comppnent attached.");
         if (!GameOptions)
-            throw new NullReferenceException("no ooptions");
+            throw new NullReferenceException("no options");
     }
     private void Start()
     {
@@ -44,19 +51,22 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         //if (Letter == null)
             Letter = Resources.Load<Letter>($"Scripts/Letters/{letter}");
 
+        //text mesh
+        _textMeshPro.text = Letter.Symbol.ToString();
+
         //check that all resources are there
         //if (Letter.PhonicAudio == null)
             Letter.PhonicAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/phonics/{Letter.Symbol}");
         //if (Letter.LetterAudio == null)
             Letter.LetterAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/letters/{Letter.Symbol}");
-        if (Letter.Sprite == null)
-            Letter.Sprite = Resources.Load<Sprite>($"Sprites/{Letter.Symbol}");
+        //if (Letter.Sprite == null)
+        //    Letter.Sprite = Resources.Load<Sprite>($"Sprites/{Letter.Symbol}");
 
         //assign to component
         if (_audioSource)
             _audioSource.clip = Letter.PhonicAudio;
-        if (_spriteRenderer)
-            _spriteRenderer.sprite = Letter.Sprite;
+        //if (_spriteRenderer)
+        //    _spriteRenderer.sprite = Letter.Sprite;
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)

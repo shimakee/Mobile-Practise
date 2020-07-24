@@ -106,7 +106,7 @@ public class WordManager : MonoBehaviour
 
         foreach (var word in wordList)
         {
-            trimmedWordList.Add(word.Trim());
+            trimmedWordList.Add(word.Trim().ToLower());
         }
 
         trimmedWordList.Sort();
@@ -131,9 +131,6 @@ public class WordManager : MonoBehaviour
                 //end scene?... show end game animation?... score?..
             }
         }
-
-        Debug.Log($"wordlist length = {_wordsListIndex.Length}");
-        Debug.Log($"currentWordListIndex = {_currentWorListIndex}");
     }
 
     void PreviousIndex()
@@ -176,7 +173,7 @@ public class WordManager : MonoBehaviour
         {
             _isCreatingWord = true;
 
-            GameObject instantiatedWord = Instantiate(WordBlockPrefab);
+            GameObject instantiatedWord = Instantiate(WordBlockPrefab, transform);
             _currentWordObject = instantiatedWord;
             instantiatedWord.transform.position = position;
             //instantiatedWord.name = word;
@@ -270,11 +267,13 @@ public class WordManager : MonoBehaviour
 
     private void DisableCurrentWordImage()
     {
+        //for word
         if (_currentWordObject)
         {
             _readWordsObject[_wordIndex] = _currentWordObject;
             _currentWordObject.SetActive(false);
         }
+        //for image
         if (_currentImageObject)
         {
             _readImagesObjects[_wordIndex] = _currentImageObject;
@@ -291,9 +290,9 @@ public class WordManager : MonoBehaviour
         //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
         //Debug.Log($"center position Y: {heightCenterPosition}");
 
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         float scale = CalculateScale(word);
-        float letterHeight = letterBlockSpriteRenderer.bounds.size.y * scale; // for starting position
+        float letterHeight = letterBlockSpriteRenderer.rect.height * scale; // for starting position
         float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
 
         Debug.Log($"position y{PositionY}");
@@ -303,10 +302,10 @@ public class WordManager : MonoBehaviour
 
     float CalculateScale(string word)
     {
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<SpriteRenderer>();
+        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
         int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
+        float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
         float totalWordSizeX = length * LetterWidth;
         float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
         if(totalWidthInUnits < totalWordSizeX)
