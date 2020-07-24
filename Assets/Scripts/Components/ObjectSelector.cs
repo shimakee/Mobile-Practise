@@ -7,9 +7,6 @@ public class ObjectSelector : MonoBehaviour, IObjectSelector
 {
     public virtual GameObject DetermineSelection(Vector3 inputPosition)
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return null;
-
         //create ray
         Ray ray = Camera.main.ScreenPointToRay(inputPosition);
         //draw raycast
@@ -19,7 +16,7 @@ public class ObjectSelector : MonoBehaviour, IObjectSelector
         //check that it hit something
         if (!hit)
             return null;
-
+            
         return hit.collider.gameObject;
     }
 }

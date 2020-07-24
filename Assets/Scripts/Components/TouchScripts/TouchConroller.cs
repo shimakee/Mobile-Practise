@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TouchConroller : MonoBehaviour
 {
@@ -53,7 +54,7 @@ public class TouchConroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.touchCount > 0 && Input.touchCount <= maxAllowedTouch)
+        if (Input.touchCount > 0 && Input.touchCount <= maxAllowedTouch)
         {
 
             foreach (Touch touch in Input.touches)
@@ -70,6 +71,8 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchBegan(Touch touch)
     {
+        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            return;
         if (touch.phase == TouchPhase.Began)
         {
             int fingerId = touch.fingerId;
@@ -97,6 +100,8 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchStationary(Touch touch)
     {
+        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            return;
         int fingerId = touch.fingerId;
 
         if (touch.phase == TouchPhase.Began)
@@ -154,7 +159,9 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchMove(Touch touch)
     {
-        if(touch.phase == TouchPhase.Moved)
+        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            return;
+        if (touch.phase == TouchPhase.Moved)
         {
             int fingerId = touch.fingerId;
             GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
@@ -323,7 +330,9 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchOff(Touch touch)
     {
-        if(touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
+        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            return;
+        if (touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
         {
             int fingerId = touch.fingerId;
             GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
@@ -492,6 +501,8 @@ public class TouchConroller : MonoBehaviour
             _selectedOnTouchMove[fingerId].Clear();
             _selectedOnTouchOff[fingerId] = null;
         }
+
+
     }
 
     void DetermineSwipeDirection(Touch touch)
