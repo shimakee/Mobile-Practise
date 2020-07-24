@@ -89,6 +89,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         Debug.Log($"scale {scale}");
 
         float letterWidth = letterBlockSpriteRenderer.bounds.size.x * scale; // for starting position
+        //float letterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
         Debug.Log($"Letter width scaled {letterWidth}");
         float initialAllowanceToCenterPosition =((letterWidth * word.Length) / 2 ) - (letterWidth / 2); //less half since pivot point is at the center.
         Debug.Log($"Initial allowance {initialAllowanceToCenterPosition}");
@@ -223,11 +224,14 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         float totalWordSizeX = (length * LetterWidth) ;
 
         float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
-        float divisor = totalWidthInUnits/ totalWordSizeX;
+        if(totalWidthInUnits < totalWordSizeX)
+            return totalWidthInUnits/totalWordSizeX;
 
-        Debug.Log($"divisor {divisor}");
+        //Debug.Log($"word size {totalWordSizeX}");
+        //Debug.Log($"width in units {totalWidthInUnits}");
+        //Debug.Log($"divisor {divisor}");
 
-        return divisor;
+        return 1;
     }
 
 }

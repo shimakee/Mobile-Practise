@@ -54,7 +54,7 @@ MonoBehaviour:
     type: 3}
   WordSpawnWaitTime: 0.1
   WorldUnitSize: 10
-  Margin: 0.5
+  Margin: 0.3
   gameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
 --- !u!114 &1866846915
 MonoBehaviour:

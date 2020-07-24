@@ -296,6 +296,8 @@ public class WordManager : MonoBehaviour
         float letterHeight = letterBlockSpriteRenderer.bounds.size.y * scale; // for starting position
         float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
 
+        Debug.Log($"position y{PositionY}");
+
         return new Vector2(0, PositionY);
     }
 
@@ -306,12 +308,13 @@ public class WordManager : MonoBehaviour
         int length = word.Length;
         float LetterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
         float totalWordSizeX = length * LetterWidth;
-
         float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
-        float divisor = totalWidthInUnits / totalWordSizeX;
+        if(totalWidthInUnits < totalWordSizeX)
+         return totalWidthInUnits / totalWordSizeX;
 
-        Debug.Log($"divisor {divisor}");
 
-        return divisor;
+        //Debug.Log($"divisor {divisor}");
+
+        return 1;
     }
 }

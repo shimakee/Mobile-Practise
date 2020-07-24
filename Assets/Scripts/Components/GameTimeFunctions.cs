@@ -30,6 +30,7 @@ public class GameTimeFunctions : MonoBehaviour
         SetColor(LetterAudioToggle, _gameOptions.LetterAudio == LetterAudioOptions.letters);
     }
 
+    //TODO: move this somewhere - maybe exercise manager or word manager
     private void FixedUpdate()
     {
         if (WordManager.CurrentWordListIndex <= 0)
