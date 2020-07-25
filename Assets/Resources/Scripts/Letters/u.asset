@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Symbol: 117
   Sprite: {fileID: 21300000, guid: 5c65a4cdd6f2a5240b6b947286c628a9, type: 3}
-  PhonicAudio: {fileID: 8300000, guid: e13654a010ac293459d5a70cc90b486d, type: 3}
-  LetterAudio: {fileID: 0}
+  PhonicAudio: {fileID: 8300000, guid: 96a2da2bd3ac2d540ae9655d24a5b89f, type: 3}
+  LetterAudio: {fileID: 8300000, guid: 0adfb6edc7a55984283f1594fd6749ce, type: 3}
   LetterType: 0

@@ -147,7 +147,7 @@ MonoBehaviour:
   GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
   WorldUnitSize: 10
   PerLetterMargin: 1
-  Allowance: 2
+  Allowance: 3
 --- !u!114 &7429833229380686744
 MonoBehaviour:
   m_ObjectHideFlags: 0

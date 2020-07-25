@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEditor.iOS;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,9 +29,9 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     private AudioSource _audioSource;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
-    private Color32 _ColorDeselect = Color.white;
-    private Color32 _ColorActive = new Color32(74, 150, 214, 255);
-    private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
+    //private Color32 _ColorDeselect = Color.white;
+    //private Color32 _ColorActive = new Color32(74, 150, 214, 255);
+    //private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
 
     private void Awake()
     {
@@ -90,7 +91,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //float letterWidth = letterBlockSpriteRenderer.rect.width * scale; // for starting position
         float letterWidth = ((letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize) * scale;
-        float initialAllowanceToCenterPosition = ((letterWidth * word.Length) / 2) + (PerLetterMargin * word.Length-1) - (letterWidth / 2); //less half since pivot point is at the center.
+        float initialAllowanceToCenterPosition = ((letterWidth * word.Length)  + (PerLetterMargin * word.Length-1))/2 - (letterWidth / 2); //less half since pivot point is at the center.
 
         //assemble the word using the letters
         int lettersInstantiated = 0;
@@ -101,6 +102,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
             letterGameObject.transform.position = objectPosition;
             letterGameObject.transform.localScale = new Vector2(scale, scale);
+            Debug.Log($"scale {scale}");
             letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
             lettersInstantiated++;
         }
@@ -218,7 +220,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         int length = word.Length;
         float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
         //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
-        float totalWordSizeX = (length * LetterWidth);
+        float totalWordSizeX = (length * LetterWidth)+ (PerLetterMargin * word.Length - 1);
         
         Debug.Log($"total word size {totalWordSizeX}");
         Debug.Log($"total letter size {LetterWidth}");

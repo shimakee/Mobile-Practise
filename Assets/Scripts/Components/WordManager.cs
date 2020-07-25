@@ -4,102 +4,59 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class WordManager : MonoBehaviour
 {
-    public string TextAssetName = "wordList"; // to delete
-    public TextAsset WordsListTextFile;
+  
     public GameObject WordBlockPrefab;
     public GameObject LetterBlockPrefab;
     public GameObject ImageBlockPrefab;
-    public float WordSpawnWaitTime = .5f;
+    public GameOptions GameOptions;
 
     //worldsize
-    public int WorldUnitSize = 10;
-    [Range(0, 5)] public float Margin = 0.5f;
+    //public int WorldUnitSize = 10;
+    public GameObject[] WordObjects { get { return _wordsObject; } }
+    public GameObject[] ImageObjects { get { return _imagesObjects; } }
+    public string[] WordList { get { return _completeWordList; } }
+    public string CurrentWord { get { return _completeWordList[CurrentIndex]; } }
+    public int CurrentIndex { get { return _wordsListIndex[_currentWordListIndex]; } }
+    public int MaxIndex; //maxIndex before looping/repeating
 
-    //Options
-    public GameOptions gameOptions;
-
-    //wordList
-    private List<string> _completeWordList;
-    private GameObject[] _readWordsObject; //object of words already read; (so as not to destroy and instantiate them again and again
-    private GameObject[] _readImagesObjects;
-
-    //indexes
+    //list of words
+    private string[] _completeWordList;
+    //list of words as word/image game object
+    private GameObject[] _wordsObject; //object of words already read; (so as not to destroy and instantiate them again and again
+    private GameObject[] _imagesObjects;
+    //list index
     private int[] _wordsListIndex; //list of index for all words arranged or shuffled based on option.
-    private int _currentWorListIndex = 0; //this is the index that will run up and down the wordsListIndex.
-    private int _maxIndex; //maxIndex before looping/repeating
-
-    public int WordListLength {  get { return _completeWordList.Count; } }
-    public int CurrentWordListIndex { get { return _currentWorListIndex; } }
-    private int _wordIndex
-    {
-        get {
-                Debug.Log($" wordlistIndex returned {_wordsListIndex[_currentWorListIndex]}");
-                return _wordsListIndex[_currentWorListIndex]; }
-    }
-
-    //word
-    private bool _isCreatingWord = false;
-    private bool _isCreatingImage = false;
+    private int _currentWordListIndex = 0; //this is the index that will run up and down the wordsListIndex.
+    
+    //current image or word
     private GameObject _currentWordObject;
     private GameObject _currentImageObject;
     private void Awake()
     {
-        //check that wordlist text file exist
-        //TextAssetName will be  changed based on mode?
-        if (!WordsListTextFile)
-            WordsListTextFile = Resources.Load<TextAsset>(TextAssetName);
-
-        //generate list of words.
-        _completeWordList = GenerateWordListFromTxt(WordsListTextFile);
-
-        //initialize array to store instantiated objects
-        _readWordsObject = new GameObject[_completeWordList.Count];
-        _readImagesObjects = new GameObject[_completeWordList.Count];
-
-        //assign max index;
-        _maxIndex = _completeWordList.Count - 1;
-        _readWordsObject = new GameObject[_completeWordList.Count];
-
         //check that there is a prefab
         if (!WordBlockPrefab)
             throw new NullReferenceException("must have a reference to the wordBlock object to instantiate.");
     }
     private void Start()
     {
-        //int wordListLength = _completeWordList.Count - 1;
-
-        //generate array indexes - should be based on options
-        _wordsListIndex = GetArrangedIndex(_completeWordList);
-        string word = _completeWordList[_wordIndex];
-
-        //generate first word
-        StartCoroutine(CreateWordObject(_completeWordList[_wordIndex], WordSpawnWaitTime, CalculatePosition(word)));
-        StartCoroutine(CreateImageObject(_completeWordList[_wordIndex], WordSpawnWaitTime, new Vector2(0, 0)));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.touchCount > 0)
-        {
-            foreach (var touch in Input.touches)
-            {
-                OnOneFingerTwoTaps(touch); //get next object
-                OnTwoFingerOneap(touch); //get previous object
-            }
-        }
     }
 
-    //create list of strings from the word block
-    private List<string> GenerateWordListFromTxt(TextAsset textAsset)
+    public List<string> GenerateWordListFromTxt(string textFileName)
     {
+        TextAsset textFile = Resources.Load<TextAsset>($"wordList/{textFileName}") ?? throw new NullReferenceException("no txt asset with word list:");
 
         //reads text file and generates text array of strings.
-        List<string> wordList = textAsset.ToString().Split('\n').ToList();
+        List<string> wordList = textFile.ToString().Split('\n').ToList();
         List<string> trimmedWordList = new List<string>();
 
         foreach (var word in wordList)
@@ -111,208 +68,157 @@ public class WordManager : MonoBehaviour
         return trimmedWordList;
     }
 
-    void NextIndex()
+    public void LoadWordsToLoadManager(List<string> wordList)
     {
-        if(_currentWorListIndex < _maxIndex)
+        int length = wordList.Count;
+        _completeWordList = wordList.ToArray();
+        _wordsObject = new GameObject[length];
+        _imagesObjects = new GameObject[length];
+        _wordsListIndex = GetIndexSet(length);
+        MaxIndex = length - 1;
+    }
+
+    private int[] GetIndexSet(int length)
+    {
+        return Enumerable.Range(0, length).ToArray();
+    }
+    private int[] ShuffleIndex(int[] intSet)
+    {
+
+
+        return intSet;
+    }
+    private GameObject CreateWordObject(string word, Vector3 position)
+    {
+        GameObject instantiatedWord = Instantiate(WordBlockPrefab, transform);
+        instantiatedWord.transform.position = position;
+        instantiatedWord.GetComponent<IWordSelectionResponse>().Initialize(word);
+        _wordsObject[CurrentIndex] = instantiatedWord;
+        return instantiatedWord;
+    }
+
+    //private IEnumerator CreateImageObject(string word, float waitTime, Vector3 position)
+    private GameObject CreateImageObject(string word, Vector3 position)
+    {
+        GameObject instantiatedImageObject = Instantiate(ImageBlockPrefab, transform);
+        instantiatedImageObject.transform.position = position;
+        instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicure(word);
+        _imagesObjects[CurrentIndex] = instantiatedImageObject;
+        return instantiatedImageObject;
+    }
+
+    public void NextIndex()
+    {
+        if (_currentWordListIndex < MaxIndex)
         {
-            _currentWorListIndex++;
+            _currentWordListIndex++;
         }
         else
         {
             //if repeat is on loop back to the start
-            if (gameOptions.Repeat)
-            {
-                _currentWorListIndex = 0;
-            }
-            else
-            {
-                //end scene?... show end game animation?... score?..
-            }
+            if (GameOptions.Repeat)
+                _currentWordListIndex = 0;
         }
     }
 
-    void PreviousIndex()
+    public void PreviousIndex()
     {
-        if (_currentWorListIndex > 0)
-            _currentWorListIndex--;
-
+        if (_currentWordListIndex > 0)
+            _currentWordListIndex--;
     }
 
-    //int[] GetShuffledIndex(List<string> wordList)
-    //{
-    //    int[] shuffledIndex = new int[wordList.Count - 1];
-    //    //get set of random numbers from 0 to wordList.length-1;
-
-    //    //place them onto shuffleIndex
-
-
-    //    return shuffledIndex;
-    //}
-
-    int[] GetArrangedIndex(List<string> wordList)
+    public void InstantiateWord(Vector3 position)
     {
-        int[] arrangedIndex = new int[wordList.Count];
-        Debug.Log($"wordlist length {wordList.Count}");
-        Debug.Log($"arranged index length {arrangedIndex.Length}");
-
-        for (int i = 0; i < arrangedIndex.Length; i++)
-        {
-            arrangedIndex[i] = i;
-            Debug.Log($"arrange index number i = {i}");
-        }
-
-        return arrangedIndex;
-    }
-
-    private IEnumerator CreateWordObject(string word, float waitTime, Vector3 position)
-    {
-
-        if (!_isCreatingWord)
-        {
-            _isCreatingWord = true;
-
-            GameObject instantiatedWord = Instantiate(WordBlockPrefab, transform);
-            _currentWordObject = instantiatedWord;
-            instantiatedWord.transform.position = position;
-            //instantiatedWord.name = word;
-            int n = instantiatedWord.GetComponent<IWordSelectionResponse>().Initialize(word);
-
-            yield return new WaitForSecondsRealtime(waitTime);
-            _isCreatingWord = false;
-        }
-    }
-
-    private IEnumerator CreateImageObject(string word, float waitTime, Vector3 position)
-    {
-
-        if (!_isCreatingImage)
-        {
-            _isCreatingImage = true;
-
-            GameObject instantiatedImageObject = Instantiate(ImageBlockPrefab);
-            _currentImageObject = instantiatedImageObject;
-            instantiatedImageObject.transform.position = position;
-            instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicure(word);
-
-            yield return new WaitForSecondsRealtime(waitTime);
-            _isCreatingImage = false;
-        }
-    }
-
-    void OnTwoFingerOneap(Touch touch)
-    {
-        if(Input.touchCount == 2 && touch.phase == TouchPhase.Ended)
-        {
-            Previous();
-        }
-    }
-
-    void OnOneFingerTwoTaps(Touch touch)
-    {
-        if(Input.touchCount == 1 && touch.tapCount == 2 && touch.phase == TouchPhase.Ended)
-        {
-            Next();
-        }
-    }
-
-    public void Next()
-    {
-        if (!_isCreatingWord)
-        {
-            DisableCurrentWordImage();
-            NextIndex();
-            InstantiateWordImage();
-        }
-    }
-
-    public void Previous()
-    {
-        if (!_isCreatingWord)
-        {
-            DisableCurrentWordImage();
-            PreviousIndex();
-            InstantiateWordImage();
-        }
-    }
-
-    private void InstantiateWordImage()
-    {
-        string word = _completeWordList[_wordIndex];
+        string word = _completeWordList[CurrentIndex];
 
         //WORD
-        if (_readWordsObject[_wordIndex] != null)
+        if (_wordsObject[CurrentIndex] != null)
         {
-            _currentWordObject = _readWordsObject[_wordIndex];
+            _currentWordObject = _wordsObject[CurrentIndex];
             _currentWordObject.SetActive(true);
         }
         else
         {
-            Vector2 position = CalculatePosition(word);
-            StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
-        }
+            //Vector2 position = CalculatePosition(word);
+            //StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
 
+            _currentWordObject = CreateWordObject(word, position);
+
+        }
+    }
+
+    public void InstantiateImage(Vector3 position)
+    {
+        string word = _completeWordList[CurrentIndex];
         //IMAGE
-        if (_readImagesObjects[_wordIndex] != null)
+        if (_imagesObjects[CurrentIndex] != null)
         {
-            _currentImageObject = _readImagesObjects[_wordIndex];
+            _currentImageObject = _imagesObjects[CurrentIndex];
             _currentImageObject.SetActive(true);
         }
         else
         {
-            StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
+            //StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
+            _currentImageObject = CreateImageObject(word, position);
         }
     }
 
-    private void DisableCurrentWordImage()
+    public void DisableCurrentWord()
     {
         //for word
         if (_currentWordObject)
         {
-            _readWordsObject[_wordIndex] = _currentWordObject;
+            if (!_wordsObject.Contains(_currentWordObject))
+                _wordsObject[CurrentIndex] = _currentWordObject;
             _currentWordObject.SetActive(false);
         }
+    }
+
+    public void DisableCurrentImage()
+    {
         //for image
         if (_currentImageObject)
         {
-            _readImagesObjects[_wordIndex] = _currentImageObject;
+            if (!_imagesObjects.Contains(_currentImageObject))
+                _imagesObjects[CurrentIndex] = _currentImageObject;
             _currentImageObject.SetActive(false);
         }
     }
 
     ////calculates the position to place on screen
-    private Vector3 CalculatePosition(string word)
-    {
-        //float widthCenterPosition = (Screen.width / 2)/Screen.width * (WorldUnitSize * WidthAspectRatio);
-        //Debug.Log($"center position X: {widthCenterPosition}");
+    //private Vector3 CalculatePosition(string word)
+    //{
+    //    //float widthCenterPosition = (Screen.width / 2)/Screen.width * (WorldUnitSize * WidthAspectRatio);
+    //    //Debug.Log($"center position X: {widthCenterPosition}");
 
-        //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
-        //Debug.Log($"center position Y: {heightCenterPosition}");
+    //    //float heightCenterPosition = (Screen.height / 2)/Screen.height * (WorldUnitSize * HeightAspectRatio);
+    //    //Debug.Log($"center position Y: {heightCenterPosition}");
 
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
-        float scale = CalculateScale(word);
-        float letterHeight = ((letterBlockSpriteRenderer.rect.height / Screen.height) * WorldUnitSize) * scale; // for starting position
-        float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
+    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
+    //    float scale = CalculateScale(word);
+    //    float letterHeight = ((letterBlockSpriteRenderer.rect.height / Screen.height) * WorldUnitSize) * scale; // for starting position
+    //    float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
 
-        Debug.Log($"position y{PositionY}");
+    //    Debug.Log($"position y{PositionY}");
 
-        return new Vector2(0, PositionY);
-    }
+    //    return new Vector2(0, PositionY);
+    //}
 
-    float CalculateScale(string word)
-    {
-        var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
+    //float CalculateScale(string word)
+    //{
+    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
-        int length = word.Length;
-        float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
-        //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
-        float totalWordSizeX = length * LetterWidth;
-        float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
-        if(totalWidthInUnits < totalWordSizeX)
-         return totalWidthInUnits / totalWordSizeX;
+    //    int length = word.Length;
+    //    float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
+    //    //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
+    //    float totalWordSizeX = length * LetterWidth;
+    //    float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
+    //    if(totalWidthInUnits < totalWordSizeX)
+    //     return totalWidthInUnits / totalWordSizeX;
 
 
-        //Debug.Log($"divisor {divisor}");
+    //    //Debug.Log($"divisor {divisor}");
 
-        return 1;
-    }
+    //    return 1;
+    //}
 }
