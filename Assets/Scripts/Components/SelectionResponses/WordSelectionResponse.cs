@@ -26,20 +26,18 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private string _currentWord = "";
     private AudioSource _audioSource;
-    //private MeshRenderer _renderer;
-    //private SpriteRenderer _spriteRenderer;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
+
+    private Color32 _ColorDeselect = Color.white;
+    private Color32 _ColorActive = new Color32(74, 150, 214, 255);
+    private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
 
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
-        //_renderer = GetComponent<MeshRenderer>();
-        //_spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
-        //if (!_spriteRenderer)
-        //    throw new NullReferenceException("no sprite renderer comppnent attached.");
         if (!GameOptions)
             throw new NullReferenceException("no game options to load.");
     }
@@ -64,6 +62,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //load reasource
         if(String.IsNullOrWhiteSpace(Word.WordSpelling))
             Word.WordSpelling = wordString;
+
         if(Word.WordAudio == null)
             Word.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{wordString}");
         if(Word.Sprite == null)
@@ -76,7 +75,6 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //initializing letters & place them in the world.
         AssembleLetters(Word.WordSpelling);
-        //InitializeWordImage(Word);
 
         //return 0 if only necessary components are loaded
         //return 1 if all components are loaded
@@ -89,34 +87,28 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     {
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         float scale = CalculateScale(word);
-        Debug.Log($"scale {scale}");
 
-        float letterWidth = letterBlockSpriteRenderer.rect.width * scale; // for starting position
-        //float letterWidth = letterBlockSpriteRenderer.bounds.size.x; // for starting position
-        Debug.Log($"Letter width scaled {letterWidth}");
-        float initialAllowanceToCenterPosition = ((letterWidth * word.Length) / 2) - (letterWidth / 2); //less half since pivot point is at the center.
-        Debug.Log($"Initial allowance {initialAllowanceToCenterPosition}");
+        //float letterWidth = letterBlockSpriteRenderer.rect.width * scale; // for starting position
+        float letterWidth = ((letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize) * scale;
+        float initialAllowanceToCenterPosition = ((letterWidth * word.Length) / 2) + (PerLetterMargin * word.Length-1) - (letterWidth / 2); //less half since pivot point is at the center.
 
         //assemble the word using the letters
         int lettersInstantiated = 0;
         foreach (char character in word)
         {
-            //Letter letter = word.Letters.Where(l => l.Symbol == character).FirstOrDefault();
-            //if (letter)
-            //{
             Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated) - initialAllowanceToCenterPosition, transform.position.y, transform.position.z);
-                GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
-                letterGameObject.transform.position = objectPosition;
-                //letterGameObject.transform.localScale = new Vector2(scale, scale);
+                objectPosition.x += PerLetterMargin * lettersInstantiated;
+            GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
+            letterGameObject.transform.position = objectPosition;
+            letterGameObject.transform.localScale = new Vector2(scale, scale);
             letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
-            //}
             lettersInstantiated++;
         }
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1.3f, 1.3f, 0);
+        //this.gameObject.transform.localScale = new Vector3(1.3f, 1.3f, 0);
     }
 
     public void OnHoverSelected(GameObject gameObject, Vector3 inputPosition)
@@ -126,19 +118,19 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     public void WasSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 0);
+        //this.gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 0);
     }
 
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
 
         this.OnSelectionConfirm(gameObject, inputPosition, new List<GameObject>());
     }
@@ -146,7 +138,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
     {
         //return to original scale
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
 
         //check if selected matches.
         if (_lettersGameObjectSelected.Count == Word.WordSpelling.Length && wasSelectedGameObjects.Count == Word.WordSpelling.Length)
@@ -171,6 +163,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         {
             if (_lettersGameObjectSelected.Count < Word.WordSpelling.Length && wasSelectedGameObjects.Count == _lettersGameObjectSelected.Count)
             {
+                //concatinate characters
                 foreach (var item in _lettersGameObjectSelected)
                 {
                     _currentWord += item.Letter.Symbol;
@@ -223,18 +216,20 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
         int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
+        float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
+        //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
         float totalWordSizeX = (length * LetterWidth);
+        
+        Debug.Log($"total word size {totalWordSizeX}");
+        Debug.Log($"total letter size {LetterWidth}");
 
         float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
+
+        Debug.Log($"total world units {totalWidthInUnits}");
+
         if (totalWidthInUnits < totalWordSizeX)
             return totalWidthInUnits / totalWordSizeX;
 
-        //Debug.Log($"word size {totalWordSizeX}");
-        //Debug.Log($"width in units {totalWidthInUnits}");
-        //Debug.Log($"divisor {divisor}");
-
         return 1;
     }
-
 }

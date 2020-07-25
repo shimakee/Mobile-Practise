@@ -17,7 +17,7 @@ public class WordManager : MonoBehaviour
 
     //worldsize
     public int WorldUnitSize = 10;
-    [Range(0, 1)] public float Margin = 0.5f;
+    [Range(0, 5)] public float Margin = 0.5f;
 
     //Options
     public GameOptions gameOptions;
@@ -92,8 +92,6 @@ public class WordManager : MonoBehaviour
                 OnTwoFingerOneap(touch); //get previous object
             }
         }
-        //Debug.Log($"x:{Input.mousePosition.x}");
-        //Debug.Log($"y:{Input.mousePosition.y}");
     }
 
     //create list of strings from the word block
@@ -292,7 +290,7 @@ public class WordManager : MonoBehaviour
 
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         float scale = CalculateScale(word);
-        float letterHeight = letterBlockSpriteRenderer.rect.height * scale; // for starting position
+        float letterHeight = ((letterBlockSpriteRenderer.rect.height / Screen.height) * WorldUnitSize) * scale; // for starting position
         float PositionY = (WorldUnitSize/2 * -1) + letterHeight/2 + Margin;
 
         Debug.Log($"position y{PositionY}");
@@ -305,7 +303,8 @@ public class WordManager : MonoBehaviour
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
         int length = word.Length;
-        float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
+        float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
+        //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
         float totalWordSizeX = length * LetterWidth;
         float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
         if(totalWidthInUnits < totalWordSizeX)

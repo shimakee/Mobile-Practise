@@ -15,8 +15,6 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
     public GameOptions GameOptions;
     private AudioSource _audioSource;
-    //private SpriteRenderer _spriteRenderer;
-    //private RectTransform _rectTransform;
 
     private Vector3 _originalPosition;
     private Vector3 _originalScale;
@@ -24,19 +22,19 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     private Vector3 _growScale;
     private TextMeshProUGUI _textMeshPro;
 
+    private Color32 _ColorDeselect = Color.white;
+    private Color32 _ColorActive = new Color32(74, 150, 214, 255);
+    private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
+
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
         _textMeshPro = GetComponent<TextMeshProUGUI>();
-        //_rectTransform = GetComponent<RectTransform>();
-        //_spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
         if(!_textMeshPro)
             throw new NullReferenceException("no text mesh pro comppnent attached.");
-        //if (!_rectTransform)
-        //    throw new NullReferenceException("no mesh renderer comppnent attached.");
         if (!GameOptions)
             throw new NullReferenceException("no options");
     }
@@ -48,31 +46,32 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     }
     public void Initialize(char letter) // create method overload if necessary
     {
-        //if (Letter == null)
-            Letter = Resources.Load<Letter>($"Scripts/Letters/{letter}");
+        Letter = Resources.Load<Letter>($"Scripts/Letters/{letter}");
+        if (Letter == null)
+        {
+            Letter = ScriptableObject.CreateInstance<Letter>();
+            Letter.Symbol = letter;
+        }
+            
 
         //text mesh
         _textMeshPro.text = Letter.Symbol.ToString();
 
         //check that all resources are there
-        //if (Letter.PhonicAudio == null)
             Letter.PhonicAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/phonics/{Letter.Symbol}");
-        //if (Letter.LetterAudio == null)
             Letter.LetterAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/letters/{Letter.Symbol}");
-        //if (Letter.Sprite == null)
-        //    Letter.Sprite = Resources.Load<Sprite>($"Sprites/{Letter.Symbol}");
 
         //assign to component
         if (_audioSource)
             _audioSource.clip = Letter.PhonicAudio;
-        //if (_spriteRenderer)
-        //    _spriteRenderer.sprite = Letter.Sprite;
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
         
         this.gameObject.transform.localScale = _growScale;
+        _textMeshPro.color = _ColorActive;
+
         var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
         if (parentWordComponent != null)
             parentWordComponent.OnChildLetterSelected(this, inputPosition);
@@ -82,12 +81,12 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     {
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
+        _textMeshPro.color = _ColorDeselect;
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
-        //return to original scale
-        this.gameObject.transform.localScale = _originalScale;
+
 
         this.OnSelectionConfirm(gameObject, inputPosition, new List<GameObject>());
     }
@@ -95,6 +94,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     {
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
+        _textMeshPro.color = _ColorDeselect;
 
         var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
         if (parentWordComponent != null)
@@ -110,12 +110,15 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     {
         //do nothing
         this.gameObject.transform.localScale = _originalScale;
+        _textMeshPro.color = _ColorWasActive;
+
     }
 
     public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
         //maintain scale;
         this.gameObject.transform.localScale = _originalScale;
+        _textMeshPro.color = _ColorDeselect;
 
         if (!_audioSource.isPlaying)
         {
