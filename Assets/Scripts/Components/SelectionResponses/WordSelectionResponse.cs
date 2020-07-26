@@ -29,6 +29,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     private AudioSource _audioSource;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
+    private ILetterSelectionResponse[] _letterChildren;
+
     //private Color32 _ColorDeselect = Color.white;
     //private Color32 _ColorActive = new Color32(74, 150, 214, 255);
     //private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
@@ -87,23 +89,26 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     private void AssembleLetters(string word) // create overload for offset and margins?
     {
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
+        int length = word.Length;
+        _letterChildren = new ILetterSelectionResponse[length];
         float scale = CalculateScale(word);
 
         //float letterWidth = letterBlockSpriteRenderer.rect.width * scale; // for starting position
         float letterWidth = ((letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize) * scale;
-        float initialAllowanceToCenterPosition = ((letterWidth * word.Length)  + (PerLetterMargin * word.Length-1))/2 - (letterWidth / 2); //less half since pivot point is at the center.
+        float initialAllowanceToCenterPosition = ((letterWidth * length)  + (PerLetterMargin * length-1))/2 - (letterWidth / 2); //less half since pivot point is at the center.
 
         //assemble the word using the letters
         int lettersInstantiated = 0;
-        foreach (char character in word)
+        for (int i = 0; i < length; i++)
         {
             Vector3 objectPosition = new Vector3(transform.position.x + (letterWidth * lettersInstantiated) - initialAllowanceToCenterPosition, transform.position.y, transform.position.z);
-                objectPosition.x += PerLetterMargin * lettersInstantiated;
+            objectPosition.x += PerLetterMargin * lettersInstantiated;
             GameObject letterGameObject = Instantiate(LetterBlockPrefab, transform);
             letterGameObject.transform.position = objectPosition;
             letterGameObject.transform.localScale = new Vector2(scale, scale);
-            Debug.Log($"scale {scale}");
-            letterGameObject.GetComponent<ILetterSelectionResponse>().Initialize(character);
+            ILetterSelectionResponse letterComponent = letterGameObject.GetComponent<ILetterSelectionResponse>();
+            letterComponent.Initialize(word[i]);
+            _letterChildren[i] = letterComponent;
             lettersInstantiated++;
         }
     }
@@ -211,6 +216,40 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         }
 
         OnSelectionConfirm(this.gameObject, inputPosition, wasSelectedObjects);
+    }
+
+    public void ToUpper()
+    {
+        Debug.Log($"going upper", this);
+        for (int i = 0; i < _letterChildren.Length; i++)
+        {
+            _letterChildren[i].ToUpper();
+        }
+    }
+
+    public void ToLower()
+    {
+        Debug.Log($"going lower", this);
+        for (int i = 0; i < _letterChildren.Length; i++)
+        {
+            _letterChildren[i].ToLower();
+        }
+    }
+
+    public void ToStandard()
+    {
+        Debug.Log($"going standard", this);
+        for (int i = 0; i < _letterChildren.Length; i++)
+        {
+            if(i == 0)
+            {
+                _letterChildren[i].ToUpper();
+            }
+            else
+            {
+                _letterChildren[i].ToLower();
+            }
+        }
     }
 
     float CalculateScale(string word)

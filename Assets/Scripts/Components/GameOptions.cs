@@ -8,8 +8,15 @@ public class GameOptions : ScriptableObject
     public ImageAudioOptions ImageAudio = ImageAudioOptions.sfxs;
     public LetterAudioOptions LetterAudio = LetterAudioOptions.phonics;
     public VoicePackage VoicePackage = VoicePackage.default_male;
+    public LetterCasingOptions LetterCasingOptions = LetterCasingOptions.lower;
     public bool Shuffle = false;
     public bool Repeat = false;
+
+    private Color32 _activeColor = new Color32(45, 146, 231, 255);
+    private Color32 _alternateColor = new Color32(77, 221, 74, 255);
+    private Color32 _inActiveColor = Color.white;
+
+    public event Action CasingChanged;
 
     private void Awake()
     {
@@ -58,12 +65,18 @@ public class GameOptions : ScriptableObject
         return this;
     }
 
+    private void OnCasingChanged()
+    {
+        CasingChanged?.Invoke();
+    }
+
     public void ToggleShuffle(GameObject gameObject)
     {
         this.Shuffle = !this.Shuffle;
 
-        SetColor(gameObject, Shuffle);
+        SetActiveColor(gameObject, Shuffle);
         this.Save();
+
 
     }
 
@@ -71,7 +84,7 @@ public class GameOptions : ScriptableObject
     {
         this.Repeat = !this.Repeat;
 
-        SetColor(gameObject, this.Repeat);
+        SetActiveColor(gameObject, this.Repeat);
         this.Save();
     }
 
@@ -86,7 +99,7 @@ public class GameOptions : ScriptableObject
             this.ImageAudio = ImageAudioOptions.sfxs;
         }
 
-        SetColor(gameObject, this.ImageAudio == ImageAudioOptions.sfxs);
+        SetActiveColor(gameObject, this.ImageAudio == ImageAudioOptions.sfxs);
         this.Save();
     }
 
@@ -101,23 +114,53 @@ public class GameOptions : ScriptableObject
             this.LetterAudio = LetterAudioOptions.letters;
         }
 
-        SetColor(gameObject, this.LetterAudio == LetterAudioOptions.letters);
+        SetActiveColor(gameObject, this.LetterAudio == LetterAudioOptions.letters);
         this.Save();
     }
 
+    public void ToggleLetterCasing(GameObject gameObject)
+    {
+        int enumMaxIndex = Enum.GetNames(typeof(LetterCasingOptions)).Length-1;
 
-    public void SetColor(GameObject gameObject, bool isActive)
+        if ((int)this.LetterCasingOptions > enumMaxIndex - 1)
+        {
+            this.LetterCasingOptions = 0;
+        }
+        else
+        {
+            this.LetterCasingOptions++;
+        }
+
+        ChangeColor(gameObject);
+        this.Save();
+
+        OnCasingChanged();
+    }
+
+    public void SetActiveColor(GameObject gameObject, bool isActive)
     {
         Image spriteRenderer = gameObject.GetComponent<Image>();
 
 
         if (isActive)
         {
-            spriteRenderer.color = new Color32(45, 146, 231, 255);
+            spriteRenderer.color = _activeColor;
         }
         else
         {
-            spriteRenderer.color = Color.white;
+            spriteRenderer.color = _inActiveColor;
         }
+    }
+
+    public void ChangeColor(GameObject gameObject)
+    {
+        Image imageRenderer = gameObject.GetComponent<Image>();
+
+        if (this.LetterCasingOptions == LetterCasingOptions.lower)
+            imageRenderer.color = _alternateColor;
+        if (this.LetterCasingOptions == LetterCasingOptions.upper)
+            imageRenderer.color = _activeColor;
+        if (this.LetterCasingOptions == LetterCasingOptions.standard)
+            imageRenderer.color = _inActiveColor;
     }
 }

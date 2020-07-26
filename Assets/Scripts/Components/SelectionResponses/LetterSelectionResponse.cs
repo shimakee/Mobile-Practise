@@ -132,4 +132,16 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
             }
         }
     }
+
+    public void ToUpper()
+    {
+        _textMeshPro.text = Letter.Symbol.ToString().ToUpper();
+        //_textMeshPro.text.ToUpper();
+    }
+
+    public void ToLower()
+    {
+        _textMeshPro.text = Letter.Symbol.ToString().ToLower();
+        //_textMeshPro.text.ToLower();
+    }
 }

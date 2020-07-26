@@ -71,12 +71,13 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchBegan(Touch touch)
     {
-        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+        int fingerId = touch.fingerId;
+
+        if (EventSystem.current.IsPointerOverGameObject(fingerId))
             return;
 
         if (touch.phase == TouchPhase.Began)
         {
-            int fingerId = touch.fingerId;
             GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
 
             //assigning current touch objects
@@ -101,10 +102,9 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchStationary(Touch touch)
     {
-        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-            return;
-
         int fingerId = touch.fingerId;
+        if (EventSystem.current.IsPointerOverGameObject(fingerId))
+            return;
 
         if (touch.phase == TouchPhase.Began)
         {
@@ -161,12 +161,12 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchMove(Touch touch)
     {
-        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+        int fingerId = touch.fingerId;
+        if (EventSystem.current.IsPointerOverGameObject(fingerId))
             return;
 
         if (touch.phase == TouchPhase.Moved)
         {
-            int fingerId = touch.fingerId;
             GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
 
             //determine if touch control option exist
@@ -333,12 +333,12 @@ public class TouchConroller : MonoBehaviour
 
     void OnTouchOff(Touch touch)
     {
-        if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+        int fingerId = touch.fingerId;
+        if (EventSystem.current.IsPointerOverGameObject(fingerId))
             return;
 
         if (touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
         {
-            int fingerId = touch.fingerId;
             GameObject selectedObject = _objectSelector.DetermineSelection(touch.position);
             if (selectedObject)
             {
@@ -346,8 +346,11 @@ public class TouchConroller : MonoBehaviour
             }
             else
             {
-                if (_currentSelection[fingerId])
-                    _touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
+                if (_currentSelection.ContainsKey(fingerId))
+                {
+                    if (_currentSelection[fingerId])
+                        _touchControlOptions = _currentSelection[fingerId].GetComponent<ITouchControlOptions>();
+                }
             }
 
             if (!_selectedOnTouchOff.ContainsKey(fingerId))

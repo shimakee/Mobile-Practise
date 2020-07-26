@@ -41,6 +41,8 @@ public class WordManager : MonoBehaviour
         //check that there is a prefab
         if (!WordBlockPrefab)
             throw new NullReferenceException("must have a reference to the wordBlock object to instantiate.");
+
+        GameOptions.CasingChanged += ChangeCasing;
     }
     private void Start()
     {
@@ -143,8 +145,9 @@ public class WordManager : MonoBehaviour
             //StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
 
             _currentWordObject = CreateWordObject(word, position);
-
         }
+
+        ChangeCasing();
     }
 
     public void InstantiateImage(Vector3 position)
@@ -183,6 +186,17 @@ public class WordManager : MonoBehaviour
                 _imagesObjects[CurrentIndex] = _currentImageObject;
             _currentImageObject.SetActive(false);
         }
+    }
+
+    public void ChangeCasing()
+    {
+        var component = _currentWordObject.GetComponent<IWordSelectionResponse>();
+        if (GameOptions.LetterCasingOptions == LetterCasingOptions.lower)
+            component.ToLower();
+        if (GameOptions.LetterCasingOptions == LetterCasingOptions.upper)
+            component.ToUpper();
+        if (GameOptions.LetterCasingOptions == LetterCasingOptions.standard)
+            component.ToStandard();
     }
 
     ////calculates the position to place on screen

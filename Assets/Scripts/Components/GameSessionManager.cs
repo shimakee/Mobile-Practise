@@ -19,6 +19,7 @@ public class GameSessionManager : MonoBehaviour
     public GameObject RepeatToggle;
     public GameObject ImageAudioToggle;
     public GameObject LetterAudioToggle;
+    public GameObject CasingToggle;
 
     //wordmanager
     private WordManager _wordManager;
@@ -34,16 +35,16 @@ public class GameSessionManager : MonoBehaviour
     void Start()
     {
         //options - set UI to reflect options
-        GameOptions.SetColor(ShuffleToggle, GameOptions.Shuffle);
-        GameOptions.SetColor(RepeatToggle, GameOptions.Repeat);
-        GameOptions.SetColor(ImageAudioToggle, GameOptions.ImageAudio == ImageAudioOptions.sfxs);
-        GameOptions.SetColor(LetterAudioToggle, GameOptions.LetterAudio == LetterAudioOptions.letters);
+        GameOptions.SetActiveColor(ShuffleToggle, GameOptions.Shuffle);
+        GameOptions.SetActiveColor(RepeatToggle, GameOptions.Repeat);
+        GameOptions.SetActiveColor(ImageAudioToggle, GameOptions.ImageAudio == ImageAudioOptions.sfxs);
+        GameOptions.SetActiveColor(LetterAudioToggle, GameOptions.LetterAudio == LetterAudioOptions.letters);
+        GameOptions.ChangeColor(CasingToggle);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void Next()
