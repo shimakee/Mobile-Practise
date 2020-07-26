@@ -37,11 +37,12 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
             throw new NullReferenceException("no text mesh pro comppnent attached.");
         if (!GameOptions)
             throw new NullReferenceException("no options");
+
+        _originalPosition = transform.position;
+        _originalScale = transform.localScale;
     }
     private void Start()
     {
-        _originalPosition = transform.position;
-        _originalScale = transform.localScale;
         _growScale = new Vector2((float)(_originalScale.x * 1.3), (float)(_originalScale.x * 1.3));
     }
     public void Initialize(char letter) // create method overload if necessary
@@ -50,7 +51,17 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         if (Letter == null)
         {
             Letter = ScriptableObject.CreateInstance<Letter>();
+            var letterString = letter.ToString().ToLower();
             Letter.Symbol = letter;
+            //consonant or vowel
+            if (letterString == "a" || letterString == "e" || letterString == "i" || letterString == "o" || letterString == "u")
+            {
+                Letter.LetterType = LetterType.vowel;
+            }
+            else
+            {
+                Letter.LetterType = LetterType.consonant;
+            }
         }
             
 

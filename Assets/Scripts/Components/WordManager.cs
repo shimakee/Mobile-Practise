@@ -79,6 +79,10 @@ public class WordManager : MonoBehaviour
         _wordsListIndex = GetIndexSet(length);
         MaxIndex = length - 1;
     }
+    public void ResetIndex()
+    {
+        _currentWordListIndex = 0;
+    }
 
     private int[] GetIndexSet(int length)
     {

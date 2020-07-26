@@ -58,6 +58,9 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         if (String.IsNullOrWhiteSpace(wordString))
             throw new ArgumentNullException("wordString arguement cannot be null, as it is used to generate the word.");
 
+        //name your word object
+        transform.name = wordString;
+
         //create word class scriptable object
         if(Word == null)
             Word = ScriptableObject.CreateInstance<Word>();
@@ -148,7 +151,9 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
 
         //check if selected matches.
-        if (_lettersGameObjectSelected.Count == Word.WordSpelling.Length && wasSelectedGameObjects.Count == Word.WordSpelling.Length)
+        //if (_lettersGameObjectSelected.Count == Word.WordSpelling.Length && wasSelectedGameObjects.Count == Word.WordSpelling.Length)
+
+        if (_lettersGameObjectSelected.Count == Word.WordSpelling.Length)
         {
             for (int i = 0; i < _lettersGameObjectSelected.Count; i++)
             {
@@ -168,11 +173,13 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         }
         else
         {
-            if (_lettersGameObjectSelected.Count < Word.WordSpelling.Length && wasSelectedGameObjects.Count == _lettersGameObjectSelected.Count)
-            {
+
+            //if (_lettersGameObjectSelected.Count < Word.WordSpelling.Length && wasSelectedGameObjects.Count == _lettersGameObjectSelected.Count)
+            if (_lettersGameObjectSelected.Count < Word.WordSpelling.Length)
+                {
                 //concatinate characters
                 foreach (var item in _lettersGameObjectSelected)
-                {
+                {   
                     _currentWord += item.Letter.Symbol;
                 }
 
@@ -229,9 +236,9 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     public void ToLower()
     {
-        Debug.Log($"going lower", this);
         for (int i = 0; i < _letterChildren.Length; i++)
         {
+            Debug.Log($"going lower {_letterChildren[i].Letter.Symbol} ", this);
             _letterChildren[i].ToLower();
         }
     }

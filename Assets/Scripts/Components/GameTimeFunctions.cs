@@ -7,23 +7,23 @@ using UnityEngine.UI;
 
 public class GameTimeFunctions : MonoBehaviour
 {
-    public Canvas PauseCanvas;
+    //public Canvas PauseCanvas;
 
     private void Start()
     {
     }
 
-    public void PauseGame()
+    public void PauseGame(GameObject canvas)
     {
         //set time.timescale to 0?..
-        PauseCanvas.gameObject.SetActive(true);
+        canvas.gameObject.SetActive(true);
         
     }
 
-    public void ResumeGame()
+    public void ResumeGame(GameObject canvas)
     {
         //resume time scale
-        PauseCanvas.gameObject.SetActive(false);
+        canvas.gameObject.SetActive(false);
 
     }
 

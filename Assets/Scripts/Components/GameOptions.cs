@@ -131,7 +131,7 @@ public class GameOptions : ScriptableObject
             this.LetterCasingOptions++;
         }
 
-        ChangeColor(gameObject);
+        ChangeUIOnCasingColor(gameObject);
         this.Save();
 
         OnCasingChanged();
@@ -152,7 +152,7 @@ public class GameOptions : ScriptableObject
         }
     }
 
-    public void ChangeColor(GameObject gameObject)
+    public void ChangeUIOnCasingColor(GameObject gameObject)
     {
         Image imageRenderer = gameObject.GetComponent<Image>();
 

@@ -59,6 +59,9 @@ public class TouchConroller : MonoBehaviour
 
             foreach (Touch touch in Input.touches)
             {
+                //if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                //    return;
+
                 //select object based on touch phase input.
                 OnTouchBegan(touch);
                 OnTouchStationary(touch);
@@ -72,9 +75,6 @@ public class TouchConroller : MonoBehaviour
     void OnTouchBegan(Touch touch)
     {
         int fingerId = touch.fingerId;
-
-        if (EventSystem.current.IsPointerOverGameObject(fingerId))
-            return;
 
         if (touch.phase == TouchPhase.Began)
         {
@@ -103,8 +103,6 @@ public class TouchConroller : MonoBehaviour
     void OnTouchStationary(Touch touch)
     {
         int fingerId = touch.fingerId;
-        if (EventSystem.current.IsPointerOverGameObject(fingerId))
-            return;
 
         if (touch.phase == TouchPhase.Began)
         {
@@ -162,8 +160,6 @@ public class TouchConroller : MonoBehaviour
     void OnTouchMove(Touch touch)
     {
         int fingerId = touch.fingerId;
-        if (EventSystem.current.IsPointerOverGameObject(fingerId))
-            return;
 
         if (touch.phase == TouchPhase.Moved)
         {
@@ -334,8 +330,6 @@ public class TouchConroller : MonoBehaviour
     void OnTouchOff(Touch touch)
     {
         int fingerId = touch.fingerId;
-        if (EventSystem.current.IsPointerOverGameObject(fingerId))
-            return;
 
         if (touch.phase == TouchPhase.Ended ||  touch.phase == TouchPhase.Canceled)
         {
