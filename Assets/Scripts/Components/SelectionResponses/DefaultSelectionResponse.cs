@@ -42,8 +42,8 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
             {
                 //use default implementation
                 //follow input position
-                var position = Camera.main.ScreenToWorldPoint(inputPosition);
-                gameObject.transform.position = new Vector2(position.x, position.y);
+                //var position = Camera.main.ScreenToWorldPoint(inputPosition);
+                //gameObject.transform.position = new Vector2(position.x, position.y);
             }
         }
     }
@@ -109,7 +109,7 @@ public class DefaultSelectionResponse : MonoBehaviour, ISelectionResponse
         {
             //use default implementation
             //just follow is selected method and drag object to touch location
-            this.IsSelected(gameObject, inputPosition);
+            //this.IsSelected(gameObject, inputPosition);
         }
     }
 
