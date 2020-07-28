@@ -5,18 +5,23 @@ using UnityEngine.UI;
 [CreateAssetMenu(fileName ="gameOption", menuName = "Create scriptable game option")]
 public class GameOptions : ScriptableObject
 {
+    //volume
+    public float MasterAudioVolume = 0;
+    public float VoiceAudioVolume = 0;
+    public float MusicAudioVolume = 0;
+    public float SfxAudioVolume = 0;
+    //audio options
     public ImageAudioOptions ImageAudio = ImageAudioOptions.sfxs;
     public LetterAudioOptions LetterAudio = LetterAudioOptions.phonics;
     public VoicePackage VoicePackage = VoicePackage.default_male;
     public LetterCasingOptions LetterCasingOptions = LetterCasingOptions.lower;
+    //display options
     public bool Shuffle = false;
     public bool Repeat = false;
-
-    private Color32 _activeColor = new Color32(45, 146, 231, 255);
-    private Color32 _alternateColor = new Color32(77, 221, 74, 255);
-    private Color32 _inActiveColor = Color.white;
-
+    //casing changed event
     public event Action CasingChanged;
+
+    
 
     private void Awake()
     {
@@ -25,17 +30,41 @@ public class GameOptions : ScriptableObject
 
     public void Save()
     {
+        //volume
+        PlayerPrefs.SetFloat("masterVolume", this.MasterAudioVolume);
+        PlayerPrefs.SetFloat("voiceVolume", this.VoiceAudioVolume);
+        PlayerPrefs.SetFloat("musicVolume", this.MusicAudioVolume);
+        PlayerPrefs.SetFloat("sfxVolume", this.SfxAudioVolume);
+        //audio options
         PlayerPrefs.SetString("audioPackage", this.VoicePackage.ToString());
         PlayerPrefs.SetString("imageAudioOption", this.ImageAudio.ToString());
         PlayerPrefs.SetString("letterAudioOption", this.LetterAudio.ToString());
-
+        //display options
         PlayerPrefs.SetInt("shuffleOption", Convert.ToInt32(this.Shuffle));
         PlayerPrefs.SetInt("repeatOption", Convert.ToInt32(this.Repeat));
         PlayerPrefs.Save();
+
+        OnCasingChanged();
     }
 
     public void Initialize()
     {
+        if (PlayerPrefs.HasKey("masterVolume"))
+        {
+            this.MasterAudioVolume = PlayerPrefs.GetFloat("masterVolume");
+        }
+        if (PlayerPrefs.HasKey("voiceVolume"))
+        {
+            this.VoiceAudioVolume = PlayerPrefs.GetFloat("voiceVolume");
+        }
+        if (PlayerPrefs.HasKey("voiceVolume"))
+        {
+            this.MusicAudioVolume = PlayerPrefs.GetFloat("musicVolume");
+        }
+        if (PlayerPrefs.HasKey("voiceVolume"))
+        {
+            this.SfxAudioVolume = PlayerPrefs.GetFloat("sfxVolume");
+        }
         if (PlayerPrefs.HasKey("audioPackage"))
         {
             Enum.TryParse(PlayerPrefs.GetString("audioPackage"), out VoicePackage audioPackage);
@@ -60,107 +89,8 @@ public class GameOptions : ScriptableObject
             this.Repeat = Convert.ToBoolean(PlayerPrefs.GetInt("repeatOption"));
     }
 
-    public GameOptions GetGameOptions()
-    {
-        return this;
-    }
-
     private void OnCasingChanged()
     {
         CasingChanged?.Invoke();
-    }
-
-    public void ToggleShuffle(GameObject gameObject)
-    {
-        this.Shuffle = !this.Shuffle;
-
-        SetActiveColor(gameObject, Shuffle);
-        this.Save();
-
-
-    }
-
-    public void ToggleRepeat(GameObject gameObject)
-    {
-        this.Repeat = !this.Repeat;
-
-        SetActiveColor(gameObject, this.Repeat);
-        this.Save();
-    }
-
-    public void ToggleImageAudio(GameObject gameObject)
-    {
-        if (this.ImageAudio == ImageAudioOptions.sfxs)
-        {
-            this.ImageAudio = ImageAudioOptions.words;
-        }
-        else
-        {
-            this.ImageAudio = ImageAudioOptions.sfxs;
-        }
-
-        SetActiveColor(gameObject, this.ImageAudio == ImageAudioOptions.sfxs);
-        this.Save();
-    }
-
-    public void ToggleLetterAudio(GameObject gameObject)
-    {
-        if (this.LetterAudio == LetterAudioOptions.letters)
-        {
-            this.LetterAudio = LetterAudioOptions.phonics;
-        }
-        else
-        {
-            this.LetterAudio = LetterAudioOptions.letters;
-        }
-
-        SetActiveColor(gameObject, this.LetterAudio == LetterAudioOptions.letters);
-        this.Save();
-    }
-
-    public void ToggleLetterCasing(GameObject gameObject)
-    {
-        int enumMaxIndex = Enum.GetNames(typeof(LetterCasingOptions)).Length-1;
-
-        if ((int)this.LetterCasingOptions > enumMaxIndex - 1)
-        {
-            this.LetterCasingOptions = 0;
-        }
-        else
-        {
-            this.LetterCasingOptions++;
-        }
-
-        ChangeUIOnCasingColor(gameObject);
-        this.Save();
-
-        OnCasingChanged();
-    }
-
-    public void SetActiveColor(GameObject gameObject, bool isActive)
-    {
-        Image spriteRenderer = gameObject.GetComponent<Image>();
-
-
-        if (isActive)
-        {
-            spriteRenderer.color = _activeColor;
-        }
-        else
-        {
-            spriteRenderer.color = _inActiveColor;
-        }
-    }
-
-    public void ChangeUIOnCasingColor(GameObject gameObject)
-    {
-        Image imageRenderer = gameObject.GetComponent<Image>();
-
-        if (this.LetterCasingOptions == LetterCasingOptions.lower)
-            imageRenderer.color = _alternateColor;
-        if (this.LetterCasingOptions == LetterCasingOptions.upper)
-            imageRenderer.color = _activeColor;
-        if (this.LetterCasingOptions == LetterCasingOptions.standard)
-            imageRenderer.color = _inActiveColor;
     }
 }

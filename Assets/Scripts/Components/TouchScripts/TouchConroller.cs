@@ -59,8 +59,8 @@ public class TouchConroller : MonoBehaviour
 
             foreach (Touch touch in Input.touches)
             {
-                //if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-                //    return;
+                if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                    return;
 
                 //select object based on touch phase input.
                 OnTouchBegan(touch);

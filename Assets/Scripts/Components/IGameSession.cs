@@ -9,5 +9,6 @@ public interface IGameSession
     void SessionPause(GameObject pauseCanvas);
     void SessionResume(GameObject pauseCanvas);
     void SessionStart();
+    void SessionStart(string textFileName);
     void SessionEnd();
 }

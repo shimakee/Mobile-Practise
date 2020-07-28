@@ -112,18 +112,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be25c35d9bedb34dbd512e0ef254e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextAssetName: wordList
-  WordsListTextFile: {fileID: 4900000, guid: efb7f8b8fa30eeb48b107f736cc14343, type: 3}
   WordBlockPrefab: {fileID: 4864529629476286148, guid: 27e5289485780a34cbd6781b83c68ee2,
     type: 3}
   LetterBlockPrefab: {fileID: 2665847817984910082, guid: 8f431fb1df693574499a1fd13e71bdbe,
     type: 3}
   ImageBlockPrefab: {fileID: 8189060424923311912, guid: 6445341ef3862ec408d599e35dd1f27d,
     type: 3}
-  WordSpawnWaitTime: 0.1
-  WorldUnitSize: 10
-  Margin: 0.3
-  gameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
+  GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
+  MaxIndex: 0
 --- !u!114 &4976956431306772360
 MonoBehaviour:
   m_ObjectHideFlags: 0

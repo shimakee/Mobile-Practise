@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using UnityEngine;
 
 public class RunThrough : MonoBehaviour, IGameSession
@@ -23,7 +24,6 @@ public class RunThrough : MonoBehaviour, IGameSession
     {
         WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
         _gameOptions = WordManager.GameOptions;
-        WordManager.LoadWordsToLoadManager(WordManager.GenerateWordListFromTxt(TextAssetName));
     }
 
     private void Start()
@@ -35,6 +35,22 @@ public class RunThrough : MonoBehaviour, IGameSession
 
     public void SessionStart()
     {
+        SessionStart(TextAssetName);
+    }
+    public void SessionStart(string textFileName)
+    {
+        if (String.IsNullOrWhiteSpace(textFileName))
+        {
+            WordManager.LoadWordsToLoadManager(WordManager.GenerateWordListFromTxt(TextAssetName));
+        }
+        else
+        {
+            TextAssetName = textFileName;
+            WordManager.LoadWordsToLoadManager(WordManager.GenerateWordListFromTxt(textFileName));
+        }
+
+
+
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(true);
         WordManager.ResetIndex();
         WordManager.InstantiateWord(new Vector3(0, 0, 0));
@@ -59,6 +75,15 @@ public class RunThrough : MonoBehaviour, IGameSession
         pauseCanvas.gameObject.SetActive(true);
         StartCanvas.SetActive(false);
         EndCanvas.SetActive(false);
+    }
+
+    public void SessionReset(GameObject pauseCanvas)
+    {
+        pauseCanvas.gameObject.SetActive(false);
+        StartCanvas.SetActive(true);
+        EndCanvas.SetActive(false);
+        WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+        WordManager.ClearWordList();
     }
 
     public void SessionResume(GameObject pauseCanvas)

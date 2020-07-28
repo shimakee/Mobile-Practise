@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7859024882847514330}
   - component: {fileID: 5179097380156427464}
   m_Layer: 0
-  m_Name: GameSessionManager
+  m_Name: GameOptionsController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68ce6edfd7e51fe4d857591ca0ae19cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  VoiceMixer: {fileID: 24100000, guid: 2821217134ce99148ae8063d44c12576, type: 2}
+  MusicMixer: {fileID: 24100000, guid: f6e2cd88c8f82eb48a6aeb3c1a5b5911, type: 2}
+  SfxMixer: {fileID: 24100000, guid: d83310448e661c644a0136993f9f1cd8, type: 2}
   GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
   ShuffleToggle: {fileID: 0}
   RepeatToggle: {fileID: 0}

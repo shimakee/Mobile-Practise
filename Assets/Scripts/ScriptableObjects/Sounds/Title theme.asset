@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69ab65beb97b04644a6a9acf8dac591b, type: 3}
+  m_Name: Title theme
+  m_EditorClassIdentifier: 
+  Name: Title theme
+  AudioClip: {fileID: 8300000, guid: 47549241bdda70f49987e63e5133cbe8, type: 3}
+  Loop: 1
+  PlayOnAwake: 1
+  OutputMixer: {fileID: 24300002, guid: 060390546cc8b5943b8f182c384fa0a1, type: 2}
+  Volume: 1
+  AudioSource: {fileID: 0}

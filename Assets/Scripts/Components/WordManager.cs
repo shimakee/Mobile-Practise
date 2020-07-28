@@ -132,6 +132,20 @@ public class WordManager : MonoBehaviour
         if (_currentWordListIndex > 0)
             _currentWordListIndex--;
     }
+    public void ClearWordList()
+    {
+        for (int i = 0; i < _wordsObject.Length; i++)
+        {
+            if (_wordsObject[i] != null)
+                Destroy(_wordsObject[i]);
+        }
+
+        for (int i = 0; i < _imagesObjects.Length; i++)
+        {
+            if (_imagesObjects[i] != null)
+                Destroy(_imagesObjects[i]);
+        }
+    }
 
     public void InstantiateWord(Vector3 position)
     {
