@@ -7,10 +7,17 @@ using UnityEngine.UI;
 
 public class GameTimeFunctions : MonoBehaviour
 {
-    //public Canvas PauseCanvas;
 
-    private void Start()
+
+    //public Canvas PauseCanvas;
+    public void ActivateObject(GameObject gameObject)
     {
+        gameObject.SetActive(true);
+    }
+
+    public void DeActivateObject(GameObject gameObject)
+    {
+        gameObject.SetActive(false);
     }
 
     public void PauseGame(GameObject canvas)
@@ -30,6 +37,16 @@ public class GameTimeFunctions : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+
+        //StartCoroutine((PlayQuitEnding());
+        
     }
+
+    //private IEnumerator PlayQuitEnding()
+    //{
+    //    //play audio
+    //    yield return new WaitForSeconds(2);
+    //    Application.Quit();
+    //}
 
 }

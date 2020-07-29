@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69ab65beb97b04644a6a9acf8dac591b, type: 3}
   m_Name: Next
   m_EditorClassIdentifier: 
-  Name: Next
+  Name: Nextt
   AudioClip: {fileID: 8300000, guid: 812eccb784c21f447bf2a24fecabb102, type: 3}
   Loop: 0
   PlayOnAwake: 0

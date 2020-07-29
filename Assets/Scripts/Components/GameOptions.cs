@@ -51,17 +51,18 @@ public class GameOptions : ScriptableObject
     {
         if (PlayerPrefs.HasKey("masterVolume"))
         {
+            Debug.Log($"masterVolume key exist with value of {PlayerPrefs.GetFloat("masterVolume")}");
             this.MasterAudioVolume = PlayerPrefs.GetFloat("masterVolume");
         }
         if (PlayerPrefs.HasKey("voiceVolume"))
         {
             this.VoiceAudioVolume = PlayerPrefs.GetFloat("voiceVolume");
         }
-        if (PlayerPrefs.HasKey("voiceVolume"))
+        if (PlayerPrefs.HasKey("musicVolume"))
         {
             this.MusicAudioVolume = PlayerPrefs.GetFloat("musicVolume");
         }
-        if (PlayerPrefs.HasKey("voiceVolume"))
+        if (PlayerPrefs.HasKey("sfxVolume"))
         {
             this.SfxAudioVolume = PlayerPrefs.GetFloat("sfxVolume");
         }

@@ -208,6 +208,9 @@ public class WordManager : MonoBehaviour
 
     public void ChangeCasing()
     {
+        if (!_currentWordObject)
+            return;
+
         var component = _currentWordObject.GetComponent<IWordSelectionResponse>();
         if (GameOptions.LetterCasingOptions == LetterCasingOptions.lower)
             component.ToLower();

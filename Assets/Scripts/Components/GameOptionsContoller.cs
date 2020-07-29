@@ -29,7 +29,8 @@ public class GameOptionsContoller : MonoBehaviour
 
     //colors
     private Color32 _activeColor = new Color32(45, 146, 231, 255);
-    private Color32 _alternateColor = new Color32(77, 221, 74, 255);
+    //private Color32 _alternateColor = new Color32(77, 221, 74, 255);
+    private Color32 _alternateColor = new Color32(162, 247, 154, 255);
     private Color32 _inActiveColor = Color.white;
 
     private void Awake()
@@ -39,17 +40,13 @@ public class GameOptionsContoller : MonoBehaviour
         this.SetActiveColor(ImageAudioToggle, GameOptions.ImageAudio == ImageAudioOptions.sfxs);
         this.SetActiveColor(LetterAudioToggle, GameOptions.LetterAudio == LetterAudioOptions.letters);
         this.ChangeUIOnCasingColor(CasingToggle);
-
-        MusicMixer.SetFloat("volume", GameOptions.MusicAudioVolume);
-
-        SetSliderValues();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         LetterCasingDropDown.value = (int)GameOptions.LetterCasingOptions;
-
+        SetSliderValues();
         PopulateDropDown<LetterCasingOptions>(LetterCasingDropDown);
     }
 
@@ -85,20 +82,24 @@ public class GameOptionsContoller : MonoBehaviour
     }
     public void SetVolumeMaster(float volume)
     {
-        MasterMixer.SetFloat("volume", volume);
+        MasterMixer.SetFloat("volume", Mathf.Log10(volume)  * 20);
+        GameOptions.MasterAudioVolume = volume;
     }
     public void SetVolumeVoice(float volume)
     {
-        Debug.Log($"volume voice {volume}", this);
-        VoiceMixer.SetFloat("volume", volume);
+        VoiceMixer.SetFloat("volume", Mathf.Log10(volume) * 20);
+        GameOptions.VoiceAudioVolume = volume;
+
     }
     public void SetVolumeMusic(float volume)
     {
-        MusicMixer.SetFloat("volume", volume);
+        MusicMixer.SetFloat("volume", Mathf.Log10(volume) * 20);
+        GameOptions.MusicAudioVolume = volume;
     }
     public void SetVolumeSfx(float volume)
     {
-        SfxMixer.SetFloat("volume", volume);
+        SfxMixer.SetFloat("volume", Mathf.Log10(volume) * 20);
+        GameOptions.SfxAudioVolume = volume;
     }
 
     public void LetterCasingDropdownChanged(int index)
@@ -179,7 +180,7 @@ public class GameOptionsContoller : MonoBehaviour
 
         if (isActive)
         {
-            spriteRenderer.color = _activeColor;
+            spriteRenderer.color = _alternateColor;
         }
         else
         {

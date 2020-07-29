@@ -8,8 +8,41 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] Sounds;
 
+    public static AudioManager instance;
+
     private void Awake()
     {
+        //if (instance == null)
+        //{
+        //    instance = this;
+        //    DontDestroyOnLoad(this);
+        //}
+        //else
+        //{
+        //    if(this != instance)
+        //    {
+        //        Destroy(instance.gameObject);
+        //        instance = this;
+        //        DontDestroyOnLoad(this.gameObject);
+        //        //this.gameObject.SetActive(false);
+        //        //Destroy(this.gameObject);
+        //        //return;
+        //    }
+        //}
+
+        if (instance != null && instance != this)
+        {
+            this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+
         foreach (var s in Sounds)
         {
             s.AudioSource = gameObject.AddComponent<AudioSource>();
@@ -36,7 +69,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-            sound.AudioSource.Play();
+        sound.AudioSource.Play();
     }
 
     //play voice method

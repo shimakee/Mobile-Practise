@@ -20,10 +20,12 @@ public class RunThrough : MonoBehaviour, IGameSession
     private bool _sessionEnded;
     private bool _sessionStarted;
     private bool hasReachedLastWord;
+    private AudioManager _audioManager;
     private void Awake()
     {
         WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
         _gameOptions = WordManager.GameOptions;
+        _audioManager = FindObjectOfType<AudioManager>();
     }
 
     private void Start()
@@ -64,6 +66,7 @@ public class RunThrough : MonoBehaviour, IGameSession
 
     public void SessionEnd()
     {
+        _audioManager.Play("Success");
         _sessionEnded = true;
         _sessionStarted = false;
         WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
@@ -82,13 +85,19 @@ public class RunThrough : MonoBehaviour, IGameSession
         pauseCanvas.gameObject.SetActive(false);
         StartCanvas.SetActive(true);
         EndCanvas.SetActive(false);
-        WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
-        WordManager.ClearWordList();
+        _sessionEnded = false;
+        _sessionStarted = false;
+        if(WordManager.WordObjects != null)
+        {
+            WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+            WordManager.ClearWordList();
+        }
     }
 
     public void SessionResume(GameObject pauseCanvas)
     {
         pauseCanvas.gameObject.SetActive(false);
+
 
         if (!_sessionStarted && !_sessionEnded)
         {
@@ -103,6 +112,9 @@ public class RunThrough : MonoBehaviour, IGameSession
     {
         if (_sessionEnded || !_sessionStarted)
             return;
+
+        _audioManager.Play("Click");
+
         if(WordManager.CurrentIndex < WordManager.MaxIndex)
         {
             WordManager.DisableCurrentWord();
@@ -127,6 +139,8 @@ public class RunThrough : MonoBehaviour, IGameSession
     {
         if (_sessionEnded || !_sessionStarted)
             return;
+
+        _audioManager.Play("Click");
 
         WordManager.DisableCurrentWord();
         WordManager.PreviousIndex();
