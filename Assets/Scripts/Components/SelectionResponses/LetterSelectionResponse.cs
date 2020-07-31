@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -93,6 +92,10 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorDeselect;
+
+        var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
+        if (parentWordComponent != null)
+            parentWordComponent.OnChildLetterConfirmed(this, inputPosition, null);
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)

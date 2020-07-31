@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -423,6 +422,7 @@ public class TouchConroller : MonoBehaviour
             }
             else
             {
+                if(_currentSelection.ContainsKey(fingerId))
                 if (_currentSelection[fingerId])
                 {
                     if (_touchControlOptions == null)
@@ -465,17 +465,18 @@ public class TouchConroller : MonoBehaviour
             }
 
             //determine touch end response confirmation
-            if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId])
-            {
-                if (_selectedOnTouchMove[fingerId].Count > 0)
+            if(_selectedOnTouchBegan.ContainsKey(fingerId) && _selectedOnTouchOff.ContainsKey(fingerId))
+                if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId])
                 {
-                    _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                    if (_selectedOnTouchMove[fingerId].Count > 0)
+                    {
+                        _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position, _selectedOnTouchMove[fingerId]);
+                    }
+                    else
+                    {
+                        _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
+                    }
                 }
-                else
-                {
-                    _selectionResponse.OnSelectionConfirm(_selectedOnTouchOff[fingerId], touch.position);
-                }
-            }
 
             if(_touchControlOptions == null)
             {
@@ -489,7 +490,8 @@ public class TouchConroller : MonoBehaviour
             {
                 if (_touchControlOptions.enableUnniqueSelection)
                 {
-                    if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1)
+                    if (_selectedOnTouchBegan.ContainsKey(fingerId) && _selectedOnTouchOff.ContainsKey(fingerId) && _selectedOnTouchMove.ContainsKey(fingerId) )
+                        if (_selectedOnTouchBegan[fingerId] && _selectedOnTouchBegan[fingerId] == _selectedOnTouchOff[fingerId] && _selectedOnTouchMove[fingerId].Count <= 1)
                         _selectionResponse.IsSelectedUnique(_selectedOnTouchBegan[fingerId], touch.position);
                 }
             }

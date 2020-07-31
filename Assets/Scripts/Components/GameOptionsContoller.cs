@@ -1,6 +1,4 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -32,9 +30,11 @@ public class GameOptionsContoller : MonoBehaviour
     //private Color32 _alternateColor = new Color32(77, 221, 74, 255);
     private Color32 _alternateColor = new Color32(162, 247, 154, 255);
     private Color32 _inActiveColor = Color.white;
-
+    private AudioManager _audioManager;
     private void Awake()
     {
+        _audioManager = FindObjectOfType<AudioManager>();
+
         this.SetActiveColor(ShuffleToggle, GameOptions.Shuffle);
         this.SetActiveColor(RepeatToggle, GameOptions.Repeat);
         this.SetActiveColor(ImageAudioToggle, GameOptions.ImageAudio == ImageAudioOptions.sfxs);
@@ -68,16 +68,19 @@ public class GameOptionsContoller : MonoBehaviour
 
     public void ActivateOptionsCanvas(GameObject optionsCanvas)
     {
+        _audioManager.Play("Open");
         optionsCanvas.SetActive(true);
     }
 
     public void DeActivateOptionsCanvas(GameObject optionsCanvas)
     {
+        _audioManager.Play("Close");
         optionsCanvas.SetActive(false);
     }
 
     public void SaveOptions()
     {
+        _audioManager.Play("Confirm");
         GameOptions.Save();
     }
     public void SetVolumeMaster(float volume)

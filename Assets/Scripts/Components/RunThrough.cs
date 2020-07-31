@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using UnityEngine;
 
 public class RunThrough : MonoBehaviour, IGameSession
