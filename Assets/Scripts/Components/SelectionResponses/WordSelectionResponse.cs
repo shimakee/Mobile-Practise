@@ -22,6 +22,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private string _currentWord = "";
     private AudioSource _audioSource;
+    private AudioManager _audioManager;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
     private ILetterSelectionResponse[] _letterChildren;
@@ -32,6 +33,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private void Awake()
     {
+        _audioManager = FindObjectOfType<AudioManager>();
         _audioSource = GetComponent<AudioSource>();
 
         if (!_audioSource)
@@ -179,11 +181,13 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
                 }
 
                 //find if we have audio that matches current selected
-                AudioClip resourcedWord = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{_currentWord}");
-                if (resourcedWord && !_audioSource.isPlaying)
-                {
-                    _audioSource.PlayOneShot(resourcedWord);
-                }
+                //AudioClip resourcedWord = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{_currentWord}");
+                //if (resourcedWord && !_audioSource.isPlaying)
+                //{
+                //    _audioSource.PlayOneShot(resourcedWord);
+                //}
+
+                _audioManager.PlayVoice(_currentWord);
             }
         }
 

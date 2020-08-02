@@ -94,6 +94,9 @@ public class WordManager : MonoBehaviour
     }
     private void ShuffleIndex(int[] intSet)
     {
+        if (intSet == null)
+            return;
+
         System.Random random = new System.Random();
 
         int length = intSet.Length;
@@ -119,6 +122,9 @@ public class WordManager : MonoBehaviour
 
     private void SortIndex(int[] intSet)
     {
+        if (intSet == null)
+            return;
+
         int[] tempArray =  new int[intSet.Length - (_currentWordListIndex + 1)];
 
         Array.Copy(intSet, _currentWordListIndex + 1, tempArray, 0, tempArray.Length);

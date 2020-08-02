@@ -120,7 +120,7 @@ public class RunThrough : MonoBehaviour, IGameSession
 
         _audioManager.Play("Click");
 
-        if(WordManager.CurrentIndexRunner < WordManager.MaxIndex)
+        if(WordManager.CurrentIndexRunner < WordManager.MaxIndex)   
         {
             WordManager.DisableCurrentWord();
             WordManager.NextIndex();
