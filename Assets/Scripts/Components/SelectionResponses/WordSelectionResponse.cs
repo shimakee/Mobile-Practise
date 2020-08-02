@@ -222,7 +222,6 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     public void ToUpper()
     {
-        Debug.Log($"going upper", this);
         for (int i = 0; i < _letterChildren.Length; i++)
         {
             _letterChildren[i].ToUpper();
@@ -233,14 +232,12 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     {
         for (int i = 0; i < _letterChildren.Length; i++)
         {
-            Debug.Log($"going lower {_letterChildren[i].Letter.Symbol} ", this);
             _letterChildren[i].ToLower();
         }
     }
 
     public void ToStandard()
     {
-        Debug.Log($"going standard", this);
         for (int i = 0; i < _letterChildren.Length; i++)
         {
             if(i == 0)
@@ -263,12 +260,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
         float totalWordSizeX = (length * LetterWidth)+ (PerLetterMargin * word.Length - 1);
         
-        Debug.Log($"total word size {totalWordSizeX}");
-        Debug.Log($"total letter size {LetterWidth}");
-
         float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
-
-        Debug.Log($"total world units {totalWidthInUnits}");
 
         if (totalWidthInUnits < totalWordSizeX)
             return totalWidthInUnits / totalWordSizeX;

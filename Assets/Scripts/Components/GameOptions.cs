@@ -19,7 +19,7 @@ public class GameOptions : ScriptableObject
     public bool Shuffle = false;
     public bool Repeat = false;
     //casing changed event
-    public event Action CasingChanged;
+    public event Action PropertyChanged;
 
     
 
@@ -44,7 +44,7 @@ public class GameOptions : ScriptableObject
         PlayerPrefs.SetInt("repeatOption", Convert.ToInt32(this.Repeat));
         PlayerPrefs.Save();
 
-        OnCasingChanged();
+        OnPropertyChanged();
     }
 
     public void Initialize()
@@ -90,8 +90,8 @@ public class GameOptions : ScriptableObject
             this.Repeat = Convert.ToBoolean(PlayerPrefs.GetInt("repeatOption"));
     }
 
-    private void OnCasingChanged()
+    private void OnPropertyChanged()
     {
-        CasingChanged?.Invoke();
+        PropertyChanged?.Invoke();
     }
 }

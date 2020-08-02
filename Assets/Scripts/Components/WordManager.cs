@@ -22,6 +22,7 @@ public class WordManager : MonoBehaviour
     public string[] WordList { get { return _completeWordList; } }
     public string CurrentWord { get { return _completeWordList[CurrentIndex]; } }
     public int CurrentIndex { get { return _wordsListIndex[_currentWordListIndex]; } }
+    public int CurrentIndexRunner { get { return _currentWordListIndex;  } }
     public int MaxIndex; //maxIndex before looping/repeating
 
     //list of words
@@ -42,7 +43,7 @@ public class WordManager : MonoBehaviour
         if (!WordBlockPrefab)
             throw new NullReferenceException("must have a reference to the wordBlock object to instantiate.");
 
-        GameOptions.CasingChanged += ChangeCasing;
+        GameOptions.PropertyChanged += OptionPropertyChanged;
     }
     private void Start()
     {
@@ -77,6 +78,9 @@ public class WordManager : MonoBehaviour
         _wordsObject = new GameObject[length];
         _imagesObjects = new GameObject[length];
         _wordsListIndex = GetIndexSet(length);
+
+        if (GameOptions.Shuffle)
+            ShuffleIndex(_wordsListIndex);
         MaxIndex = length - 1;
     }
     public void ResetIndex()
@@ -88,11 +92,40 @@ public class WordManager : MonoBehaviour
     {
         return Enumerable.Range(0, length).ToArray();
     }
-    private int[] ShuffleIndex(int[] intSet)
+    private void ShuffleIndex(int[] intSet)
     {
+        System.Random random = new System.Random();
 
+        int length = intSet.Length;
+        //Debug.Log($"lenght {length}");
 
-        return intSet;
+        for (int i = _currentWordListIndex +1; i < intSet.Length; i++)
+        {
+            int rng = random.Next(i, length);
+
+            int temp = intSet[i];
+            intSet[i] = intSet[rng];
+            intSet[rng] = temp;
+
+            //Debug.Log($"index rng {rng}");
+            //Debug.Log($"index i {i}");
+            //Debug.Log($"temp value {temp}");
+            //Debug.Log($"i value {intSet[i]}");
+            //Debug.Log($"rng value {intSet[rng]}");
+        }
+
+        //return intSet;
+    }
+
+    private void SortIndex(int[] intSet)
+    {
+        int[] tempArray =  new int[intSet.Length - (_currentWordListIndex + 1)];
+
+        Array.Copy(intSet, _currentWordListIndex + 1, tempArray, 0, tempArray.Length);
+
+        Array.Sort(tempArray);
+
+        Array.Copy(tempArray, 0, intSet, _currentWordListIndex + 1, tempArray.Length);
     }
     private GameObject CreateWordObject(string word, Vector3 position)
     {
@@ -115,6 +148,7 @@ public class WordManager : MonoBehaviour
 
     public void NextIndex()
     {
+        Debug.Log($"current index {_currentWordListIndex}", this);
         if (_currentWordListIndex < MaxIndex)
         {
             _currentWordListIndex++;
@@ -125,12 +159,19 @@ public class WordManager : MonoBehaviour
             if (GameOptions.Repeat)
                 _currentWordListIndex = 0;
         }
+        Debug.Log($"current index ++ {_currentWordListIndex}", this);
+
     }
 
     public void PreviousIndex()
     {
+        Debug.Log($"current index {_currentWordListIndex}", this);
+
         if (_currentWordListIndex > 0)
             _currentWordListIndex--;
+
+        Debug.Log($"current index ++ {_currentWordListIndex}", this);
+
     }
     public void ClearWordList()
     {
@@ -165,7 +206,7 @@ public class WordManager : MonoBehaviour
             _currentWordObject = CreateWordObject(word, position);
         }
 
-        ChangeCasing();
+        OptionPropertyChanged();
     }
 
     public void InstantiateImage(Vector3 position)
@@ -206,8 +247,18 @@ public class WordManager : MonoBehaviour
         }
     }
 
-    public void ChangeCasing()
+    public void OptionPropertyChanged()
     {
+
+        if (GameOptions.Shuffle)
+        {
+            ShuffleIndex(_wordsListIndex);
+        }
+        else
+        {
+            SortIndex(_wordsListIndex);
+        }
+
         if (!_currentWordObject)
             return;
 

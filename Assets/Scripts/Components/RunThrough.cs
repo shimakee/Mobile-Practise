@@ -70,6 +70,12 @@ public class RunThrough : MonoBehaviour, IGameSession
         _sessionStarted = false;
         WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
         EndCanvas.SetActive(true);
+
+        if (WordManager.WordObjects != null)
+        {
+            WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+            WordManager.ClearWordList();
+        }
     }
 
     public void SessionPause(GameObject pauseCanvas)
@@ -114,24 +120,21 @@ public class RunThrough : MonoBehaviour, IGameSession
 
         _audioManager.Play("Click");
 
-        if(WordManager.CurrentIndex < WordManager.MaxIndex)
+        if(WordManager.CurrentIndexRunner < WordManager.MaxIndex)
         {
             WordManager.DisableCurrentWord();
             WordManager.NextIndex();
             WordManager.InstantiateWord(new Vector3(0, 0, 0));
         }
 
-        Debug.Log( $"current index {WordManager.CurrentIndex}");
-        Debug.Log($"max index {WordManager.MaxIndex}");
-
         if (hasReachedLastWord)
         {
             SessionEnd();
             NextButton.SetActive(false);
         }
-        if (WordManager.CurrentIndex >= WordManager.MaxIndex)
+        if (WordManager.CurrentIndexRunner >= WordManager.MaxIndex)
             hasReachedLastWord = true;
-        if (WordManager.CurrentIndex > 0)
+        if (WordManager.CurrentIndexRunner > 0)
             PreviousButton.SetActive(true);
     }
     public void Previous()
@@ -145,9 +148,9 @@ public class RunThrough : MonoBehaviour, IGameSession
         WordManager.PreviousIndex();
         WordManager.InstantiateWord(new Vector3(0, 0, 0));
 
-        if (WordManager.CurrentIndex <= 0)
+        if (WordManager.CurrentIndexRunner <= 0)
             PreviousButton.SetActive(false);
-        if (WordManager.CurrentIndex < WordManager.MaxIndex)
+        if (WordManager.CurrentIndexRunner < WordManager.MaxIndex)
             NextButton.SetActive(true);
     }
 }
