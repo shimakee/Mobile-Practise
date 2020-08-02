@@ -97,8 +97,11 @@ public class AudioManager : MonoBehaviour
             resourceWord = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{name}");
         }
 
-        _audioSource.clip = resourceWord;
-        _audioSource.Play();
+        if (resourceWord && _audioSource)
+        {
+            _audioSource.clip = resourceWord;
+            _audioSource.Play();
+        }
     }
 
     private bool IsVowel(char c)

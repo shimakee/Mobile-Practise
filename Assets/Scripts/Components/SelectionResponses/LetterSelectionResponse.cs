@@ -25,10 +25,13 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     private Color32 _ColorActive = new Color32(74, 150, 214, 255);
     private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
 
+    private IWordSelectionResponse _parentWord;
+
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
         _textMeshPro = GetComponent<TextMeshProUGUI>();
+        _parentWord = transform.parent.GetComponent<IWordSelectionResponse>();
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
@@ -82,9 +85,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         this.gameObject.transform.localScale = _growScale;
         _textMeshPro.color = _ColorActive;
 
-        var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
-        if (parentWordComponent != null)
-            parentWordComponent.OnChildLetterSelected(this, inputPosition);
+        if (_parentWord != null)
+            _parentWord.OnChildLetterSelected(this, inputPosition);
     }
 
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
@@ -93,9 +95,14 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorDeselect;
 
-        var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
-        if (parentWordComponent != null)
-            parentWordComponent.OnChildLetterConfirmed(this, inputPosition, null);
+        //Debug.Log("deselected", this);
+        //var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
+
+        //if (_audioSource)
+        //    _audioSource.Play();
+
+        if (_parentWord != null)
+            _parentWord.OnChildLetterConfirmed(this, inputPosition, null);
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
@@ -110,9 +117,9 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorDeselect;
 
-        var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
-        if (parentWordComponent != null)
-            parentWordComponent.OnChildLetterConfirmed(this, inputPosition, wasSelectedGameObjects);
+        //var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
+        if (_parentWord != null)
+            _parentWord.OnChildLetterConfirmed(this, inputPosition, wasSelectedGameObjects);
     }
 
     public void OnHoverSelected(GameObject gameObject, Vector3 inputPosition)
@@ -125,7 +132,6 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         //do nothing
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorWasActive;
-
     }
 
     public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)

@@ -36,6 +36,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         _audioManager = FindObjectOfType<AudioManager>();
         _audioSource = GetComponent<AudioSource>();
 
+        if(!_audioManager)
+            throw new NullReferenceException("no audio manager comppnent attached.");
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
         if (!GameOptions)
@@ -179,13 +181,6 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
                 {   
                     _currentWord += item.Letter.Symbol;
                 }
-
-                //find if we have audio that matches current selected
-                //AudioClip resourcedWord = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{_currentWord}");
-                //if (resourcedWord && !_audioSource.isPlaying)
-                //{
-                //    _audioSource.PlayOneShot(resourcedWord);
-                //}
 
                 _audioManager.PlayVoice(_currentWord);
             }
