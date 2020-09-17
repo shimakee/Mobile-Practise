@@ -1,0 +1,14 @@
+bag
+bin
+cab
+cob
+gum
+ham
+hut
+map
+mat
+pin
+rim
+van
+wig
+zip

@@ -149,6 +149,7 @@ public class WordManager : MonoBehaviour
         instantiatedImageObject.transform.position = position;
         instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicure(word);
         _imagesObjects[CurrentIndex] = instantiatedImageObject;
+
         return instantiatedImageObject;
     }
 
@@ -303,13 +304,12 @@ public class WordManager : MonoBehaviour
     //    int length = word.Length;
     //    float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
     //    //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
-    //    float totalWordSizeX = length * LetterWidth;
-    //    float totalWidthInUnits = WorldUnitSize * (Screen.width / Screen.height);
-    //    if(totalWidthInUnits < totalWordSizeX)
-    //     return totalWidthInUnits / totalWordSizeX;
+    //    float totalWordSizeX = (length * LetterWidth) + (PerLetterMargin * word.Length - 1);
 
+    //    float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
 
-    //    //Debug.Log($"divisor {divisor}");
+    //    if (totalWidthInUnits < totalWordSizeX)
+    //        return totalWidthInUnits / totalWordSizeX;
 
     //    return 1;
     //}

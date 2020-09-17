@@ -7,8 +7,11 @@ using UnityEngine;
 public enum UiType
 {
     mainMenu,
+    gameUI,
+    pauseMenu,
     options,
-    something
+    gameStart,
+    gameEnd
 }
 
 public class UiManager : MonoBehaviour

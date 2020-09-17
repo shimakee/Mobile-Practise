@@ -20,6 +20,7 @@ public class RunThrough : MonoBehaviour, IGameSession
     private bool _sessionStarted;
     private bool hasReachedLastWord;
     private AudioManager _audioManager;
+    private bool IsImageActive;
     private void Awake()
     {
         WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
@@ -123,8 +124,12 @@ public class RunThrough : MonoBehaviour, IGameSession
         if(WordManager.CurrentIndexRunner < WordManager.MaxIndex)   
         {
             WordManager.DisableCurrentWord();
+            WordManager.DisableCurrentImage();
+            IsImageActive = false;
+
             WordManager.NextIndex();
             WordManager.InstantiateWord(new Vector3(0, 0, 0));
+
         }
 
         if (hasReachedLastWord)
@@ -152,5 +157,22 @@ public class RunThrough : MonoBehaviour, IGameSession
             PreviousButton.SetActive(false);
         if (WordManager.CurrentIndexRunner < WordManager.MaxIndex)
             NextButton.SetActive(true);
+    }
+
+    public void FlipImageAndWord()
+    {
+        if (IsImageActive)
+        {
+            WordManager.InstantiateWord(new Vector3(0, 0, 0));
+            WordManager.DisableCurrentImage();
+            IsImageActive = false;
+        }
+        else
+        {
+            WordManager.DisableCurrentWord();
+            WordManager.InstantiateImage(new Vector3(0,0,0));
+            IsImageActive = true;
+
+        }
     }
 }

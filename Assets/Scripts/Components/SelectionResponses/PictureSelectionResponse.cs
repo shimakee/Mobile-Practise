@@ -38,7 +38,7 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         if (Picture.Sfx == null)
             Picture.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{picture}");
         if (Picture.Sprite == null)
-            Picture.Sprite = Resources.Load<Sprite>($"Sprites/{picture}");
+            Picture.Sprite = Resources.Load<Sprite>($"Sprites/default/{picture}");
         if (Picture.WordAudio == null)
             Picture.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{picture}");
 
