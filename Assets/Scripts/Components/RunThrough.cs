@@ -8,8 +8,7 @@ public class RunThrough : MonoBehaviour, IGameSession
     public WordManager WordManager { get; private set; }
 
     //UI Canvas
-    public GameObject StartCanvas;
-    public GameObject EndCanvas;
+    //public UiManager UiManager;
 
     //UI buttons - maybe this should be in the IGameSession
     public GameObject NextButton;
@@ -21,16 +20,19 @@ public class RunThrough : MonoBehaviour, IGameSession
     private bool hasReachedLastWord;
     private AudioManager _audioManager;
     private bool IsImageActive;
+
+    private UiManager _uiManager;
     private void Awake()
     {
         WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
         _gameOptions = WordManager.GameOptions;
         _audioManager = FindObjectOfType<AudioManager>();
+        _uiManager = FindObjectOfType<UiManager>();
     }
 
     private void Start()
     {
-        StartCanvas.SetActive(true);
+        //StartCanvas.SetActive(true);
         //there is a unity bug, if i instantiate it here the word will be complete but if i instantiate it on sessionstart last letter will be missing
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
     }
@@ -56,8 +58,8 @@ public class RunThrough : MonoBehaviour, IGameSession
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(true);
         WordManager.ResetIndex();
         WordManager.InstantiateWord(new Vector3(0, 0, 0));
-        StartCanvas.SetActive(false);
-        EndCanvas.SetActive(false);
+        //StartCanvas.SetActive(false);
+        //EndCanvas.SetActive(false);
         _sessionStarted = true;
         _sessionEnded = false;
         hasReachedLastWord = false;
@@ -70,7 +72,7 @@ public class RunThrough : MonoBehaviour, IGameSession
         _sessionEnded = true;
         _sessionStarted = false;
         WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
-        EndCanvas.SetActive(true);
+        _uiManager.SwitchCanvas(UiType.gameEnd);
 
         if (WordManager.WordObjects != null)
         {
@@ -81,37 +83,25 @@ public class RunThrough : MonoBehaviour, IGameSession
 
     public void SessionPause(GameObject pauseCanvas)
     {
-        pauseCanvas.gameObject.SetActive(true);
-        StartCanvas.SetActive(false);
-        EndCanvas.SetActive(false);
     }
 
-    public void SessionReset(GameObject pauseCanvas)
+    public void SessionReset()
     {
-        pauseCanvas.gameObject.SetActive(false);
-        StartCanvas.SetActive(true);
-        EndCanvas.SetActive(false);
         _sessionEnded = false;
         _sessionStarted = false;
-        if(WordManager.WordObjects != null)
+        if (WordManager)
         {
-            WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
-            WordManager.ClearWordList();
+            if(WordManager.WordObjects != null)
+            {
+                if (WordManager.WordObjects[WordManager.CurrentIndex] != null) 
+                    WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+                WordManager.ClearWordList();
+            }
         }
     }
 
     public void SessionResume(GameObject pauseCanvas)
     {
-        pauseCanvas.gameObject.SetActive(false);
-
-
-        if (!_sessionStarted && !_sessionEnded)
-        {
-            StartCanvas.SetActive(true);
-        }else if(_sessionEnded)
-        {
-            EndCanvas.SetActive(true);
-        }
     }
 
     public void Next()
@@ -148,6 +138,9 @@ public class RunThrough : MonoBehaviour, IGameSession
             return;
 
         _audioManager.Play("Click");
+
+        WordManager.DisableCurrentImage();
+        IsImageActive = false;
 
         WordManager.DisableCurrentWord();
         WordManager.PreviousIndex();
