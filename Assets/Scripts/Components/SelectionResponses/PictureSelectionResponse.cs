@@ -15,6 +15,9 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
 
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
+
+    private Vector3 _originalScale;
+    private Vector3 _originalPosition;
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -28,12 +31,18 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
             throw new NullReferenceException("no options.");
     }
 
-    public void InitializePicure(string picture) //create overload for offset and margins?
+    private void Start()
+    {
+        _originalScale = this.gameObject.transform.localScale;
+        _originalPosition = this.gameObject.transform.position;
+    }
+    public void InitializePicture(string picture) //create overload for offset and margins?
     {
         if(Picture == null)
             Picture = ScriptableObject.CreateInstance<Picture>();
         if(String.IsNullOrWhiteSpace(Picture.Name))
             Picture.Name = picture + "Image";
+
         //assign assets
         if (Picture.Sfx == null)
             Picture.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{picture}");
@@ -42,19 +51,27 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         if (Picture.WordAudio == null)
             Picture.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{picture}");
 
+        //name your object
+        transform.name = this.Picture.Name;
+
+
         //check that all resources are there
-            _spriteRenderer.sprite = Picture.Sprite;
-            _audioSource.clip = Picture.Sfx;
+        _spriteRenderer.sprite = Picture.Sprite;
+        _audioSource.clip = Picture.Sfx;
+
 
     }
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1.3f, 1.3f, 0);
+        var sizeUp = new Vector3(0,0,0);
+        sizeUp.x = (float)(_originalScale.x * 1.3);
+        sizeUp.y = (float)(_originalScale.x * 1.3);
+        this.gameObject.transform.localScale = sizeUp;
     }
 
     public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
@@ -80,12 +97,16 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
     {
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
+
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
-        this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        //this.gameObject.transform.localScale = new Vector3(1, 1, 0);
+        this.gameObject.transform.localScale = _originalScale;
+
     }
 
     public void WasSelected(GameObject gameObject, Vector3 inputPosition)

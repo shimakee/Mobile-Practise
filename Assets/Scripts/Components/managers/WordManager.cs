@@ -14,6 +14,7 @@ public class WordManager : MonoBehaviour
     public GameObject LetterBlockPrefab;
     public GameObject ImageBlockPrefab;
     public GameOptions GameOptions;
+    public int TotalWorldUnits = 10;
 
     //worldsize
     //public int WorldUnitSize = 10;
@@ -133,21 +134,24 @@ public class WordManager : MonoBehaviour
 
         Array.Copy(tempArray, 0, intSet, _currentWordListIndex + 1, tempArray.Length);
     }
-    private GameObject CreateWordObject(string word, Vector3 position)
+    private GameObject CreateWordObject(string word, Vector3 position, float scale)
     {
         GameObject instantiatedWord = Instantiate(WordBlockPrefab, transform);
         instantiatedWord.transform.position = position;
         instantiatedWord.GetComponent<IWordSelectionResponse>().Initialize(word);
+        instantiatedWord.transform.localScale = new Vector2(scale, scale);
         _wordsObject[CurrentIndex] = instantiatedWord;
         return instantiatedWord;
     }
 
     //private IEnumerator CreateImageObject(string word, float waitTime, Vector3 position)
-    private GameObject CreateImageObject(string word, Vector3 position)
+    private GameObject CreateImageObject(string word, Vector3 position, float imageScale)
     {
         GameObject instantiatedImageObject = Instantiate(ImageBlockPrefab, transform);
         instantiatedImageObject.transform.position = position;
-        instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicure(word);
+        float scale = CalculateImageScale() * imageScale;
+        instantiatedImageObject.transform.localScale = new Vector2(scale, scale);
+        instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicture(word);
         _imagesObjects[CurrentIndex] = instantiatedImageObject;
 
         return instantiatedImageObject;
@@ -155,7 +159,7 @@ public class WordManager : MonoBehaviour
 
     public void NextIndex()
     {
-        Debug.Log($"current index {_currentWordListIndex}", this);
+        //Debug.Log($"current index {_currentWordListIndex}", this);
         if (_currentWordListIndex < MaxIndex)
         {
             _currentWordListIndex++;
@@ -166,18 +170,18 @@ public class WordManager : MonoBehaviour
             if (GameOptions.Repeat)
                 _currentWordListIndex = 0;
         }
-        Debug.Log($"current index ++ {_currentWordListIndex}", this);
+        //Debug.Log($"current index ++ {_currentWordListIndex}", this);
 
     }
 
     public void PreviousIndex()
     {
-        Debug.Log($"current index {_currentWordListIndex}", this);
+        //Debug.Log($"current index {_currentWordListIndex}", this);
 
         if (_currentWordListIndex > 0)
             _currentWordListIndex--;
 
-        Debug.Log($"current index ++ {_currentWordListIndex}", this);
+        //Debug.Log($"current index ++ {_currentWordListIndex}", this);
 
     }
     public void ClearWordList()
@@ -195,28 +199,30 @@ public class WordManager : MonoBehaviour
         }
     }
 
-    public void InstantiateWord(Vector3 position)
+    public GameObject InstantiateWord(Vector3 position, float scale = 1)
     {
         string word = _completeWordList[CurrentIndex];
-
         //WORD
         if (_wordsObject[CurrentIndex] != null)
         {
             _currentWordObject = _wordsObject[CurrentIndex];
             _currentWordObject.SetActive(true);
+
+
         }
         else
         {
             //Vector2 position = CalculatePosition(word);
             //StartCoroutine(CreateWordObject(word, WordSpawnWaitTime, position));
 
-            _currentWordObject = CreateWordObject(word, position);
+            _currentWordObject = CreateWordObject(word, position, scale);
         }
 
         OptionPropertyChanged();
+        return _currentWordObject;
     }
 
-    public void InstantiateImage(Vector3 position)
+    public GameObject InstantiateImage(Vector3 position, float scale = 1)
     {
         string word = _completeWordList[CurrentIndex];
         //IMAGE
@@ -228,8 +234,10 @@ public class WordManager : MonoBehaviour
         else
         {
             //StartCoroutine(CreateImageObject(word, WordSpawnWaitTime, new Vector2(0, 0)));
-            _currentImageObject = CreateImageObject(word, position);
+            _currentImageObject = CreateImageObject(word, position, scale);
         }
+
+        return _currentImageObject;
     }
 
     public void DisableCurrentWord()
@@ -297,20 +305,11 @@ public class WordManager : MonoBehaviour
     //    return new Vector2(0, PositionY);
     //}
 
-    //float CalculateScale(string word)
-    //{
-    //    var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
+    float CalculateImageScale()
+    {
+        //get aspect ratio
+        int pixelPerUnit = Screen.height/TotalWorldUnits;
 
-    //    int length = word.Length;
-    //    float LetterWidth = (letterBlockSpriteRenderer.rect.width / Screen.width) * WorldUnitSize;
-    //    //float LetterWidth = letterBlockSpriteRenderer.rect.width; // for starting position
-    //    float totalWordSizeX = (length * LetterWidth) + (PerLetterMargin * word.Length - 1);
-
-    //    float totalWidthInUnits = (WorldUnitSize * (Screen.width / Screen.height)) - Allowance;
-
-    //    if (totalWidthInUnits < totalWordSizeX)
-    //        return totalWidthInUnits / totalWordSizeX;
-
-    //    return 1;
-    //}
+        return pixelPerUnit;
+    }
 }

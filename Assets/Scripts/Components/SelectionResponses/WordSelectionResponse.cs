@@ -61,7 +61,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         transform.name = wordString;
 
         //create word class scriptable object
-        if(Word == null)
+        if (Word == null)
             Word = ScriptableObject.CreateInstance<Word>();
 
         //load reasource

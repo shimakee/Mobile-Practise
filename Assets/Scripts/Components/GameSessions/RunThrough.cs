@@ -6,6 +6,7 @@ public class RunThrough : MonoBehaviour, IGameSession
     public string TextAssetName = "initialWordList";
     public GameObject WordMangerCanvas;
     public WordManager WordManager { get; private set; }
+    [Range(1f, 10f)] public float ImageSize = 5;
 
     //UI Canvas
     //public UiManager UiManager;
@@ -163,7 +164,7 @@ public class RunThrough : MonoBehaviour, IGameSession
         else
         {
             WordManager.DisableCurrentWord();
-            WordManager.InstantiateImage(new Vector3(0,0,0));
+            WordManager.InstantiateImage(new Vector3(0,0,0), ImageSize);
             IsImageActive = true;
 
         }
