@@ -106,10 +106,10 @@ public class AudioManager : MonoBehaviour
 
     private bool IsVowel(char c)
     {
-        Debug.Log($"lowercase {char.ToLower(c)}");
-        Debug.Log($"normal {c}");
-        Debug.Log($"uppercase {char.ToUpper(c)}");
-        Debug.Log($"normal {c}");
+        //Debug.Log($"lowercase {char.ToLower(c)}");
+        //Debug.Log($"normal {c}");
+        //Debug.Log($"uppercase {char.ToUpper(c)}");
+        //Debug.Log($"normal {c}");
 
         char character = char.ToLower(c);
         if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u')

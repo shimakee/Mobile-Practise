@@ -7,6 +7,8 @@ public class TouchOptionsController : MonoBehaviour, ITouchControlOptions
 {
     public TouchControlOption Option;
 
+    public TouchControlOption TouchOption { get { return Option;  } }
+
     public bool enablePassiveSelection { get { return Option.enablePassiveSelection; } }
     public bool enableUnniqueSelection { get { return Option.enableUnniqueSelection; } }
     public bool enableLastTouchConfirm { get { return Option.enableLastTouchConfirm; } }

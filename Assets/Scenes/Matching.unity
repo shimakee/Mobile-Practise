@@ -530,6 +530,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8826109791627194225, guid: 03ee9bec9dbd0f146853eabebb24c19e,
         type: 3}
+    - target: {fileID: 4976956431306772407, guid: 9ae9e13157d14fa4484161cffce1ff19,
+        type: 3}
+      propertyPath: LetterBlockPrefab
+      value: 
+      objectReference: {fileID: 3087165144655834556, guid: 46e5ff50bed904c4db96a887532caa86,
+        type: 3}
+    - target: {fileID: 4976956431306772407, guid: 9ae9e13157d14fa4484161cffce1ff19,
+        type: 3}
+      propertyPath: WordBlockPrefab
+      value: 
+      objectReference: {fileID: 7291611529193707943, guid: 7fc08c39d05deb94f914e2d25c8fe818,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ae9e13157d14fa4484161cffce1ff19, type: 3}
 --- !u!1001 &740890009

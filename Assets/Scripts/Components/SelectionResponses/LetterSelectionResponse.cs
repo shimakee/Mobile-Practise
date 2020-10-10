@@ -13,17 +13,17 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     }
 
     public GameOptions GameOptions;
-    private AudioSource _audioSource;
+    protected AudioSource _audioSource;
 
-    private Vector3 _originalPosition;
-    private Vector3 _originalScale;
+    protected Vector3 _originalPosition;
+    protected Vector3 _originalScale;
 
-    private Vector3 _growScale;
-    private TextMeshProUGUI _textMeshPro;
+    protected Vector3 _growScale;
+    protected TextMeshProUGUI _textMeshPro;
 
-    private Color32 _ColorDeselect = Color.white;
-    private Color32 _ColorActive = new Color32(74, 150, 214, 255);
-    private Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
+    protected Color32 _ColorDeselect = Color.white;
+    protected Color32 _ColorActive = new Color32(74, 150, 214, 255);
+    protected Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
 
     private IWordSelectionResponse _parentWord;
 
@@ -89,7 +89,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
             _parentWord.OnChildLetterSelected(this, inputPosition);
     }
 
-    public void Deselected(GameObject gameObject, Vector3 inputPosition)
+    public virtual void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
@@ -101,8 +101,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         //if (_audioSource)
         //    _audioSource.Play();
 
-        if (_parentWord != null)
-            _parentWord.OnChildLetterConfirmed(this, inputPosition, null);
+        //if (_parentWord != null)
+        //    _parentWord.OnChildLetterConfirmed(this, inputPosition, null);
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
@@ -140,17 +140,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorDeselect;
 
-        if (!_audioSource.isPlaying)
-        {
-            if (GameOptions.LetterAudio == LetterAudioOptions.phonics)
-            {
-                _audioSource.Play();
-            }
-            else
-            {
-                _audioSource.PlayOneShot(Letter.LetterAudio);
-            }
-        }
+        PlayAudio();
     }
 
     public void ToUpper()
@@ -163,5 +153,20 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     {
         _textMeshPro.text = Letter.Symbol.ToString().ToLower();
         //_textMeshPro.text.ToLower();
+    }
+
+    protected virtual void PlayAudio()
+    {
+        if (!_audioSource.isPlaying)
+        {
+            if (GameOptions.LetterAudio == LetterAudioOptions.phonics)
+            {
+                _audioSource.Play();
+            }
+            else
+            {
+                _audioSource.PlayOneShot(Letter.LetterAudio);
+            }
+        }
     }
 }

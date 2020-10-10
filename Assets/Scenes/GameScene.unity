@@ -807,6 +807,18 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 4976956431306772407, guid: 9ae9e13157d14fa4484161cffce1ff19,
+        type: 3}
+      propertyPath: WordBlockPrefab
+      value: 
+      objectReference: {fileID: 4864529629476286148, guid: 27e5289485780a34cbd6781b83c68ee2,
+        type: 3}
+    - target: {fileID: 4976956431306772407, guid: 9ae9e13157d14fa4484161cffce1ff19,
+        type: 3}
+      propertyPath: LetterBlockPrefab
+      value: 
+      objectReference: {fileID: 2665847817984910082, guid: 8f431fb1df693574499a1fd13e71bdbe,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ae9e13157d14fa4484161cffce1ff19, type: 3}
 --- !u!1001 &5094032946335942165

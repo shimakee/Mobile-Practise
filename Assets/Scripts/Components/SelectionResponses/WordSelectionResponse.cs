@@ -21,7 +21,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     [Range(0, 5)] public float Allowance = .5f;
 
     private string _currentWord = "";
-    private AudioSource _audioSource;
+    protected AudioSource _audioSource;
     private AudioManager _audioManager;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
@@ -109,8 +109,11 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             letterGameObject.transform.position = objectPosition;
             letterGameObject.transform.localScale = new Vector2(scale, scale);
             ILetterSelectionResponse letterComponent = letterGameObject.GetComponent<ILetterSelectionResponse>();
-            letterComponent.Initialize(word[i]);
-            _letterChildren[i] = letterComponent;
+            if (letterComponent != null)
+            {
+                letterComponent.Initialize(word[i]);
+                _letterChildren[i] = letterComponent;
+            }
             lettersInstantiated++;
         }
     }
@@ -199,7 +202,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         }
     }
 
-    public void OnChildLetterSelected(ILetterSelectionResponse childObjectSelected, Vector3 inputPosition)
+    public virtual void OnChildLetterSelected(ILetterSelectionResponse childObjectSelected, Vector3 inputPosition)
     {
         if (childObjectSelected != null)
         {
@@ -208,7 +211,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         }
     }
 
-    public void OnChildLetterConfirmed(ILetterSelectionResponse childObjectConfirmed, Vector3 inputPosition, List<GameObject> wasSelectedObjects)
+    public virtual void OnChildLetterConfirmed(ILetterSelectionResponse childObjectConfirmed, Vector3 inputPosition, List<GameObject> wasSelectedObjects)
     {
         if (childObjectConfirmed != null)
         {

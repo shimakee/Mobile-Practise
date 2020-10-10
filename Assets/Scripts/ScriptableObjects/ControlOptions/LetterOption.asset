@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enablePassiveSelection: 1
   enableUnniqueSelection: 1
-  enableLastTouchConfirm: 0
+  enableLastTouchConfirm: 1
   enableDiselectOnlyOnTouchOff: 0

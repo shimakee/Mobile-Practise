@@ -24,6 +24,8 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     private Vector2 _setPosition;
     //public string namers;
 
+    private bool isSelected = false;
+
     private GameObject _container;
 
     public bool isSet = false;
@@ -75,18 +77,21 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
 
         //check that all resources are there
         _spriteRenderer.sprite = Picture.Sprite;
-        _audioSource.clip = Picture.Sfx;
+        //_audioSource.clip = Picture.Sfx;
+        _audioSource.clip = Picture.WordAudio;
     }
 
 
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
+        isSelected = false;
         if (!isSet)
         {
             if (isContactOnSet)
             {
-                this.transform.position = _setPosition;
-                this.isSet = true;
+                //this.transform.position = _setPosition;
+                //this.isSet = true;
+                SetPosition(_setPosition);
 
                 if (_container)
                     _container.SetActive(false);
@@ -96,9 +101,11 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
             else
             {
                 this.transform.position = _originalPosition;
-                this.GetComponent<SpriteRenderer>().color = Color.grey;
             }
         }
+
+        this.gameObject.transform.localScale = _originalScale;
+
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
@@ -109,11 +116,21 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
             gameObject.transform.position = _targetPosition;
             this.GetComponent<SpriteRenderer>().color = Color.white;
         }
+
+        var scale = (float)(_originalScale.x * 1.3);
+        this.gameObject.transform.localScale = new Vector3(scale, scale, scale);
+
+        if (!_audioSource.isPlaying && !isSelected)
+        {
+            _audioSource.Play();
+        }
+
+        isSelected = true;
     }
 
     public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
-        gameObject.transform.position = new Vector3(inputPosition.x, inputPosition.y, 0);
+        //gameObject.transform.position = new Vector3(inputPosition.x, inputPosition.y, 0);
     }
 
     public void OnHoverSelected(GameObject gameObject, Vector3 inputPosition)

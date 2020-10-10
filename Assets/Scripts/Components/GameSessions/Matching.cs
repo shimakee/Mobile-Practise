@@ -21,6 +21,17 @@ public class Matching : MonoBehaviour, IGameSession
     private Vector2[] _coordinatesWords;
     private Vector2[] _coordinatesContainer;
 
+    //TODO
+    //create word object where letter does not respond but word does.
+    //shuffle words
+    //create options - image to image or word to image matching
+    //options before startin gameplay
+       // number of words
+       //number of images
+
+    //create another gameplay where you assemble letters.
+    //have them bounce around?
+
     private void Awake()
     {
         WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
