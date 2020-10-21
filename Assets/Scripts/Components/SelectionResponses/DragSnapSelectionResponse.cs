@@ -6,6 +6,7 @@ using UnityEngine;
 public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionResponse
 {
     public Picture PictureScriptable;
+    public Matching MatchingSession;
     public Picture Picture
     {
         get { return PictureScriptable; }
@@ -24,12 +25,17 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     private Vector2 _setPosition;
     //public string namers;
 
+    public Vector3 OriginalPosition { get { return _originalPosition; } set { _originalPosition = value; } }
+
     private bool isSelected = false;
 
     private GameObject _container;
 
     public bool isSet = false;
-    public bool isContactOnSet = false;
+    public bool onTrigger = false;
+    public bool isMatch = false;
+
+    //public static event Action<string> WordMatched;
 
     private void Awake()
     {
@@ -50,6 +56,7 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
         _originalScale = this.gameObject.transform.localScale;
         _originalPosition = this.gameObject.transform.position;
         //this.GetComponent<SpriteRenderer>().color = Color.grey;
+        //Matching.WordMatched += OnWordMatched;
     }
 
     // Update is called once per frame
@@ -85,18 +92,34 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     public void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
         isSelected = false;
-        if (!isSet)
+        if (!isSet )
         {
-            if (isContactOnSet)
+            if (onTrigger)
             {
-                //this.transform.position = _setPosition;
-                //this.isSet = true;
-                SetPosition(_setPosition);
+                if (isMatch)
+                {
+                    //this.transform.position = _setPosition;
+                    //this.isSet = true;
+                    SetPosition(_setPosition);
 
-                if (_container)
-                    _container.SetActive(false);
+                    if (_container)
+                        _container.SetActive(false);
 
-                _audioManager.Play("Confirm");
+                    _audioManager.Play("Confirm");
+
+                    //OnWordMatched(this.Picture.Name);
+                    //Matching.OnWordMatched(this.Picture.Name);
+                    if(MatchingSession != null)
+                    {
+                        MatchingSession.WordMatched(this.Picture.Name);
+                    }
+                    
+                }
+                else
+                {
+                    this.transform.position = _originalPosition;
+                    _audioManager.Play("Back");
+                }
             }
             else
             {
@@ -120,10 +143,10 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
         var scale = (float)(_originalScale.x * 1.3);
         this.gameObject.transform.localScale = new Vector3(scale, scale, scale);
 
-        if (!_audioSource.isPlaying && !isSelected)
-        {
-            _audioSource.Play();
-        }
+        //if (!_audioSource.isPlaying && !isSelected)
+        //{
+        //    _audioSource.Play();
+        //}
 
         isSelected = true;
     }
@@ -164,6 +187,8 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        onTrigger = true;
+
         var dragable = collision.gameObject.GetComponent<DragableContainer>();
 
         if (dragable)
@@ -171,26 +196,39 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
             if (dragable.ContainerName == this.Picture.Name)
             {
                 //dragable.SetPosition(this.gameObject.transform.position);
-                isContactOnSet = true;
+                isMatch = true;
                 _setPosition = collision.gameObject.transform.position;
                 _container = collision.gameObject;
+            }
+            else
+            {
+                isMatch = false;
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        var dragable = collision.gameObject.GetComponent<DragableContainer>();
+        onTrigger = false;
+        isMatch = false;
+        _setPosition = _originalPosition;
+        _container = null;
+        //var dragable = collision.gameObject.GetComponent<DragableContainer>();
 
-        if (dragable)
-        {
-            if (dragable.ContainerName == this.Picture.Name)
-            {
-                //dragable.SetPosition(this.gameObject.transform.position);
-                isContactOnSet = false;
-                _setPosition = _originalPosition;
-                _container = null;
-            }
-        }
+        //if (dragable)
+        //{
+        //    if (dragable.ContainerName == this.Picture.Name)
+        //    {
+        //        //dragable.SetPosition(this.gameObject.transform.position);
+        //        isContactOnSet = false;
+                
+        //    }
+        //}
     }
+
+    //private void OnWordMatched(string word)
+    //{
+    //    if(word == this.Picture.Name)
+    //        Debug.Log(word);
+    //}
 }

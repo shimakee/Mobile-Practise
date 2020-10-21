@@ -168,7 +168,9 @@ public class WordManager : MonoBehaviour
         {
             //if repeat is on loop back to the start
             if (GameOptions.Repeat)
+            {
                 _currentWordListIndex = 0;
+            }
         }
         //Debug.Log($"current index ++ {_currentWordListIndex}", this);
 
@@ -205,10 +207,10 @@ public class WordManager : MonoBehaviour
         //WORD
         if (_wordsObject[CurrentIndex] != null)
         {
+            Debug.Log($"word is instantiated {_wordsObject[CurrentIndex].name}", _wordsObject[CurrentIndex]);
             _currentWordObject = _wordsObject[CurrentIndex];
             _currentWordObject.SetActive(true);
-
-
+            _currentWordObject.transform.position = position;
         }
         else
         {
@@ -218,7 +220,7 @@ public class WordManager : MonoBehaviour
             _currentWordObject = CreateWordObject(word, position, scale);
         }
 
-        OptionPropertyChanged();
+        //OptionPropertyChanged();
         return _currentWordObject;
     }
 
@@ -230,6 +232,7 @@ public class WordManager : MonoBehaviour
         {
             _currentImageObject = _imagesObjects[CurrentIndex];
             _currentImageObject.SetActive(true);
+            _currentImageObject.transform.position = position;
         }
         else
         {
@@ -242,23 +245,61 @@ public class WordManager : MonoBehaviour
 
     public void DisableCurrentWord()
     {
+        DisableWordOnIndex(CurrentIndex);
+    }
+
+    public void DisableWordOnIndex(int i)
+    {
         //for word
-        if (_currentWordObject)
+        if(_wordsObject != null)
         {
-            if (!_wordsObject.Contains(_currentWordObject))
-                _wordsObject[CurrentIndex] = _currentWordObject;
-            _currentWordObject.SetActive(false);
+            if (_wordsObject[i])
+            {
+                Debug.Log($"disabled {_wordsObject[i]} word");
+                _wordsObject[i].SetActive(false);
+            }
+            else
+            {
+                Debug.Log("no word object on that index.");
+            }
+        }
+        else
+        {
+            Debug.Log("words object is null.");
         }
     }
 
     public void DisableCurrentImage()
     {
-        //for image
-        if (_currentImageObject)
+        ////for image
+        //if (_currentImageObject)
+        //{
+        //    if (!_imagesObjects.Contains(_currentImageObject))
+        //        _imagesObjects[CurrentIndex] = _currentImageObject;
+        //    _currentImageObject.SetActive(false);
+        //}
+
+        DisableImageOnIndex(CurrentIndex);
+    }
+
+    public void DisableImageOnIndex(int i)
+    {
+        //for word
+        if (_imagesObjects != null)
         {
-            if (!_imagesObjects.Contains(_currentImageObject))
-                _imagesObjects[CurrentIndex] = _currentImageObject;
-            _currentImageObject.SetActive(false);
+            if (_imagesObjects[i])
+            {
+                Debug.Log($"disabled {_imagesObjects[i]} image");
+                _imagesObjects[i].SetActive(false);
+            }
+            else
+            {
+                Debug.Log("no image object on that index.");
+            }
+        }
+        else
+        {
+            Debug.Log("image object is null.");
         }
     }
 

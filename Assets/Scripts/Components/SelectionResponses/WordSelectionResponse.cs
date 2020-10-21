@@ -71,7 +71,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         if(Word.WordAudio == null)
             Word.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{wordString}");
         if(Word.Sprite == null)
-            Word.Sprite = Resources.Load<Sprite>($"Sprites/{wordString}");
+            Word.Sprite = Resources.Load<Sprite>($"Sprites/default/{wordString}");
         if(Word.Sfx == null)
             Word.Sfx = Resources.Load<AudioClip>($"Audio/Sfxs/sfx_{wordString}");
 
