@@ -82,7 +82,7 @@ public class RunThrough : MonoBehaviour, IGameSession
         }
     }
 
-    public void SessionPause(GameObject pauseCanvas)
+    public void SessionPause()
     {
     }
 
@@ -101,7 +101,7 @@ public class RunThrough : MonoBehaviour, IGameSession
         }
     }
 
-    public void SessionResume(GameObject pauseCanvas)
+    public void SessionResume()
     {
     }
 

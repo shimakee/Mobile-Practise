@@ -51,12 +51,12 @@ public class Matching : MonoBehaviour, IGameSession
         
     }
 
-    public void SessionPause(GameObject pauseCanvas)
+    public void SessionPause()
     {
         throw new System.NotImplementedException();
     }
 
-    public void SessionResume(GameObject pauseCanvas)
+    public void SessionResume()
     {
         throw new System.NotImplementedException();
     }
@@ -87,7 +87,25 @@ public class Matching : MonoBehaviour, IGameSession
     {
         _audioManager.Play("Success");
 
+        SessionReset();
+        _uiManager.SwitchCanvas(UiType.gameEnd);
         Debug.Log("Session has ended.");
+    }
+
+    public void SessionReset()
+    {
+        if (WordManager)
+        {
+            if (WordManager.WordObjects != null)
+            {
+                if (WordManager.WordObjects[WordManager.CurrentIndex] != null)
+                    WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+                WordManager.ClearWordList();
+            }
+        }
+
+        ClearSetVariables();
+        isLastSet = false;
     }
 
     //private void CreateDragableContainer(string name, Vector3 position)
@@ -122,8 +140,8 @@ public class Matching : MonoBehaviour, IGameSession
         }
 
         ShuffleIndex(_coordinatesImage);
-        ShuffleIndex(_coordinatesWords);
-        ShuffleIndex(_coordinatesContainer);
+        //ShuffleIndex(_coordinatesWords);
+        //ShuffleIndex(_coordinatesContainer);
 
         for (int i = 0; i < numberOfWords; i++)
         {
