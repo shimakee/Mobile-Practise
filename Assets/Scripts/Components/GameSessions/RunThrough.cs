@@ -82,8 +82,9 @@ public class RunThrough : MonoBehaviour, IGameSession
         }
     }
 
-    public void SessionPause(GameObject pauseCanvas)
+    public void SessionPause()
     {
+        _uiManager.SwitchCanvas(UiType.pauseMenu);
     }
 
     public void SessionReset()
@@ -101,8 +102,9 @@ public class RunThrough : MonoBehaviour, IGameSession
         }
     }
 
-    public void SessionResume(GameObject pauseCanvas)
+    public void SessionResume()
     {
+        _uiManager.SwitchCanvas(UiType.gameUI);
     }
 
     public void Next()

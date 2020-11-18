@@ -51,12 +51,12 @@ public class Matching : MonoBehaviour, IGameSession
         
     }
 
-    public void SessionPause(GameObject pauseCanvas)
+    public void SessionPause()
     {
         throw new System.NotImplementedException();
     }
 
-    public void SessionResume(GameObject pauseCanvas)
+    public void SessionResume()
     {
         throw new System.NotImplementedException();
     }
@@ -86,8 +86,23 @@ public class Matching : MonoBehaviour, IGameSession
     public void SessionEnd()
     {
         _audioManager.Play("Success");
-
+        _uiManager.SwitchCanvas(UiType.gameEnd);
+        ClearSetVariables();
+        isLastSet = false;
         Debug.Log("Session has ended.");
+    }
+
+    public void SessionReset()
+    {
+        if (WordManager)
+        {
+            if (WordManager.WordObjects != null)
+            {
+                if (WordManager.WordObjects[WordManager.CurrentIndex] != null)
+                    WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+                WordManager.ClearWordList();
+            }
+        }
     }
 
     //private void CreateDragableContainer(string name, Vector3 position)
