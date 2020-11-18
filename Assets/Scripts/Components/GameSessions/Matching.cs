@@ -113,17 +113,26 @@ public class Matching : MonoBehaviour, IGameSession
 
         for (int i = 0; i < numberOfWords; i++)
         {
+            float distanceIncrement = 1 / (float)(numberOfWords + 1);
+            float xPosition = distanceIncrement * (i + 1);
+
+            _coordinatesImage[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.25f, 0));
+            _coordinatesWords[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.65f, 0));
+            _coordinatesContainer[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.65f, 0));
+        }
+
+        ShuffleIndex(_coordinatesImage);
+        ShuffleIndex(_coordinatesWords);
+        ShuffleIndex(_coordinatesContainer);
+
+        for (int i = 0; i < numberOfWords; i++)
+        {
             //if(WordManager.CurrentIndexRunner < WordManager.MaxIndex)
             //{
             _objectIndexesCurrentlyShown.Add(WordManager.CurrentIndex);
                 Debug.Log($"index added {WordManager.CurrentIndex}");
 
-                float distanceIncrement = 1 / (float)(numberOfWords + 1);
-                float xPosition = distanceIncrement * (i + 1);
-
-                _coordinatesImage[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.25f, 0));
-                _coordinatesWords[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.65f, 0));
-                _coordinatesContainer[i] = Camera.main.ViewportToWorldPoint(new Vector3(xPosition, 0.65f, 0));
+                
 
                 var wordObject = WordManager.InstantiateWord(_coordinatesWords[i], .5f);
                 if (wordObject == null)
@@ -176,6 +185,33 @@ public class Matching : MonoBehaviour, IGameSession
     }
 
 
+    private void ShuffleIndex(Vector2[] intSet)
+    {
+        if (intSet == null)
+            return;
+
+        System.Random random = new System.Random();
+
+        int length = intSet.Length;
+        //Debug.Log($"lenght {length}");
+
+        for (int i = 0; i < intSet.Length; i++)
+        {
+            int rng = random.Next(i, length);
+
+            Vector2 temp = intSet[i];
+            intSet[i] = intSet[rng];
+            intSet[rng] = temp;
+
+            //Debug.Log($"index rng {rng}");
+            //Debug.Log($"index i {i}");
+            //Debug.Log($"temp value {temp}");
+            //Debug.Log($"i value {intSet[i]}");
+            //Debug.Log($"rng value {intSet[rng]}");
+        }
+
+        //return intSet;
+    }
     //public static event Action<string> WordMatched;
 
     //public static void OnWordMatched(string word)
