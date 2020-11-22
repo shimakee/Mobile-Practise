@@ -18,6 +18,7 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
     private AudioManager _audioManager;
+    private Rigidbody2D _rigidbody2D;
 
     private Vector3 _originalScale;
     private Vector3 _originalPosition;
@@ -41,7 +42,7 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     {
         _audioSource = GetComponent<AudioSource>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-
+        _rigidbody2D = GetComponent<Rigidbody2D>();
         _audioManager = FindObjectOfType<AudioManager>();
 
         if (!_audioSource)
@@ -135,6 +136,14 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     {
         if (!isSet)
         {
+            if (_rigidbody2D)
+            {
+                Debug.Log("rigidbody");
+                _rigidbody2D.velocity = new Vector2(0, 0);
+
+                _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+            }
+
             _targetPosition = Camera.main.ScreenToWorldPoint(inputPosition);
             gameObject.transform.position = _targetPosition;
             this.GetComponent<SpriteRenderer>().color = Color.white;
@@ -231,4 +240,12 @@ public class DragSnapSelectionResponse : MonoBehaviour, IPictureSelectionRespons
     //    if(word == this.Picture.Name)
     //        Debug.Log(word);
     //}
+
+    public void PlayWordAudio()
+    {
+        //if (!_audioSource.isPlaying)
+        //{
+            _audioSource.Play();
+        //}
+    }
 }

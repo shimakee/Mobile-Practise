@@ -113,4 +113,12 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
     {
         //do nothing
     }
+
+    public void PlayWordAudio()
+    {
+        if (!_audioSource.isPlaying)
+        {
+            _audioSource.PlayOneShot(Picture.WordAudio);
+        }
+    }
 }

@@ -25,7 +25,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
     protected Color32 _ColorActive = new Color32(74, 150, 214, 255);
     protected Color32 _ColorWasActive = new Color32(155, 191, 221, 255);
 
-    private IWordSelectionResponse _parentWord;
+    protected IWordSelectionResponse _parentWord;
 
     private void Awake()
     {
@@ -79,7 +79,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
             _audioSource.clip = Letter.PhonicAudio;
     }
 
-    public void IsSelected(GameObject gameObject, Vector3 inputPosition)
+    public virtual void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
         
         this.gameObject.transform.localScale = _growScale;

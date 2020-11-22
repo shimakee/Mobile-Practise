@@ -12,4 +12,5 @@ public interface IWordSelectionResponse : ISelectionResponse
     void ToUpper();
     void ToLower();
     void ToStandard();
+    void PlayWordAudio();
 }

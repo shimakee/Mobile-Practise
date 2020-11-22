@@ -22,6 +22,7 @@ public class WordManager : MonoBehaviour
     public GameObject[] ImageObjects { get { return _imagesObjects; } }
     public string[] WordList { get { return _completeWordList; } }
     public string CurrentWord { get { return _completeWordList[CurrentIndex]; } }
+    //public GameObject CurrentWordObject { get { return WordObjects[CurrentIndex]; } }
     public int CurrentIndex { get { return _wordsListIndex[_currentWordListIndex]; } }
     public int CurrentIndexRunner { get { return _currentWordListIndex;  } }
     public int MaxIndex; //maxIndex before looping/repeating

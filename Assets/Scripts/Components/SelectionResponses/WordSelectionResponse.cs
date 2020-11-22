@@ -22,10 +22,10 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     private string _currentWord = "";
     protected AudioSource _audioSource;
-    private AudioManager _audioManager;
+    protected AudioManager _audioManager;
     private List<ILetterSelectionResponse> _lettersGameObjectSelected = new List<ILetterSelectionResponse>();
 
-    private ILetterSelectionResponse[] _letterChildren;
+    protected ILetterSelectionResponse[] _letterChildren;
 
     //private Color32 _ColorDeselect = Color.white;
     //private Color32 _ColorActive = new Color32(74, 150, 214, 255);
@@ -88,7 +88,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         return 1;
     }
-    private void AssembleLetters(string word) // create overload for offset and margins?
+    protected virtual void AssembleLetters(string word) // create overload for offset and margins?
     {
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         int length = word.Length;
@@ -253,7 +253,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         }
     }
 
-    float CalculateScale(string word)
+    protected float CalculateScale(string word)
     {
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
 
@@ -268,5 +268,10 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             return totalWidthInUnits / totalWordSizeX;
 
         return 1;
+    }
+
+    public void PlayWordAudio()
+    {
+            _audioSource.Play();
     }
 }

@@ -99,8 +99,10 @@ public class AudioManager : MonoBehaviour
 
         if (resourceWord && _audioSource)
         {
-            _audioSource.clip = resourceWord;
-            _audioSource.Play();
+            //_audioSource.clip = resourceWord;
+            //_audioSource.Play();
+
+            _audioSource.PlayOneShot(resourceWord);
         }
     }
 

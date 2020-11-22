@@ -38,6 +38,7 @@ public class Spelling : MonoBehaviour, IGameSession
         //StartCanvas.SetActive(true);
         //there is a unity bug, if i instantiate it here the word will be complete but if i instantiate it on sessionstart last letter will be missing
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(false);
+        LetterSpellingResponse.LetterMatched += LetterMatched;
     }
 
     public void SessionStart()
@@ -66,7 +67,7 @@ public class Spelling : MonoBehaviour, IGameSession
         _sessionStarted = true;
         _sessionEnded = false;
         hasReachedLastWord = false;
-        NextButton.SetActive(true);
+        //NextButton.SetActive(true);
     }
 
     public void SessionEnd()
@@ -128,12 +129,12 @@ public class Spelling : MonoBehaviour, IGameSession
         if (hasReachedLastWord)
         {
             SessionEnd();
-            NextButton.SetActive(false);
+            //NextButton.SetActive(false);
         }
         if (WordManager.CurrentIndexRunner >= WordManager.MaxIndex)
             hasReachedLastWord = true;
-        if (WordManager.CurrentIndexRunner > 0)
-            PreviousButton.SetActive(true);
+        //if (WordManager.CurrentIndexRunner > 0)
+        //    PreviousButton.SetActive(true);
     }
     public void Previous()
     {
@@ -170,5 +171,49 @@ public class Spelling : MonoBehaviour, IGameSession
             IsImageActive = true;
 
         }
+    }
+
+    public void LetterMatched()
+    {
+
+        StartCoroutine(FlipToNextWord());
+    }
+
+    private IEnumerator FlipToNextWord()
+    {
+        var wordObject = WordManager.WordObjects[WordManager.CurrentIndex];
+        var wordComponent = wordObject.GetComponent<IWordSelectionResponse>();
+
+        wordObject.transform.position = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.25f));
+        wordObject.transform.position = new Vector2(wordObject.transform.position.x, wordObject.transform.position.y);
+
+        //_audioManager.Play("Success");
+        if (wordComponent != null)
+        {
+            Debug.Log("playing audio");
+            wordComponent.PlayWordAudio();
+        }
+
+        var imageObject = WordManager.InstantiateImage(new Vector3(0, 0, 0), ImageSize);
+        imageObject.transform.position = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.60f));
+        imageObject.transform.position = new Vector2(imageObject.transform.position.x, imageObject.transform.position.y);
+
+        IsImageActive = true;
+
+
+        yield return new WaitForSeconds(2);
+
+        //FlipImageAndWord();
+        //_audioManager.Play("Confirm");
+        //var wordImage = WordManager.ImageObjects[WordManager.CurrentIndex].GetComponent<IPictureSelectionResponse>();
+        //if (wordImage != null)
+        //{
+        //    Debug.Log("playing audio");
+        //    wordImage.PlayWordAudio();
+        //}
+        //_audioManager.PlayVoice(WordManager.CurrentWord);
+        //yield return new WaitForSeconds(2);
+
+        Next();
     }
 }
