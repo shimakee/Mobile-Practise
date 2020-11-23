@@ -23,6 +23,7 @@ MonoBehaviour:
     type: 3}
   DragableContainer: {fileID: 6454180041205442243, guid: f632b36ec16ef8d4aacff06fd9ed0c5d,
     type: 3}
+  DistractionLetters: 2
 --- !u!1001 &1986959892032791385
 PrefabInstance:
   m_ObjectHideFlags: 0

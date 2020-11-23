@@ -23,6 +23,8 @@ public class LetterSpellingResponse : LetterSelectionResponse, ILetterSelectionR
     public bool isMatch = false;
 
     public Spelling GameSession;
+    //private bool _enabledRandomWalk;
+
 
     private void Awake()
     {
@@ -183,4 +185,26 @@ public class LetterSpellingResponse : LetterSelectionResponse, ILetterSelectionR
     }
 
     public static event Action LetterMatched;
+
+    //public void EnableRandomWalk(bool enable)
+    //{
+    //    _enabledRandomWalk = enable;
+
+    //    if(enable)
+    //        StartCoroutine(walkRandom());
+    //}
+
+    //private IEnumerator walkRandom()
+    //{
+    //    System.Random random = new System.Random();
+
+    //    Vector2 v = new Vector2(random.Next(0, 3), random.Next(0, 3));
+    //    if(_rigidbody2D)
+    //        _rigidbody2D.velocity = v;
+
+    //    yield return new WaitForSeconds(random.Next(1,4));
+
+    //    if (_enabledRandomWalk)
+    //        StartCoroutine(walkRandom());
+    //}
 }

@@ -21,24 +21,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &-627448820809857955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 114160979372236170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f016fca08a19f8e48bb73f7d24b031bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  LetterScriptable: {fileID: 0}
-  GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
-  isSet: 0
-  onTrigger: 0
-  isMatch: 0
-  GameSession: {fileID: 0}
 --- !u!212 &-5627821216593081540
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -90,6 +72,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-627448820809857955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114160979372236170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f016fca08a19f8e48bb73f7d24b031bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LetterScriptable: {fileID: 0}
+  GameOptions: {fileID: 11400000, guid: 9c2530fe588f7ff45a14c3f99ef63e90, type: 2}
+  isSet: 0
+  onTrigger: 0
+  isMatch: 0
+  GameSession: {fileID: 0}
+--- !u!114 &6226843241207194795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114160979372236170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd20d9038f0f5cf41bd0fa4bde179bd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2696366145091206792
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Matching.unity
     guid: da0016cb0b4b7f143a282fd7fbe657b2
+  - enabled: 1
+    path: Assets/Scenes/Spelling.unity
+    guid: cb88f9c9d329d0b468235ad47ff42f49
   m_configObjects: {}

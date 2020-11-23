@@ -16,6 +16,10 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
     private GameObject _replacementLetter;
     private DragableContainer _container;
 
+    private GameObject[] _distractionLetterObjects;
+    private List<char> _distractionChars;
+    public int DistractionLetters = 2;
+
     private void Awake()
     {
         _audioManager = FindObjectOfType<AudioManager>();
@@ -69,6 +73,7 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         SwapToDragableLetter(word);
         AddVelocityToLetter();
         AddContainer(word);
+        generateWalkingLetters(DistractionLetters, scale);
         //AssignContainerName(_deactivatedChar.ToString());
     }
 
@@ -99,7 +104,8 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         GameObject letterGameObject = Instantiate(MissingLetterBlockPrefab, transform);
         _replacementLetter = letterGameObject;
         letterGameObject.transform.localScale = new Vector2(scale, scale);
-        letterGameObject.transform.position = new Vector2(1, 1);
+        //letterGameObject.transform.position = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.25f));
+        letterGameObject.transform.position = Camera.main.ViewportToWorldPoint(randomPosition());
 
         ILetterSelectionResponse letterComponent = letterGameObject.GetComponent<ILetterSelectionResponse>();
         if (letterComponent != null)
@@ -108,7 +114,13 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
 
     private void AddVelocityToLetter()
     {
-        _replacementLetter.GetComponent<Rigidbody2D>().velocity = new Vector2(3, 3);
+
+        //_replacementLetter.GetComponent<Rigidbody2D>().velocity = new Vector2(3, 3);
+        var walker = _replacementLetter.GetComponent<RandomWalker>();
+        if (walker)
+        {
+            walker.EnableRandomWalk(true);
+        }
     }
 
     private void AddContainer(string word)
@@ -131,6 +143,44 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
 
     }
 
+    private void generateWalkingLetters(int numberOfLetters, float scale)
+    {
+        _distractionLetterObjects = new GameObject[numberOfLetters];
+        if (_distractionChars == null)
+            _distractionChars = new List<char>();
+
+        for (int i = 0; i < numberOfLetters; i++)
+        {
+            char letter = generateRandomLetter();
+            if (_distractionChars.Contains(letter) || letter == _deactivatedChar)
+            {
+                while (_distractionChars.Contains(letter) || letter == _deactivatedChar)
+                {
+                    letter = generateRandomLetter();
+                }
+            }
+
+            _distractionChars.Add(letter);
+            GameObject letterGameObject = Instantiate(MissingLetterBlockPrefab, transform);
+            _distractionLetterObjects[i] = letterGameObject;
+
+            letterGameObject.transform.position = Camera.main.ViewportToWorldPoint(randomPosition());
+            letterGameObject.transform.localScale = new Vector2(scale, scale);
+            ILetterSelectionResponse letterComponent = letterGameObject.GetComponent<ILetterSelectionResponse>();
+            if (letterComponent != null)
+            {
+                letterComponent.Initialize(letter);
+            }
+
+            var walker = letterGameObject.GetComponent<RandomWalker>();
+            if (walker)
+            {
+                walker.EnableRandomWalk(true);
+            }
+        }
+
+    }
+
     //private void AssignContainerName(string name)
     //{
     //    if (_container)
@@ -143,5 +193,35 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
     {
         if(_deactivatedLetter)
             _deactivatedLetter.GetComponent<TextMeshProUGUI>().text = _deactivatedChar.ToString();
+
+        if(_distractionLetterObjects != null)
+        {
+            for (int i = 0; i < _distractionLetterObjects.Length; i++)
+            {
+                Destroy(_distractionLetterObjects[i]);
+            }
+
+            _distractionLetterObjects = null;
+            _distractionChars.Clear();
+        }
+    }
+
+    private Vector2 randomPosition()
+    {
+        System.Random random = new System.Random();
+
+        float x = (float)(random.NextDouble() * .5) + .25f;
+        float y = (float)(random.NextDouble() * .5) + .25f;
+
+        return new Vector2(x, y);
+    }
+
+    private char generateRandomLetter()
+    {
+        System.Random random = new System.Random();
+
+        int letter = random.Next(0, 26);
+
+        return (char)('a' + letter);
     }
 }
