@@ -42,6 +42,7 @@ public class GameOptions : ScriptableObject
         //display options
         PlayerPrefs.SetInt("shuffleOption", Convert.ToInt32(this.Shuffle));
         PlayerPrefs.SetInt("repeatOption", Convert.ToInt32(this.Repeat));
+        PlayerPrefs.SetString("letterCasingOption", this.LetterCasingOptions.ToString());
         PlayerPrefs.Save();
 
         OnPropertyChanged();
@@ -84,7 +85,13 @@ public class GameOptions : ScriptableObject
             this.LetterAudio = letterAudioOptions;
         }
 
-        if(PlayerPrefs.HasKey("shuffleOption"))
+        if (PlayerPrefs.HasKey("letterCasingOption"))
+        {
+            Enum.TryParse(PlayerPrefs.GetString("letterCasingOption"), out LetterCasingOptions letterCasingOptions);
+            this.LetterCasingOptions = letterCasingOptions;
+        }
+
+        if (PlayerPrefs.HasKey("shuffleOption"))
             this.Shuffle = Convert.ToBoolean(PlayerPrefs.GetInt("shuffleOption"));
         if(PlayerPrefs.HasKey("repeatOption"))
             this.Repeat = Convert.ToBoolean(PlayerPrefs.GetInt("repeatOption"));

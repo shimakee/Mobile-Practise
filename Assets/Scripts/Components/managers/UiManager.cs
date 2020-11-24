@@ -11,7 +11,8 @@ public enum UiType
     pauseMenu,
     options,
     gameStart,
-    gameEnd
+    gameEnd,
+    option
 }
 
 public class UiManager : MonoBehaviour

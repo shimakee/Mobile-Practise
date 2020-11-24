@@ -26,6 +26,7 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         _audioSource = GetComponent<AudioSource>();
 
         LetterSpellingResponse.LetterMatched += LetterMattched;
+        GameOptions.PropertyChanged += OptionChanged;
 
         if (!_audioManager)
             throw new NullReferenceException("no audio manager comppnent attached.");
@@ -35,8 +36,15 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
             throw new NullReferenceException("no game options to load.");
     }
 
+    private void Start()
+    {
+        OptionChanged();
+    }
+
     protected override void AssembleLetters(string word) // create overload for offset and margins?
     {
+        Debug.Log("assembling letters");
+
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         int length = word.Length;
         _letterChildren = new ILetterSelectionResponse[length];
@@ -62,9 +70,14 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
             ILetterSelectionResponse letterComponent = letterGameObject.GetComponent<ILetterSelectionResponse>();
             if (letterComponent != null)
             {
+                Debug.Log("there is letter component " + _letterChildren.Length);
                 letterComponent.Initialize(word[i]);
                 _letterChildren[i] = letterComponent;
+
+               
             }
+
+
             lettersInstantiated++;
         }
 
@@ -75,6 +88,8 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         AddContainer(word);
         generateWalkingLetters(DistractionLetters, scale);
         //AssignContainerName(_deactivatedChar.ToString());
+
+        OptionChanged();
     }
 
     private void DeactivateRandomLetter(string word)
@@ -223,5 +238,13 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         int letter = random.Next(0, 26);
 
         return (char)('a' + letter);
+    }
+
+    protected override void OptionChanged()
+    {
+        base.OptionChanged();
+
+        if (_deactivatedLetter)
+            _deactivatedLetter.GetComponent<TextMeshProUGUI>().text = "_";
     }
 }

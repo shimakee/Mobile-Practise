@@ -36,12 +36,44 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
         _audioManager = FindObjectOfType<AudioManager>();
         _audioSource = GetComponent<AudioSource>();
 
-        if(!_audioManager)
+        GameOptions.PropertyChanged += OptionChanged;
+
+        if (!_audioManager)
             throw new NullReferenceException("no audio manager comppnent attached.");
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
         if (!GameOptions)
             throw new NullReferenceException("no game options to load.");
+    }
+
+    private void Start()
+    {
+        OptionChanged();
+    }
+
+    protected virtual void OptionChanged()
+    {
+        if (GameOptions != null)
+        {
+            Debug.Log("there is an option");
+            switch (GameOptions.LetterCasingOptions)
+            {
+                case LetterCasingOptions.upper:
+                    Debug.Log("1");
+                    ToUpper();
+                    break;
+                case LetterCasingOptions.lower:
+                    Debug.Log("2");
+                    ToLower();
+                    break;
+                case LetterCasingOptions.standard:
+                    Debug.Log("3");
+                    ToStandard();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -77,7 +109,7 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
         //assign components
         _audioSource.clip = Word.WordAudio;
-
+        Debug.Log("initialize word");
         //initializing letters & place them in the world.
         AssembleLetters(Word.WordSpelling);
 
@@ -90,6 +122,8 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
     }
     protected virtual void AssembleLetters(string word) // create overload for offset and margins?
     {
+        Debug.Log("assembling letters");
+
         var letterBlockSpriteRenderer = LetterBlockPrefab.GetComponent<RectTransform>();
         int length = word.Length;
         _letterChildren = new ILetterSelectionResponse[length];
@@ -112,10 +146,13 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
             if (letterComponent != null)
             {
                 letterComponent.Initialize(word[i]);
+                Debug.Log("there is letter component " + _letterChildren.Length);
                 _letterChildren[i] = letterComponent;
             }
             lettersInstantiated++;
         }
+
+        OptionChanged();
     }
 
     public void IsSelected(GameObject gameObject, Vector3 inputPosition)
@@ -224,33 +261,36 @@ public class WordSelectionResponse : MonoBehaviour, IWordSelectionResponse
 
     public void ToUpper()
     {
-        for (int i = 0; i < _letterChildren.Length; i++)
-        {
-            _letterChildren[i].ToUpper();
-        }
+        if (_letterChildren != null)
+            for (int i = 0; i < _letterChildren.Length; i++)
+            {
+                _letterChildren[i].ToUpper();
+            }
     }
 
     public void ToLower()
     {
-        for (int i = 0; i < _letterChildren.Length; i++)
-        {
-            _letterChildren[i].ToLower();
-        }
+        if(_letterChildren != null)
+            for (int i = 0; i < _letterChildren.Length; i++)
+            {
+                _letterChildren[i].ToLower();
+            }
     }
 
     public void ToStandard()
     {
-        for (int i = 0; i < _letterChildren.Length; i++)
-        {
-            if(i == 0)
+        if (_letterChildren != null)
+            for (int i = 0; i < _letterChildren.Length; i++)
             {
-                _letterChildren[i].ToUpper();
+                if(i == 0)
+                {
+                    _letterChildren[i].ToUpper();
+                }
+                else
+                {
+                    _letterChildren[i].ToLower();
+                }
             }
-            else
-            {
-                _letterChildren[i].ToLower();
-            }
-        }
     }
 
     protected float CalculateScale(string word)

@@ -69,13 +69,17 @@ public class GameOptionsContoller : MonoBehaviour
     public void ActivateOptionsCanvas(GameObject optionsCanvas)
     {
         _audioManager.Play("Open");
-        optionsCanvas.SetActive(true);
+
+        if (optionsCanvas)
+            optionsCanvas.SetActive(true);
     }
 
     public void DeActivateOptionsCanvas(GameObject optionsCanvas)
     {
         _audioManager.Play("Close");
-        optionsCanvas.SetActive(false);
+
+        if(optionsCanvas)
+            optionsCanvas.SetActive(false);
     }
 
     public void SaveOptions()
