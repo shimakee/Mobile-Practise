@@ -13,6 +13,7 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
     private GameObject[] letterChildrenObjects;
     private GameObject _deactivatedLetter;
     private char _deactivatedChar;
+    private int _deactivatedLetterIndex;
     private GameObject _replacementLetter;
     private DragableContainer _container;
 
@@ -97,6 +98,7 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
         int length = word.Length;
         System.Random random = new System.Random();
         int randomMissingLetterIndex = random.Next(0, length);
+        _deactivatedLetterIndex = randomMissingLetterIndex;
 
         _deactivatedLetter = letterChildrenObjects[randomMissingLetterIndex];
         if (_deactivatedLetter)
@@ -206,8 +208,33 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
 
     private void LetterMattched()
     {
-        if(_deactivatedLetter)
-            _deactivatedLetter.GetComponent<TextMeshProUGUI>().text = _deactivatedChar.ToString();
+        if (_deactivatedLetter)
+        {
+            var component = _deactivatedLetter.GetComponent<TextMeshProUGUI>();
+            string text = _deactivatedChar.ToString();
+
+            switch (GameOptions.LetterCasingOptions)
+            {
+                case LetterCasingOptions.upper:
+                    component.text = text.ToUpper();
+                    break;
+                case LetterCasingOptions.lower:
+                    component.text = text.ToLower();
+                    break;
+                case LetterCasingOptions.standard:
+                    if(_deactivatedLetterIndex == 0)
+                    {
+                        component.text = text.ToUpper();
+                    }
+                    else
+                    {
+                        component.text = text.ToLower();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
 
         if(_distractionLetterObjects != null)
         {
@@ -246,5 +273,76 @@ public class WordSpellingResponse : WordSelectionResponse, IWordSelectionRespons
 
         if (_deactivatedLetter)
             _deactivatedLetter.GetComponent<TextMeshProUGUI>().text = "_";
+
+        if (_replacementLetter)
+        {
+            var component = _replacementLetter.GetComponent<TextMeshProUGUI>();
+            string text = component.text;
+
+            switch (GameOptions.LetterCasingOptions)
+            {
+                case LetterCasingOptions.upper:
+                    component.text = text.ToUpper();
+                    break;
+                case LetterCasingOptions.lower:
+                    component.text = text.ToLower();
+                    break;
+                case LetterCasingOptions.standard:
+                    if (_deactivatedLetterIndex == 0)
+                    {
+                        component.text = text.ToUpper();
+                    }
+                    else
+                    {
+                        component.text = text.ToLower();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            
+        }
+
+        if (_distractionLetterObjects != null)
+        {
+            if(_distractionLetterObjects.Length > 1 && GameOptions != null)
+                for (int i = 0; i < _distractionLetterObjects.Length; i++)
+                {
+                    Debug.Log("changing distraction letters");
+                    var textComponent = _distractionLetterObjects[i].GetComponent<TextMeshProUGUI>();
+                    string text = textComponent.text;
+
+                    switch (GameOptions.LetterCasingOptions)
+                    {
+                        case LetterCasingOptions.upper:
+                            
+                            textComponent.text = text.ToUpper();
+                            Debug.Log("changing distraction letters 1");
+
+                            break;
+                        case LetterCasingOptions.lower:
+                            textComponent.text = text.ToLower();
+                            Debug.Log("changing distraction letters 2");
+                            break;
+                        case LetterCasingOptions.standard:
+                            if (_deactivatedLetterIndex == 0)
+                            {
+                                textComponent.text = text.ToUpper();
+                                Debug.Log("changing distraction letters 3a");
+
+                            }
+                            else
+                            {
+                                textComponent.text = text.ToLower();
+                                Debug.Log("changing distraction letters 3b");
+
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+        }
     }
 }

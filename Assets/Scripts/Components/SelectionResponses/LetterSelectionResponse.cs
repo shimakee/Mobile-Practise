@@ -32,6 +32,8 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         _audioSource = GetComponent<AudioSource>();
         _textMeshPro = GetComponent<TextMeshProUGUI>();
         _parentWord = transform.parent.GetComponent<IWordSelectionResponse>();
+        //_parentWord.ChildIsSelected += SelectedAction;
+        //_parentWord.ChildDeselected += DeselectedAction;
 
         if (!_audioSource)
             throw new NullReferenceException("no audio source comppnent attached.");
@@ -81,20 +83,38 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
     public virtual void IsSelected(GameObject gameObject, Vector3 inputPosition)
     {
-        
         this.gameObject.transform.localScale = _growScale;
         _textMeshPro.color = _ColorActive;
 
         if (_parentWord != null)
+        {
+            Debug.Log("is selected chold to parent call");
             _parentWord.OnChildLetterSelected(this, inputPosition);
+        }
+    }
+
+    protected void SelectedAction()
+    {
+        this.gameObject.transform.localScale = _growScale;
+        _textMeshPro.color = _ColorActive;
+    }
+
+    protected  void DeselectedAction()
+    {
+        this.gameObject.transform.localScale = _originalScale;
+        _textMeshPro.color = _ColorDeselect;
     }
 
     public virtual void Deselected(GameObject gameObject, Vector3 inputPosition)
     {
+        Debug.Log("is deselected chold to parent call 0");
+
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
         _textMeshPro.color = _ColorDeselect;
 
+        //if (_parentWord != null)
+        //    _parentWord.OnChildDeselected();
         //Debug.Log("deselected", this);
         //var parentWordComponent = transform.parent.GetComponent<IWordSelectionResponse>();
 
@@ -103,15 +123,15 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
 
         //if (_parentWord != null)
         //    _parentWord.OnChildLetterConfirmed(this, inputPosition, null);
+        this.OnSelectionConfirm(gameObject, inputPosition, new List<GameObject>());
+
     }
 
     public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition)
     {
-
-
         this.OnSelectionConfirm(gameObject, inputPosition, new List<GameObject>());
     }
-    public void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
+    public virtual void OnSelectionConfirm(GameObject gameObject, Vector3 inputPosition, List<GameObject> wasSelectedGameObjects)
     {
         //return to original scale
         this.gameObject.transform.localScale = _originalScale;
@@ -134,7 +154,7 @@ public class LetterSelectionResponse : MonoBehaviour, ILetterSelectionResponse
         _textMeshPro.color = _ColorWasActive;
     }
 
-    public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
+    public virtual void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
         //maintain scale;
         this.gameObject.transform.localScale = _originalScale;

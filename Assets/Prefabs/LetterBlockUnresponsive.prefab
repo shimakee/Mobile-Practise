@@ -21,6 +21,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -500971192211815549, guid: 8f431fb1df693574499a1fd13e71bdbe,
+        type: 3}
+      propertyPath: Option
+      value: 
+      objectReference: {fileID: 11400000, guid: 87753435e893d154db9dae5013003c46,
+        type: 2}
     - target: {fileID: 2151864133179475893, guid: 8f431fb1df693574499a1fd13e71bdbe,
         type: 3}
       propertyPath: m_HorizontalAlignment
