@@ -134,10 +134,10 @@ public class LetterSpellingResponse : LetterSelectionResponse, ILetterSelectionR
         var scale = (float)(_originalScale.x * 1.3);
         this.gameObject.transform.localScale = new Vector3(scale, scale, scale);
 
-        //if (!_audioSource.isPlaying && !isSelected)
-        //{
-        //    _audioSource.Play();
-        //}
+        if (!isSelected)
+        {
+            PlayAudio();
+        }
 
         isSelected = true;
     }
