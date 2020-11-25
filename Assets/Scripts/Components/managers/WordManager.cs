@@ -104,7 +104,7 @@ public class WordManager : MonoBehaviour
         int length = intSet.Length;
         //Debug.Log($"lenght {length}");
 
-        for (int i = _currentWordListIndex +1; i < intSet.Length; i++)
+        for (int i = _currentWordListIndex ; i < intSet.Length; i++)
         {
             int rng = random.Next(i, length);
 
