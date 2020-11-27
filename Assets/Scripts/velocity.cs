@@ -17,6 +17,8 @@ public class velocity : MonoBehaviour
     void Start()
     {
         //tra.GetComponent<Rigidbody2D>().velocity = new Vector2(5, 5);
+        Debug.Log(gameObject.transform.position.ToString(), this);
+        Debug.Log(gameObject.transform.localPosition.ToString(), this);
     }
 
     // Update is called once per frame

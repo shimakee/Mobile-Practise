@@ -148,8 +148,10 @@ public class WordManager : MonoBehaviour
     //private IEnumerator CreateImageObject(string word, float waitTime, Vector3 position)
     private GameObject CreateImageObject(string word, Vector3 position, float imageScale)
     {
+
         GameObject instantiatedImageObject = Instantiate(ImageBlockPrefab, transform);
         instantiatedImageObject.transform.position = position;
+
         float scale = CalculateImageScale() * imageScale;
         instantiatedImageObject.transform.localScale = new Vector2(scale, scale);
         instantiatedImageObject.GetComponent<IPictureSelectionResponse>().InitializePicture(word);

@@ -12,6 +12,7 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
     }
 
     public GameOptions GameOptions;
+    public static event Action<string> Selected;
 
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
@@ -41,7 +42,7 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         if(Picture == null)
             Picture = ScriptableObject.CreateInstance<Picture>();
         if(String.IsNullOrWhiteSpace(Picture.Name))
-            Picture.Name = picture + "Image";
+            Picture.Name = picture;
 
         //assign assets
         if (Picture.Sfx == null)
@@ -52,7 +53,7 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
             Picture.WordAudio = Resources.Load<AudioClip>($"Packages/{GameOptions.VoicePackage}/audio/words/{picture}");
 
         //name your object
-        transform.name = this.Picture.Name;
+        transform.name = this.Picture.Name +" Image";
 
 
         //check that all resources are there
@@ -72,9 +73,11 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         sizeUp.x = (float)(_originalScale.x * 1.3);
         sizeUp.y = (float)(_originalScale.x * 1.3);
         this.gameObject.transform.localScale = sizeUp;
+
+        Selected(this.Picture.Name);
     }
 
-    public void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
+    public virtual void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)
     {
         if (!_audioSource.isPlaying)
         {
