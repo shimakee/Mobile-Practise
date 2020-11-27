@@ -144,11 +144,9 @@ public class Guess : MonoBehaviour, IGameSession
 
     public void SessionPause()
     {
-        throw new System.NotImplementedException();
     }
     public void SessionResume()
     {
-        throw new System.NotImplementedException();
     }
 
     public void SessionReset()
@@ -158,6 +156,7 @@ public class Guess : MonoBehaviour, IGameSession
         _currentWordsOnSet.Clear();
         _indexesOfImagesOnSet.Clear();
         _wrongMarkPositions.Clear();
+        DestroyWrongMarks();
 
 
         if (WordManager)
@@ -182,7 +181,8 @@ public class Guess : MonoBehaviour, IGameSession
 
         _currentWordsOnSet.Clear();
         _indexesOfImagesOnSet.Clear();
-        _wrongMarkPositions.Clear(); 
+        _wrongMarkPositions.Clear();
+        DestroyWrongMarks();
 
         if (WordManager)
         {

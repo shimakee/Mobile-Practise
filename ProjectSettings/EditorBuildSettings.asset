@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Spelling.unity
     guid: cb88f9c9d329d0b468235ad47ff42f49
+  - enabled: 1
+    path: Assets/Scenes/Guess.unity
+    guid: 7c2f3cd2029fb99478d463fda44db2fa
   m_configObjects: {}
