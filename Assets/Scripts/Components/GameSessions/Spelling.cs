@@ -61,7 +61,7 @@ public class Spelling : MonoBehaviour, IGameSession
 
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(true);
         WordManager.ResetIndex();
-        WordManager.InstantiateWord(new Vector3(0, 0, 0));
+        WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
         //StartCanvas.SetActive(false);
         //EndCanvas.SetActive(false);
         _sessionStarted = true;
@@ -122,7 +122,7 @@ public class Spelling : MonoBehaviour, IGameSession
             IsImageActive = false;
 
             WordManager.NextIndex();
-            WordManager.InstantiateWord(new Vector3(0, 0, 0));
+            WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
 
         }
 
@@ -148,7 +148,7 @@ public class Spelling : MonoBehaviour, IGameSession
 
         WordManager.DisableCurrentWord();
         WordManager.PreviousIndex();
-        WordManager.InstantiateWord(new Vector3(0, 0, 0));
+        WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
 
         if (WordManager.CurrentIndexRunner <= 0)
             PreviousButton.SetActive(false);
@@ -160,14 +160,14 @@ public class Spelling : MonoBehaviour, IGameSession
     {
         if (IsImageActive)
         {
-            WordManager.InstantiateWord(new Vector3(0, 0, 0));
+            WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
             WordManager.DisableCurrentImage();
             IsImageActive = false;
         }
         else
         {
             WordManager.DisableCurrentWord();
-            WordManager.InstantiateImage(new Vector3(0, 0, 0), ImageSize);
+            WordManager.InstantiateCurrentImage(new Vector3(0, 0, 0), ImageSize);
             IsImageActive = true;
 
         }
@@ -194,7 +194,7 @@ public class Spelling : MonoBehaviour, IGameSession
             wordComponent.PlayWordAudio();
         }
 
-        var imageObject = WordManager.InstantiateImage(new Vector3(0, 0, 0), ImageSize);
+        var imageObject = WordManager.InstantiateCurrentImage(new Vector3(0, 0, 0), ImageSize);
         imageObject.transform.position = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.60f));
         imageObject.transform.position = new Vector2(imageObject.transform.position.x, imageObject.transform.position.y);
 

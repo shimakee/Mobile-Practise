@@ -152,7 +152,7 @@ public class Matching : MonoBehaviour, IGameSession
 
                 
 
-                var wordObject = WordManager.InstantiateWord(_coordinatesWords[i], .5f);
+                var wordObject = WordManager.InstantiateCurrentWord(_coordinatesWords[i], .5f);
                 if (wordObject == null)
                 {
                     Debug.Log("word is null");
@@ -176,7 +176,7 @@ public class Matching : MonoBehaviour, IGameSession
                 collider.radius = .5f;
                 wordContainer.ContainerName = WordManager.CurrentWord;
 
-                var imageObject = WordManager.InstantiateImage(_coordinatesImage[i], ImageSize);
+                var imageObject = WordManager.InstantiateCurrentImage(_coordinatesImage[i], ImageSize);
                 var dragSnapComponent = imageObject.GetComponent<DragSnapSelectionResponse>();
                 if (dragSnapComponent != null)
                 {

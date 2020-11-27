@@ -4,7 +4,7 @@ using UnityEngine;
 public class RunThrough : MonoBehaviour, IGameSession
 {
     public string TextAssetName = "initialWordList";
-    public GameObject WordMangerCanvas;
+    public GameObject WordManagerCanvas;
     public WordManager WordManager { get; private set; }
     [Range(1f, 10f)] public float ImageSize = 5;
 
@@ -25,7 +25,7 @@ public class RunThrough : MonoBehaviour, IGameSession
     private UiManager _uiManager;
     private void Awake()
     {
-        WordManager = WordMangerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
+        WordManager = WordManagerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
         _gameOptions = WordManager.GameOptions;
         _audioManager = FindObjectOfType<AudioManager>();
         _uiManager = FindObjectOfType<UiManager>();
@@ -58,7 +58,7 @@ public class RunThrough : MonoBehaviour, IGameSession
 
         //WordManager.WordObjects[WordManager.CurrentIndex].SetActive(true);
         WordManager.ResetIndex();
-        WordManager.InstantiateWord(new Vector3(0, 0, 0));
+        WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
         //StartCanvas.SetActive(false);
         //EndCanvas.SetActive(false);
         _sessionStarted = true;
@@ -119,7 +119,7 @@ public class RunThrough : MonoBehaviour, IGameSession
             IsImageActive = false;
 
             WordManager.NextIndex();
-            WordManager.InstantiateWord(new Vector3(0, 0, 0));
+            WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
 
         }
 
@@ -145,7 +145,7 @@ public class RunThrough : MonoBehaviour, IGameSession
 
         WordManager.DisableCurrentWord();
         WordManager.PreviousIndex();
-        WordManager.InstantiateWord(new Vector3(0, 0, 0));
+        WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
 
         if (WordManager.CurrentIndexRunner <= 0)
             PreviousButton.SetActive(false);
@@ -157,14 +157,14 @@ public class RunThrough : MonoBehaviour, IGameSession
     {
         if (IsImageActive)
         {
-            WordManager.InstantiateWord(new Vector3(0, 0, 0));
+            WordManager.InstantiateCurrentWord(new Vector3(0, 0, 0));
             WordManager.DisableCurrentImage();
             IsImageActive = false;
         }
         else
         {
             WordManager.DisableCurrentWord();
-            WordManager.InstantiateImage(new Vector3(0,0,0), ImageSize);
+            WordManager.InstantiateCurrentImage(new Vector3(0,0,0), ImageSize);
             IsImageActive = true;
 
         }
