@@ -10,9 +10,9 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         get { return PictureScriptable; }
         set { PictureScriptable = value; }
     }
+    public static event Action<GameObject, string> Selected;
 
     public GameOptions GameOptions;
-    public static event Action<string> Selected;
 
     private AudioSource _audioSource;
     private SpriteRenderer _spriteRenderer;
@@ -74,7 +74,7 @@ public class PictureSelectionResponse : MonoBehaviour, IPictureSelectionResponse
         sizeUp.y = (float)(_originalScale.x * 1.3);
         this.gameObject.transform.localScale = sizeUp;
 
-        Selected(this.Picture.Name);
+        Selected(this.gameObject, Picture.Name);
     }
 
     public virtual void IsSelectedUnique(GameObject gameObject, Vector3 inputPosition)

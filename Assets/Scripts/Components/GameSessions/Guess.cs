@@ -8,10 +8,11 @@ public class Guess : MonoBehaviour, IGameSession
     public WordManager WordManager { get; private set; }
     public GameObject WordManagerCanvas;
     public string TextAssetName = "initialWordList";
-    [Range(1f, 10f)] public float ImageSize = 4;
-
-
+    [Range(1f, 10f)] public float ImageSize = 2;
     [Range(1,5)] public int NumberOfExtraImages = 2;
+    public GameObject CorrectMark;
+    public GameObject WrongMark;
+    public int TotalWorldUnits = 10;
 
     private GameOptions _gameOptions;
     private AudioManager _audioManager;
@@ -20,7 +21,10 @@ public class Guess : MonoBehaviour, IGameSession
     private List<string> _currentWordsOnSet;
     //private List<GameObject> _currentImageObjectsOnSet;
     private List<int> _indexesOfImagesOnSet;
+    private bool _isImageSelected;
 
+    private List<Vector2> _wrongMarkPositions;
+    private List<GameObject> _wrongMarks;
     void Awake()
     {
         WordManager = WordManagerCanvas.GetComponent<WordManager>() ?? throw new NullReferenceException("no word manager");
@@ -31,34 +35,82 @@ public class Guess : MonoBehaviour, IGameSession
         PictureSelectionResponse.Selected += OnPictureSelected;
     }
 
-    private void OnPictureSelected(string name)
+    private void OnPictureSelected(GameObject obj, string name)
     {
-        if (WordManager.CurrentWord == name)
+        if(WordManager.CurrentWord != name)
         {
-            StartCoroutine(ProcessCorrectSelection());
+            if (_isImageSelected == false)
+            {
+                _isImageSelected = true;
+                ProcessWrongSelection(obj);
+            }
         }
         else
         {
-            _audioManager.Play("Back");
+            if (_isImageSelected == false)
+            {
+                _isImageSelected = true;
+                StartCoroutine(ProcessCorrectSelection(obj));
+            }
         }
     }
 
-    private IEnumerator ProcessCorrectSelection()
+    private IEnumerator ProcessCorrectSelection(GameObject obj)
     {
         _audioManager.Play("Confirm");
+        var correctMark = GameObject.Instantiate(CorrectMark, WordManager.transform);
+        correctMark.transform.position = obj.transform.position;
+        var scale = CalculateImageScale();
+        correctMark.transform.localScale = new Vector2(scale, scale);
 
-        yield return new WaitForSeconds(2);
+        DestroyWrongMarks();
+        yield return new WaitForSeconds(1);
 
-
+        Destroy(correctMark);
         Next();
+        _isImageSelected = false;
+    }
+
+    private void ProcessWrongSelection(GameObject obj)
+    {
+        _audioManager.Play("Back");
+        GameObject wrongMark = null;
+
+        if (!_wrongMarkPositions.Contains(obj.transform.position))
+        {
+            wrongMark = GameObject.Instantiate(WrongMark, WordManager.transform);
+            var scale = CalculateImageScale();
+            wrongMark.transform.localScale = new Vector2(scale, scale);
+            wrongMark.transform.position = obj.transform.position;
+            _wrongMarkPositions.Add(obj.transform.position);
+            _wrongMarks.Add(wrongMark);
+        }
+
+        //yield return new WaitForSeconds(2);
+
+        //Destroy(wrongMark);
+        _isImageSelected = false;
+    }
+
+    private void DestroyWrongMarks()
+    {
+        foreach (var item in _wrongMarks)
+        {
+            Destroy(item);
+        }
+    }
+
+    public void PlayInstruction()
+    {
+        WordManager.ImageObjects[WordManager.CurrentIndex].GetComponent<IPictureSelectionResponse>().PlayWordAudio();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         _currentWordsOnSet = new List<string>();
-
-
+        _wrongMarkPositions = new List<Vector2>();
+        _wrongMarks = new List<GameObject>();
 
     }
 
@@ -105,6 +157,8 @@ public class Guess : MonoBehaviour, IGameSession
 
         _currentWordsOnSet.Clear();
         _indexesOfImagesOnSet.Clear();
+        _wrongMarkPositions.Clear();
+
 
         if (WordManager)
         {
@@ -128,6 +182,8 @@ public class Guess : MonoBehaviour, IGameSession
 
         _currentWordsOnSet.Clear();
         _indexesOfImagesOnSet.Clear();
+        _wrongMarkPositions.Clear(); 
+
         if (WordManager)
         {
             WordManager.ResetIndex();
@@ -148,6 +204,7 @@ public class Guess : MonoBehaviour, IGameSession
         DisableCurrentSet();
         _currentWordsOnSet.Clear();
         _indexesOfImagesOnSet.Clear();
+        _wrongMarkPositions.Clear();
 
         if (WordManager.CurrentIndexRunner == WordManager.MaxIndex)
         {
@@ -179,6 +236,8 @@ public class Guess : MonoBehaviour, IGameSession
             _indexesOfImagesOnSet = new List<int>();
         _indexesOfImagesOnSet.Clear();
         _currentWordsOnSet.Clear();
+        _wrongMarkPositions.Clear();
+
 
         var random = new System.Random();
 
@@ -279,4 +338,11 @@ public class Guess : MonoBehaviour, IGameSession
         return positions;
     }
 
+    float CalculateImageScale()
+    {
+        //get aspect ratio
+        int pixelPerUnit = Screen.height / TotalWorldUnits;
+
+        return pixelPerUnit;
+    }
 }
